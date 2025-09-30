@@ -3,3 +3,7 @@ pip install -r requirements.txt
 
 # Для разработки (если есть отдельный файл)
 pip install -r requirements-dev.txt
+
+
+#parcing req
+pip install python-docx nltk pandas scikit-learn sentence-transformers evaluate rouge-score
