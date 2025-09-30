@@ -7,3 +7,10 @@ pip install -r requirements-dev.txt
 
 #parcing req
 pip install python-docx nltk pandas scikit-learn sentence-transformers evaluate rouge-score
+
+# База данных
+pip install sqlite3
+
+pip install langchain-community langchain-core
+pip install rouge-score nltk evaluate bert-score
+pip install streamlit plotly pandas numpy

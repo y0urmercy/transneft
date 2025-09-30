@@ -270,3 +270,20 @@ class EvaluationCriteria:
                 total_weight += weight
         
         return total_score / total_weight if total_weight > 0 else 0.0
+    
+
+# ==================== НАСТРОЙКИ БАЗЫ ДАННЫХ ====================
+DATABASE_CONFIG = {
+    "db_path": "data/chat_history.db",
+    "backup_enabled": True,
+    "backup_interval_hours": 24,
+    "max_history_days": 365,
+    "export_formats": ["json", "csv"]
+}
+
+# ==================== НАСТРОЙКИ СЕССИЙ ====================
+SESSION_CONFIG = {
+    "session_timeout_minutes": 120,
+    "max_messages_per_session": 1000,
+    "enable_session_analytics": True
+}
