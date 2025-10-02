@@ -1,1 +1,29 @@
+graph LR
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#333,stroke-width:2px
+    style D fill:#bbf,stroke:#333,stroke-width:2px
+    style E fill:#bbf,stroke:#333,stroke-width:2px
+    style F fill:#ff9,stroke:#333,stroke-width:2px
+    style G fill:#ff9,stroke:#333,stroke-width:2px
+    style H fill:#9f9,stroke:#333,stroke-width:2px
+    style I fill:#9f9,stroke:#333,stroke-width:2px
 
+    A[Пользовательский Запрос] --> B[Эмбеддер<br>USER-BGE-m3]
+    B -->|Эмбеддинг| C[Ретривер<br>FAISS Search top-K]
+    C -->|Контексты| D[Ридер<br>RuBERT-QA Fine-tuned]
+    D -->|Ответ| E[Вывод Пользователю]
+    F[База .docx] -->|Парсинг| G[Эмбеддинг Контекстов<br>USER-BGE-m3]
+    G --> C
+    H[Бенчмарк Триплеты] -->|Генерация| I[Оценка Метрик<br>Bleurt-20, SAS, rougeL<br>NDCG@10, MRR@10, MAP@100]
+
+    subgraph "Подготовка Данных "
+    F --> H
+    G
+    end
+    subgraph "Inference [Realtime]"
+    A --> E
+    end
+    subgraph "Оценка [Benchmark]"
+    I
+    end
