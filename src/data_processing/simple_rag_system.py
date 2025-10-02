@@ -1,6 +1,6 @@
 # scripts/simple_rag_system.py
 import json
-from vector_store import VectorStore
+from src.data_processing.vector_store import VectorStore
 from typing import List, Dict
 
 
