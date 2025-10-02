@@ -1,154 +1,150 @@
-import json
+"""
+Утилиты для анализа бенчмарка
+"""
+
+
 import pandas as pd
 import plotly.express as px
-from typing import Dict, List, Any
-import streamlit as st
+import plotly.graph_objects as go
+from typing import List, Dict, Tuple, Optional
+import json
+from src.config import TransneftConfig
+
 
 class BenchmarkAnalyzer:
-    """Анализатор бенчмарка Транснефть"""
-    
-    def __init__(self, benchmark_path: str):
+    """Анализатор бенчмарка данных"""
+
+    def __init__(self, benchmark_path: str = TransneftConfig.BENCHMARK_PATH):
         self.benchmark_path = benchmark_path
-        self.data = self.load_benchmark()
-    
-    def load_benchmark(self) -> Dict[str, Any]:
+        self.data = self._load_benchmark()
+
+    def _load_benchmark(self) -> Dict:
         """Загрузка бенчмарка"""
         try:
-            with open(self.benchmark_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            import os
+            if os.path.exists(self.benchmark_path):
+                with open(self.benchmark_path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            return {}
         except Exception as e:
-            st.error(f"Ошибка загрузки бенчмарка: {e}")
+            print(f"Ошибка загрузки бенчмарка: {e}")
             return {}
-    
-    def get_basic_stats(self) -> Dict[str, Any]:
-        """Базовая статистика бенчмарка"""
+
+    def get_basic_stats(self) -> Dict[str, any]:
+        """Получение базовой статистики"""
         if not self.data:
-            return {}
-        
+            return {
+                'total_qa_pairs': 0,
+                'unique_qa_sections': 0,
+                'avg_context_length': 0,
+                'total_sections': 0
+            }
+
         qa_pairs = self.data.get('qa_pairs', [])
         sections = self.data.get('sections', [])
-        
-        stats = {
-            'total_qa_pairs': len(qa_pairs),
-            'total_sections': len(sections),
-            'unique_qa_sections': len(set([qa['section'] for qa in qa_pairs])),
-            'avg_context_length': np.mean([qa.get('context_length', 0) for qa in qa_pairs]),
-            'total_words': sum([qa.get('word_count', 0) for qa in qa_pairs]),
-            'sections_with_entities': len([qa for qa in qa_pairs if qa.get('entities')])
-        }
-        
-        return stats
-    
-    def get_section_analysis(self) -> pd.DataFrame:
-        """Анализ распределения по секциям"""
-        qa_pairs = self.data.get('qa_pairs', [])
-        
-        section_data = {}
-        for qa in qa_pairs:
-            section = qa['section']
-            if section not in section_data:
-                section_data[section] = {
-                    'count': 0,
-                    'total_context_length': 0,
-                    'has_entities': 0
-                }
-            
-            section_data[section]['count'] += 1
-            section_data[section]['total_context_length'] += qa.get('context_length', 0)
-            if qa.get('entities'):
-                section_data[section]['has_entities'] += 1
-        
-        # Создание DataFrame
-        analysis_data = []
-        for section, data in section_data.items():
-            analysis_data.append({
-                'section': section,
-                'qa_count': data['count'],
-                'avg_context_length': data['total_context_length'] / data['count'],
-                'with_entities': data['has_entities'],
-                'entity_percentage': (data['has_entities'] / data['count']) * 100
-            })
-        
-        return pd.DataFrame(analysis_data).sort_values('qa_count', ascending=False)
-    
-    def visualize_benchmark(self):
-        """Визуализация структуры бенчмарка"""
-        if not self.data:
-            return None, None
-        
-        # Анализ секций
-        section_df = self.get_section_analysis()
-        
-        # Топ-15 секций по количеству QA пар
-        top_sections = section_df.head(15)
-        fig1 = px.bar(
-            top_sections, 
-            x='section', 
-            y='qa_count',
-            title="Топ-15 секций по количеству QA пар",
-            labels={'section': 'Секция', 'qa_count': 'Количество QA пар'}
-        )
-        fig1.update_layout(xaxis_tickangle=-45)
-        
-        # Распределение длины контекста
-        context_lengths = [qa.get('context_length', 0) for qa in self.data.get('qa_pairs', [])]
-        fig2 = px.histogram(
-            x=context_lengths,
-            title="Распределение длины контекста",
-            labels={'x': 'Длина контекста (символы)', 'y': 'Количество'}
-        )
-        
-        return fig1, fig2
-    
-    def get_entity_analysis(self) -> Dict[str, Any]:
-        """Анализ сущностей в бенчмарке"""
-        qa_pairs = self.data.get('qa_pairs', [])
-        
-        all_entities = []
-        entities_per_section = {}
-        
-        for qa in qa_pairs:
-            entities = qa.get('entities', [])
-            all_entities.extend(entities)
-            
-            section = qa['section']
-            if section not in entities_per_section:
-                entities_per_section[section] = []
-            entities_per_section[section].extend(entities)
-        
-        # Анализ частотности сущностей
-        from collections import Counter
-        entity_freq = Counter(all_entities)
-        
+
+        # Расчет статистики
+        total_qa_pairs = len(qa_pairs)
+        unique_sections = len(set([qa.get('section', '') for qa in qa_pairs]))
+
+        # Средняя длина контекста
+        context_lengths = [len(qa.get('context', '')) for qa in qa_pairs]
+        avg_context_length = sum(context_lengths) / len(context_lengths) if context_lengths else 0
+
         return {
-            'total_entities': len(all_entities),
-            'unique_entities': len(entity_freq),
-            'top_entities': entity_freq.most_common(20),
-            'entities_per_section': {k: len(v) for k, v in entities_per_section.items()}
+            'total_qa_pairs': total_qa_pairs,
+            'unique_qa_sections': unique_sections,
+            'avg_context_length': avg_context_length,
+            'total_sections': len(sections)
         }
 
-def export_benchmark_report(benchmark_path: str, output_dir: str = "results"):
-    """Экспорт полного отчета по бенчмарку"""
-    analyzer = BenchmarkAnalyzer(benchmark_path)
-    
-    # Базовая статистика
-    stats = analyzer.get_basic_stats()
-    
-    # Анализ секций
-    section_df = analyzer.get_section_analysis()
-    
-    # Анализ сущностей
-    entity_analysis = analyzer.get_entity_analysis()
-    
-    # Сохранение в CSV
-    section_df.to_csv(f"{output_dir}/section_analysis.csv", index=False, encoding='utf-8')
-    
-    # Сохранение статистики
-    stats_df = pd.DataFrame([stats])
-    stats_df.to_csv(f"{output_dir}/benchmark_stats.csv", index=False)
-    
-    return {
-        'stats': stats,
-        'section_analysis': section_df,
-        'entity_analysis': entity_analysis
-    }
+    def visualize_benchmark(self) -> Tuple[Optional[go.Figure], Optional[go.Figure]]:
+        """
+        Создание визуализаций для бенчмарка
+        Возвращает 2 фигуры (графика)
+        """
+        if not self.data:
+            return None, None
+
+        qa_pairs = self.data.get('qa_pairs', [])
+        if not qa_pairs:
+            return None, None
+
+        # Создаем DataFrame для анализа
+        df = pd.DataFrame(qa_pairs)
+
+        figures = []
+
+        try:
+            # 1. Распределение по секциям
+            if 'section' in df.columns:
+                section_counts = df['section'].value_counts()
+                fig1 = px.bar(
+                    x=section_counts.index,
+                    y=section_counts.values,
+                    title="📊 Распределение QA пар по секциям",
+                    labels={'x': 'Секция', 'y': 'Количество QA пар'}
+                )
+                fig1.update_layout(xaxis_tickangle=-45)
+                figures.append(fig1)
+            else:
+                figures.append(None)
+        except Exception as e:
+            print(f"Ошибка создания графика секций: {e}")
+            figures.append(None)
+
+        try:
+            # 2. Длина контекста
+            if 'context' in df.columns:
+                df['context_length'] = df['context'].str.len()
+                fig2 = px.histogram(
+                    df,
+                    x='context_length',
+                    title="� Распределение длины контекста",
+                    labels={'context_length': 'Длина контекста (символы)'}
+                )
+                figures.append(fig2)
+            else:
+                figures.append(None)
+        except Exception as e:
+            print(f"Ошибка создания графика длины: {e}")
+            figures.append(None)
+
+        # Возвращаем кортеж с двумя фигурами
+        return tuple(figures) if figures else (None, None)
+
+
+def export_benchmark_report(analyzer: BenchmarkAnalyzer, output_path: str = "benchmark_report.html"):
+    """Экспорт отчета по бенчмарку"""
+    try:
+        stats = analyzer.get_basic_stats()
+
+        report_html = f"""
+        <html>
+        <head>
+            <title>Отчет по бенчмарку Транснефть</title>
+            <style>
+                body {{ font-family: Arial, sans-serif; margin: 20px; }}
+                .stats {{ background: #f5f5f5; padding: 15px; border-radius: 5px; }}
+                .metric {{ margin: 10px 0; }}
+            </style>
+        </head>
+        <body>
+            <h1>📊 Отчет по бенчмарку Транснефть QA</h1>
+            <div class="stats">
+                <h2>Основная статистика</h2>
+                <div class="metric"><strong>Всего QA пар:</strong> {stats['total_qa_pairs']}</div>
+                <div class="metric"><strong>Уникальные секции:</strong> {stats['unique_qa_sections']}</div>
+                <div class="metric"><strong>Средняя длина контекста:</strong> {stats['avg_context_length']:.0f} симв.</div>
+            </div>
+        </body>
+        </html>
+        """
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(report_html)
+
+        return True
+    except Exception as e:
+        print(f"Ошибка экспорта отчета: {e}")
+        return False

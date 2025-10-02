@@ -1,7 +1,3 @@
-"""
-UI компоненты в стиле Госуслуг для Streamlit
-"""
-
 import streamlit as st
 import os
 import uuid
@@ -10,13 +6,14 @@ import base64
 from typing import Optional, Dict, Any
 from datetime import datetime
 import pandas as pd
+import numpy as np
 import plotly.express as px
 
-class GosuslugiUI:
-    """Класс для создания UI компонентов в стиле Госуслуг"""
+class StyleUI:
+    """Класс для создания UI компонентов"""
     
     @staticmethod
-    def load_css(css_file_path: str = "css/gosuslugi_style.css"):
+    def load_css(css_file_path: str = "css/style.css"):
         """Загрузка CSS стилей из файла"""
         try:
             if os.path.exists(css_file_path):
@@ -30,7 +27,6 @@ class GosuslugiUI:
     
     @staticmethod
     def create_header(user_name: str = "Пользователь"):
-        """Создание шапки в стиле Госуслуг"""
         col1, col2, col3 = st.columns([3, 2, 1])
         
         with col1:
@@ -42,7 +38,7 @@ class GosuslugiUI:
             """, unsafe_allow_html=True)
         
         with col3:
-            GosuslugiUI.display_user_profile(user_name)
+            StyleUI.display_user_profile(user_name)
     
     @staticmethod
     def display_user_profile(user_name: str = "Пользователь"):
@@ -62,9 +58,9 @@ class GosuslugiUI:
                     st.image(image, width=50, use_column_width=False)
                 except Exception as e:
                     st.error(f"Ошибка загрузки аватара: {e}")
-                    GosuslugiUI._display_default_avatar()
+                    StyleUI._display_default_avatar()
             else:
-                GosuslugiUI._display_default_avatar()
+                StyleUI._display_default_avatar()
         
         with col2:
             st.markdown(f"""
@@ -302,26 +298,26 @@ class DatabaseUI:
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            GosuslugiUI.display_metric_card(
+            StyleUI.display_metric_card(
                 "Всего сообщений",
                 stats.get('total_messages', 0)
             )
         
         with col2:
-            GosuslugiUI.display_metric_card(
+            StyleUI.display_metric_card(
                 "Среднее время ответа",
                 f"{stats.get('avg_response_time', 0):.1f}с"
             )
         
         with col3:
-            GosuslugiUI.display_metric_card(
+            StyleUI.display_metric_card(
                 "Оцененных сообщений",
                 stats.get('rated_messages', 0)
             )
         
         with col4:
             avg_rating = stats.get('avg_rating', 0)
-            GosuslugiUI.display_metric_card(
+            StyleUI.display_metric_card(
                 "Средняя оценка",
                 f"{avg_rating:.1f}⭐" if avg_rating > 0 else "Нет оценок"
             )

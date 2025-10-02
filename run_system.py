@@ -5,6 +5,7 @@
 
 import os
 import sys
+from src.config import TransneftConfig
 
 def main():
     """Основная функция запуска"""
@@ -21,7 +22,7 @@ def main():
         return
     
     # Проверка бенчмарка
-    benchmark_path = "data/transneft_benchmark.json"
+    benchmark_path = TransneftConfig.BENCHMARK_PATH
     if not os.path.exists(benchmark_path):
         print(f"❌ Файл бенчмарка не найден: {benchmark_path}")
         print("Поместите transneft_benchmark.json в папку data/")

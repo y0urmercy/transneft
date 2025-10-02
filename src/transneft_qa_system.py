@@ -2,6 +2,53 @@
 Главный файл системы Транснефть QA с интеграцией базы данных
 """
 
+import os
+import warnings
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+
+# Отключаем ненужные предупреждения
+os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
+warnings.filterwarnings("ignore", category=UserWarning, module="nltk")
+warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub")
+
+def calculate_bleu(reference, candidate):
+    """Улучшенный расчет BLEU оценки"""
+    # Используем функцию сглаживания для случаев с малым количеством n-gram совпадений
+    smoothie = SmoothingFunction().method4
+    return sentence_bleu([reference], candidate, smoothing_function=smoothie)
+
+
+def invoke_chain_safely(chain, input_data):
+    """Безопасный вызов LangChain цепи с обработкой разных типов входных данных"""
+    try:
+        # Обрабатываем разные форматы входных данных
+        if isinstance(input_data, str):
+            # Если входные данные - строка
+            return chain.invoke({"query": input_data})
+        elif isinstance(input_data, dict):
+            # Если входные данные - словарь, проверяем наличие нужных ключей
+            if 'query' in input_data:
+                return chain.invoke(input_data)
+            elif 'input' in input_data:
+                return chain.invoke({"query": input_data['input']})
+            elif 'question' in input_data:
+                return chain.invoke({"query": input_data['question']})
+            else:
+                # Пробуем использовать первый ключ
+                first_key = next(iter(input_data.keys()))
+                return chain.invoke({"query": str(input_data[first_key])})
+        else:
+            # Для других типов преобразуем в строку
+            return chain.invoke({"query": str(input_data)})
+
+    except Exception as e:
+        print(f"Ошибка при вызове цепи: {e}")
+        # Пробуем старый метод как запасной вариант
+        try:
+            return chain(input_data)
+        except:
+            raise e
+
 import streamlit as st
 import json
 import pandas as pd
@@ -19,13 +66,14 @@ import time
 # Добавляем путь к src
 sys.path.append('src')
 
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS, Chroma
-from langchain.schema import Document
-from langchain.prompts import PromptTemplate
+# Исправленные импорты LangChain
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS, Chroma
+from langchain_core.documents import Document
+from langchain_core.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-from langchain.llms import OpenAI
-from langchain.chat_models import ChatOpenAI
+from langchain_community.llms import OpenAI
+from langchain_community.chat_models import ChatOpenAI
 
 # Метрики оценки
 from rouge_score import rouge_scorer
@@ -36,13 +84,13 @@ from bert_score import score as bert_score
 # Наши модули
 from config import TransneftConfig, get_model_config, validate_benchmark_path, EvaluationCriteria
 from benchmark_utils import BenchmarkAnalyzer, export_benchmark_report
-from ui_components import GosuslugiUI, AvatarManager, DatabaseUI
+from ui_components import StyleUI, AvatarManager, DatabaseUI
 from database_models import DatabaseManager, ChatMessage, EvaluationResult, db_manager
 
 
 class TransneftBenchmarkQA:
     """Основной класс QA системы для Транснефть с интеграцией БД"""
-    
+
     def __init__(self, benchmark_path: str = None):
         self.benchmark_path = benchmark_path or TransneftConfig.BENCHMARK_PATH
         self.benchmark_data = None
@@ -52,33 +100,33 @@ class TransneftBenchmarkQA:
         self.qa_pairs = []
         self.sections = []
         self.db_manager = db_manager
-        
+
         # Загрузка бенчмарка
         self.load_benchmark()
-        
+
     def load_benchmark(self):
         """Загрузка бенчмарка"""
         try:
             if not os.path.exists(self.benchmark_path):
                 st.error(f"❌ Файл бенчмарка не найден: {self.benchmark_path}")
                 return
-                
+
             with open(self.benchmark_path, 'r', encoding='utf-8') as f:
                 self.benchmark_data = json.load(f)
-            
+
             self.qa_pairs = self.benchmark_data.get('qa_pairs', [])
             self.sections = self.benchmark_data.get('sections', [])
-            
+
             st.success(f"✅ Бенчмарк загружен: {len(self.qa_pairs)} QA пар, {len(self.sections)} секций")
-            
+
         except Exception as e:
             st.error(f"❌ Ошибка загрузки бенчмарка: {str(e)}")
-    
+
     def initialize_system(self, embedding_model: str = None, search_mode: str = "balanced"):
         """Полная инициализация системы"""
         if not self.benchmark_data:
             raise ValueError("Бенчмарк не загружен")
-        
+
         # Инициализация эмбеддингов
         model_name = embedding_model or TransneftConfig.EMBEDDING_MODELS["default"]
         self.embeddings = HuggingFaceEmbeddings(
@@ -86,22 +134,22 @@ class TransneftBenchmarkQA:
             model_kwargs={'device': 'cpu'},
             encode_kwargs={'normalize_embeddings': True}
         )
-        
+
         # Подготовка документов
         documents = self.prepare_training_data()
-        
+
         # Создание векторного хранилища
         self.vector_store = FAISS.from_documents(documents, self.embeddings)
-        
+
         # Инициализация QA цепи
         self.initialize_qa_chain(search_mode)
-        
+
         return len(documents)
-    
+
     def prepare_training_data(self) -> List[Document]:
         """Подготовка данных для обучения из бенчмарка"""
         documents = []
-        
+
         for qa_pair in self.qa_pairs:
             doc = Document(
                 page_content=qa_pair['context'],
@@ -115,26 +163,26 @@ class TransneftBenchmarkQA:
                 }
             )
             documents.append(doc)
-        
+
         return documents
-    
+
     def initialize_qa_chain(self, search_mode: str = "balanced", model_type: str = "local", api_key: str = None):
         """Инициализация QA цепи"""
         search_config = get_model_config(search_mode)
-        
+
         retriever = self.vector_store.as_retriever(
             search_type=search_config["search_type"],
             search_kwargs={k: v for k, v in search_config.items() if k != "search_type"}
         )
-        
-        # Выбор промта
+
+        # Выбор промта - ИСПРАВЛЕННЫЕ ПЕРЕМЕННЫЕ
         prompt_template = TransneftConfig.PROMPT_TEMPLATES["expert"]
         PROMPT = PromptTemplate(
             template=prompt_template,
-            input_variables=["context", "question"]
+            input_variables=["context", "question"]  # Используем question вместо query
         )
-        
-        # Выбор модели
+
+        # Выбор модели (остается без изменений)
         if model_type == "openai" and api_key:
             llm = ChatOpenAI(
                 model_name="gpt-3.5-turbo",
@@ -143,16 +191,23 @@ class TransneftBenchmarkQA:
                 max_tokens=1000
             )
         else:
-            # Локальная реализация
-            from langchain.llms import FakeListLLM
-            responses = [
-                "На основе данных ПАО 'Транснефть'...",
-                "Согласно корпоративной информации...",
-                "В документации компании указано..."
-            ]
-            llm = FakeListLLM(responses=responses)
-        
-        # Создание QA цепи
+            try:
+                from langchain_community.llms import FakeListLLM
+                responses = [
+                    "На основе данных ПАО 'Транснефть'...",
+                    "Согласно корпоgit ративной информации...",
+                    "В документации компании указано..."
+                ]
+                llm = FakeListLLM(responses=responses)
+            except ImportError:
+                from langchain_community.llms import OpenAI
+                llm = OpenAI(
+                    temperature=0.1,
+                    max_tokens=500,
+                    model_name="gpt-3.5-turbo"
+                )
+
+        # Создание QA цепи - ИСПРАВЛЕННЫЙ ВЫЗОВ
         self.qa_chain = RetrievalQA.from_chain_type(
             llm=llm,
             chain_type="stuff",
@@ -160,45 +215,55 @@ class TransneftBenchmarkQA:
             chain_type_kwargs={"prompt": PROMPT},
             return_source_documents=True
         )
-    
     def ask_question(self, question: str, session_id: str, user_id: str = "default") -> Dict[str, Any]:
         """Задать вопрос системе с сохранением в БД"""
         if not self.qa_chain:
             raise ValueError("QA система не инициализирована")
-        
+
         start_time = time.time()
-        
+
         try:
-            result = self.qa_chain({"query": question})
+            # ИСПРАВЛЕНИЕ: Правильный вызов цепи с словарем
+            result = self.qa_chain.invoke({"query": question})
             response_time = time.time() - start_time
-            
+
+            # Извлекаем результат и source_documents
+            answer = result.get('result', '')
+            source_documents = result.get('source_documents', [])
+
+            # Подготавливаем источники для сохранения
+            sources_list = []
+            for doc in source_documents:
+                sources_list.append({
+                    'content': doc.page_content[:500] if doc.page_content else '',
+                    'section': doc.metadata.get('section', ''),
+                    'source': doc.metadata.get('source_file', '')
+                })
+
             # Сохраняем в базу данных
             chat_message = ChatMessage(
                 session_id=session_id,
                 user_id=user_id,
                 question=question,
-                answer=result['result'],
-                sources=json.dumps([
-                    {
-                        'content': doc.page_content[:500],
-                        'section': doc.metadata.get('section', ''),
-                        'source': doc.metadata.get('source_file', '')
-                    }
-                    for doc in result.get('source_documents', [])
-                ], ensure_ascii=False),
+                answer=answer,
+                sources=json.dumps(sources_list, ensure_ascii=False),
                 timestamp=datetime.now(),
                 response_time=response_time,
                 model_used="transneft_qa"
             )
-            
+
             message_id = self.db_manager.save_chat_message(chat_message)
-            result['message_id'] = message_id
-            
-            return result
-            
+
+            # Возвращаем результат в правильном формате
+            return {
+                'result': answer,
+                'source_documents': source_documents,
+                'message_id': message_id
+            }
+
         except Exception as e:
             response_time = time.time() - start_time
-            
+
             # Сохраняем ошибку в базу данных
             error_message = ChatMessage(
                 session_id=session_id,
@@ -209,34 +274,33 @@ class TransneftBenchmarkQA:
                 response_time=response_time,
                 model_used="transneft_qa_error"
             )
-            
+
             self.db_manager.save_chat_message(error_message)
             raise e
-    
     def evaluate_system(self, sample_size: int = None) -> Dict[str, Any]:
         """Оценка системы на бенчмарке с сохранением в БД"""
         if not self.qa_chain:
             raise ValueError("QA система не инициализирована")
-        
+
         start_time = time.time()
-        
+
         # Выборка для оценки
         eval_qa_pairs = self.qa_pairs
         if sample_size and sample_size < len(self.qa_pairs):
             indices = np.random.choice(len(self.qa_pairs), sample_size, replace=False)
             eval_qa_pairs = [self.qa_pairs[i] for i in indices]
-        
+
         generated_answers = []
         reference_answers = []
         questions = []
         sections = []
-        
+
         progress_bar = st.progress(0)
         status_text = st.empty()
-        
+
         for i, qa_pair in enumerate(eval_qa_pairs):
-            status_text.text(f"Обработка {i+1}/{len(eval_qa_pairs)}: {qa_pair['question_id']}")
-            
+            status_text.text(f"Обработка {i + 1}/{len(eval_qa_pairs)}: {qa_pair['question_id']}")
+
             try:
                 # Используем временную сессию для оценки
                 result = self.ask_question(qa_pair['question'], "evaluation_session", "system")
@@ -244,19 +308,19 @@ class TransneftBenchmarkQA:
                 reference_answers.append(qa_pair['answer'])
                 questions.append(qa_pair['question'])
                 sections.append(qa_pair['section'])
-                
+
                 progress_bar.progress((i + 1) / len(eval_qa_pairs))
-                
+
             except Exception as e:
                 st.warning(f"Пропуск {qa_pair['question_id']}: {str(e)}")
                 continue
-        
+
         status_text.empty()
-        
+
         # Расчет метрик
         metrics = self.calculate_metrics(generated_answers, reference_answers)
         duration = time.time() - start_time
-        
+
         # Сохранение результатов оценки
         eval_result = EvaluationResult(
             evaluation_date=datetime.now(),
@@ -270,10 +334,10 @@ class TransneftBenchmarkQA:
             overall_score=EvaluationCriteria.calculate_overall_score(metrics),
             duration_seconds=duration
         )
-        
+
         eval_id = self.db_manager.save_evaluation_result(eval_result)
         metrics['evaluation_id'] = eval_id
-        
+
         return {
             'metrics': metrics,
             'generated_answers': generated_answers,
@@ -283,15 +347,15 @@ class TransneftBenchmarkQA:
             'eval_qa_pairs': eval_qa_pairs,
             'evaluation_result': eval_result
         }
-    
+
     def calculate_metrics(self, generated_answers: List[str], reference_answers: List[str]) -> Dict[str, float]:
         """Расчет метрик качества"""
         # ROUGE
         rouge_scorer_obj = rouge_scorer.RougeScorer(
-            ['rouge1', 'rouge2', 'rougeL'], 
+            ['rouge1', 'rouge2', 'rougeL'],
             use_stemmer=True
         )
-        
+
         rouge_scores = []
         for gen, ref in zip(generated_answers, reference_answers):
             scores = rouge_scorer_obj.score(ref, gen)
@@ -300,34 +364,34 @@ class TransneftBenchmarkQA:
                 'rouge2': scores['rouge2'].fmeasure,
                 'rougeL': scores['rougeL'].fmeasure
             })
-        
+
         # BLEU
         bleu_scores = []
         for gen, ref in zip(generated_answers, reference_answers):
             reference = [ref.split()]
             candidate = gen.split()
             bleu_scores.append(sentence_bleu(reference, candidate))
-        
+
         # BERTScore
         try:
             P, R, F1 = bert_score(generated_answers, reference_answers, lang="ru")
             bertscore_f1 = F1.mean().item()
         except:
             bertscore_f1 = 0.0
-        
+
         # Метеор
         try:
             meteor = evaluate.load('meteor')
             meteor_score = meteor.compute(
-                predictions=generated_answers, 
+                predictions=generated_answers,
                 references=reference_answers
             )['meteor']
         except:
             meteor_score = 0.0
-        
+
         # Агрегация результатов
         rouge_df = pd.DataFrame(rouge_scores)
-        
+
         return {
             'rouge1': rouge_df['rouge1'].mean(),
             'rouge2': rouge_df['rouge2'].mean(),
@@ -337,31 +401,31 @@ class TransneftBenchmarkQA:
             'meteor': meteor_score,
             'num_evaluated': len(generated_answers)
         }
-    
+
     def load_chat_history(self, session_id: str) -> List[Tuple[str, str, list, str]]:
         """Загрузка истории чата из базы данных"""
         messages = self.db_manager.get_chat_history(session_id)
-        
+
         chat_history = []
         for msg in messages:
             try:
-                sources = json.loads(msg.sources) if msg.sources else []
+                sources = json.loads(msg['sources']) if msg['sources'] else []
             except:
                 sources = []
-            
+
             chat_history.append((
-                msg.question,
-                msg.answer,
+                msg['question'],
+                msg['answer'],
                 sources,
-                msg.timestamp.strftime("%H:%M:%S") if msg.timestamp else ""
+                msg['timestamp'] if msg['timestamp'] else ""
             ))
-        
+
         return chat_history
 
 
 def main():
     """Основная функция Streamlit приложения"""
-    
+
     # Конфигурация страницы
     st.set_page_config(
         page_title=TransneftConfig.UI_CONFIG["page_title"],
@@ -369,27 +433,27 @@ def main():
         layout=TransneftConfig.UI_CONFIG["layout"],
         initial_sidebar_state=TransneftConfig.UI_CONFIG["initial_sidebar_state"]
     )
-    
+
     # Загрузка CSS стилей
-    GosuslugiUI.load_css()
-    
+    StyleUI.load_css()
+
     # Инициализация сессии
     if 'current_session' not in st.session_state:
         st.session_state.current_session = str(uuid.uuid4())
-    
+
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
-    
+
     if 'current_tab' not in st.session_state:
         st.session_state.current_tab = "Чат-бот"
-    
+
     # Создание шапки
-    GosuslugiUI.create_header("Алексей Петров")
-    
+    StyleUI.create_header("Алексей Петров")
+
     # Сайдбар с навигацией
     with st.sidebar:
-        GosuslugiUI.create_sidebar_navigation()
-        
+        StyleUI.create_sidebar_navigation()
+
         # Информация о сессии
         st.markdown(f"""
         <div class="metric-card">
@@ -402,36 +466,36 @@ def main():
             </p>
         </div>
         """, unsafe_allow_html=True)
-        
+
         # Загрузка аватара
-        GosuslugiUI.upload_avatar()
-        
+        StyleUI.upload_avatar()
+
         # Настройки системы
         st.markdown("---")
         st.subheader("⚙️ Настройки системы")
-        
+
         # Выбор модели поиска
         search_mode = st.selectbox(
             "Режим поиска:",
             ["balanced", "precision", "recall"],
             format_func=lambda x: {
                 "balanced": "⚖️ Сбалансированный",
-                "precision": "🎯 Точность", 
+                "precision": "🎯 Точность",
                 "recall": "🔍 Полнота"
             }[x]
         )
-        
+
         # Настройки API
         use_openai = st.checkbox("Использовать OpenAI GPT")
         api_key = None
         if use_openai:
             api_key = st.text_input("OpenAI API Key:", type="password")
-        
+
         # Управление историей
         st.markdown("---")
         st.subheader("💾 Управление историей")
         DatabaseUI.display_chat_history_controls()
-        
+
         # Информация о системе
         st.markdown("---")
         st.subheader("ℹ️ О системе")
@@ -442,31 +506,31 @@ def main():
         Использует RAG-архитектуру и современные
         языковые модели.
         """)
-    
+
     # Основные вкладки
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "💬 Чат-бот", "📊 История", "🧪 Оценка качества", "📈 Аналитика", "🔧 Администрирование"
     ])
-    
+
     with tab1:
         display_chat_interface()
-    
+
     with tab2:
         display_history_interface()
-    
+
     with tab3:
         display_evaluation_interface()
-    
+
     with tab4:
         display_analytics_interface()
-    
+
     with tab5:
         display_admin_interface()
 
 
 def display_chat_interface():
     """Отображение интерфейса чат-бота"""
-    
+
     # Инициализация системы
     if 'qa_system' not in st.session_state:
         with st.spinner("🔄 Инициализация системы..."):
@@ -475,61 +539,61 @@ def display_chat_interface():
                 doc_count = st.session_state.qa_system.initialize_system()
                 st.session_state.system_ready = True
                 st.success(f"✅ Система готова! Обработано {doc_count} документов")
-                
+
                 # Загрузка истории из БД
                 st.session_state.chat_history = st.session_state.qa_system.load_chat_history(
                     st.session_state.current_session
                 )
-                
+
             except Exception as e:
                 st.error(f"❌ Ошибка инициализации: {str(e)}")
                 st.session_state.system_ready = False
-    
+
     # Секция поиска
-    GosuslugiUI.create_search_section()
-    
+    StyleUI.create_search_section()
+
     # Быстрые действия
-    GosuslugiUI.create_quick_actions()
-    
+    StyleUI.create_quick_actions()
+
     # История чата
     st.markdown("### 💭 История диалога")
-    
+
     if not st.session_state.chat_history:
         st.info("💡 Задайте первый вопрос о ПАО 'Транснефть'")
     else:
         for i, (question, answer, sources, timestamp) in enumerate(st.session_state.chat_history):
-            GosuslugiUI.display_chat_message(question, is_user=True, timestamp=timestamp)
-            GosuslugiUI.display_chat_message(answer, is_user=False, timestamp=timestamp)
-            
+            StyleUI.display_chat_message(question, is_user=True, timestamp=timestamp)
+            StyleUI.display_chat_message(answer, is_user=False, timestamp=timestamp)
+
             # Кнопка оценки ответа
             col1, col2 = st.columns([3, 1])
             with col2:
                 if st.button("⭐ Оценить", key=f"rate_{i}", use_container_width=True):
                     st.session_state.rate_message_idx = i
-            
+
             if sources:
                 with st.expander("📚 Показать источники"):
-                    GosuslugiUI.display_source_documents(sources)
-    
+                    StyleUI.display_source_documents(sources)
+
     # Форма для нового вопроса
     st.markdown("---")
     st.markdown("### 💬 Новый вопрос")
-    
+
     with st.form("question_form", clear_on_submit=True):
         question = st.text_area(
             "Ваш вопрос:",
             placeholder="Например: Каков размер уставного капитала Транснефти? Или: Когда компания была основана?",
             height=100
         )
-        
+
         col1, col2 = st.columns([3, 1])
-        
+
         with col1:
             submitted = st.form_submit_button("🚀 Отправить вопрос", use_container_width=True)
-        
+
         with col2:
             show_sources = st.checkbox("Показать источники", value=True)
-        
+
         if submitted and question:
             if not st.session_state.get('system_ready', False):
                 st.error("❌ Система не готова. Подождите завершения инициализации.")
@@ -537,58 +601,58 @@ def display_chat_interface():
                 with st.spinner("🔍 Ищем ответ в базе знаний..."):
                     try:
                         result = st.session_state.qa_system.ask_question(
-                            question, 
+                            question,
                             st.session_state.current_session,
                             "user"
                         )
-                        
+
                         # Обновляем историю из БД
                         st.session_state.chat_history = st.session_state.qa_system.load_chat_history(
                             st.session_state.current_session
                         )
-                        
+
                         st.rerun()
-                        
+
                     except Exception as e:
                         st.error(f"❌ Ошибка при обработке вопроса: {str(e)}")
 
 
 def display_history_interface():
     """Отображение интерфейса истории"""
-    
+
     st.markdown("## 📊 История сессий")
-    
+
     if 'qa_system' not in st.session_state:
         st.warning("⚠️ Сначала инициализируйте систему")
         return
-    
+
     # Статистика пользователя
     stats = db_manager.get_chat_statistics("user")
     DatabaseUI.display_session_analytics(stats)
-    
+
     # Экспорт данных
     st.markdown("---")
     DatabaseUI.display_export_options()
-    
+
     # История сессий
     st.markdown("---")
     st.markdown("### 📋 Предыдущие сессии")
-    
+
     sessions = db_manager.get_user_sessions("user", limit=10)
-    
+
     if not sessions:
         st.info("ℹ️ Нет сохраненных сессий")
     else:
         for session in sessions:
             with st.expander(f"Сессия {session['session_id'][:8]}... ({session['start_time']})"):
                 col1, col2, col3 = st.columns(3)
-                
+
                 with col1:
                     st.metric("Сообщений", session['message_count'])
-                
+
                 with col2:
                     st.metric("Начало", session['start_time'][:16])
-                
+
                 with col3:
                     if st.button("🔄 Загрузить", key=f"load_{session['session_id']}"):
                         st.session_state.current_session = session['session_id']
@@ -601,18 +665,18 @@ def display_history_interface():
 
 def display_evaluation_interface():
     """Отображение интерфейса оценки качества"""
-    
+
     st.markdown("## 🧪 Оценка качества системы")
-    
+
     if 'qa_system' not in st.session_state or not st.session_state.get('system_ready', False):
         st.warning("⚠️ Сначала инициализируйте систему во вкладке 'Чат-бот'")
         return
-    
+
     col1, col2 = st.columns([2, 1])
-    
+
     with col1:
         st.markdown("### 📊 Запуск оценки")
-        
+
         sample_size = st.slider(
             "Размер выборки для оценки:",
             min_value=10,
@@ -621,42 +685,42 @@ def display_evaluation_interface():
             step=5,
             help="Количество QA пар для тестирования"
         )
-        
+
         if st.button("🎯 Запустить оценку", type="primary", use_container_width=True):
             with st.spinner("Провожу комплексную оценку системы..."):
                 evaluation_results = st.session_state.qa_system.evaluate_system(sample_size)
                 st.session_state.evaluation_results = evaluation_results
                 st.success("✅ Оценка завершена!")
-    
+
     with col2:
         st.markdown("### 📈 Метрики качества")
-        
+
         if 'evaluation_results' in st.session_state:
             metrics = st.session_state.evaluation_results['metrics']
-            
+
             # Отображение метрик в карточках
-            GosuslugiUI.display_metric_card(
-                "ROUGE-1", 
+            StyleUI.display_metric_card(
+                "ROUGE-1",
                 f"{metrics['rouge1']:.3f}",
                 help_text="Схожесть униграмм"
             )
-            
-            GosuslugiUI.display_metric_card(
-                "ROUGE-2", 
+
+            StyleUI.display_metric_card(
+                "ROUGE-2",
                 f"{metrics['rouge2']:.3f}",
                 help_text="Схожесть биграмм"
             )
-            
-            GosuslugiUI.display_metric_card(
-                "BERTScore", 
+
+            StyleUI.display_metric_card(
+                "BERTScore",
                 f"{metrics['bertscore']:.3f}",
                 help_text="Семантическая схожесть"
             )
-            
+
             # Общая оценка
             overall_score = EvaluationCriteria.calculate_overall_score(metrics)
             quality_level = EvaluationCriteria.get_quality_level(overall_score, "overall")
-            
+
             st.markdown(f"""
             <div class="metric-card">
                 <h4 style="margin: 0 0 0.5rem 0; color: #333;">Общая оценка</h4>
@@ -664,11 +728,11 @@ def display_evaluation_interface():
                 <p style="margin: 0; color: #666;">Уровень: {quality_level}</p>
             </div>
             """, unsafe_allow_html=True)
-        
+
         # История оценок
         st.markdown("### 📅 История оценок")
         eval_history = db_manager.get_evaluation_history(limit=5)
-        
+
         for eval_result in eval_history:
             with st.expander(f"Оценка от {eval_result.evaluation_date.strftime('%d.%m.%Y %H:%M')}"):
                 col1, col2 = st.columns(2)
@@ -682,87 +746,258 @@ def display_evaluation_interface():
 
 def display_analytics_interface():
     """Отображение аналитики системы"""
-    
+
     st.markdown("## 📊 Аналитика системы")
-    
+
     if 'qa_system' not in st.session_state:
         st.warning("⚠️ Сначала инициализируйте систему")
         return
-    
+
     # Анализ бенчмарка
     analyzer = BenchmarkAnalyzer()
-    
+
     if not analyzer.data:
         st.error("❌ Не удалось загрузить бенчмарк для анализа")
         return
-    
+
+    # Основная статистика в колонках
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.markdown("### 📈 Статистика бенчмарка")
         stats = analyzer.get_basic_stats()
-        
-        GosuslugiUI.display_metric_card(
-            "Всего QA пар", 
-            stats['total_qa_pairs']
-        )
-        
-        GosuslugiUI.display_metric_card(
-            "Уникальные секции", 
-            stats['unique_qa_sections']
-        )
-        
-        GosuslugiUI.display_metric_card(
-            "Средняя длина контекста", 
-            f"{stats['avg_context_length']:.0f} симв."
-        )
-    
-    with col2:
-        st.markdown("### 🔍 Визуализация")
-        
-        # Визуализации
-        fig1, fig2, fig3 = analyzer.visualize_benchmark()
-        
-        if fig1:
-            st.plotly_chart(fig1, use_container_width=True)
-        
-        if fig2:
-            st.plotly_chart(fig2, use_container_width=True)
 
+        StyleUI.display_metric_card(
+            "Всего QA пар",
+            stats.get('total_qa_pairs', 0)
+        )
+
+        StyleUI.display_metric_card(
+            "Уникальные секции",
+            stats.get('unique_qa_sections', 0)
+        )
+
+        StyleUI.display_metric_card(
+            "Средняя длина контекста",
+            f"{stats.get('avg_context_length', 0):.0f} симв."
+        )
+
+        # Дополнительная статистика
+        StyleUI.display_metric_card(
+            "Общее количество слов",
+            stats.get('total_word_count', 0)
+        )
+
+    with col2:
+        st.markdown("### 🔍 Распределение данных")
+
+        try:
+            # Получаем все визуализации
+            figures = analyzer.visualize_benchmark()
+
+            # Безопасное отображение фигур
+            displayed_figures = 0
+
+            for i, fig in enumerate(figures):
+                if fig is not None and hasattr(fig, 'update_layout'):
+                    st.plotly_chart(fig, use_container_width=True)
+                    displayed_figures += 1
+
+                    # Ограничиваем количество отображаемых графиков
+                    if displayed_figures >= 2:
+                        break
+
+            # Если графиков нет, показываем информационное сообщение
+            if displayed_figures == 0:
+                st.info("""
+                **ℹ️ Информация о визуализации:**
+
+                Для отображения графиков необходимо:
+                - Не менее 3 QA пар в бенчмарке
+                - Данные с различными секциями
+                - Контексты разной длины
+
+                Добавьте больше данных в бенчмарк для анализа.
+                """)
+
+        except Exception as e:
+            st.warning(f"⚠️ Ошибка при создании визуализации: {str(e)}")
+            st.info("""
+            **Рекомендации:**
+            - Проверьте структуру данных бенчмарка
+            - Убедитесь, что есть данные для анализа
+            - Добавьте разнообразные QA пары
+            """)
+
+    # Детальный анализ бенчмарка
+    st.markdown("---")
+    st.markdown("### 📋 Детальный анализ данных")
+
+    # Создаем вкладки для разных типов анализа
+    tab1, tab2, tab3 = st.tabs(["📊 Статистика", "🏷️ По секциям", "📏 По длине"])
+
+    with tab1:
+        display_detailed_statistics(analyzer)
+
+    with tab2:
+        display_section_analysis(analyzer)
+
+    with tab3:
+        display_length_analysis(analyzer)
+
+    # Экспорт аналитики
+    st.markdown("---")
+    st.markdown("### 📤 Экспорт отчетов")
+
+    col_export1, col_export2 = st.columns(2)
+
+    with col_export1:
+        if st.button("📄 Сгенерировать PDF отчет", use_container_width=True):
+            with st.spinner("Формирую отчет..."):
+                try:
+                    report_path = export_benchmark_report(analyzer)
+                    if report_path and os.path.exists(report_path):
+                        with open(report_path, "rb") as file:
+                            st.download_button(
+                                label="📥 Скачать PDF отчет",
+                                data=file,
+                                file_name="transneft_benchmark_report.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
+                    else:
+                        st.error("❌ Не удалось сгенерировать отчет")
+                except Exception as e:
+                    st.error(f"❌ Ошибка при генерации отчета: {str(e)}")
+
+    with col_export2:
+        if st.button("📊 Экспорт в Excel", use_container_width=True):
+            with st.spinner("Подготавливаю данные для Excel..."):
+                try:
+                    excel_data = analyzer.export_to_excel()
+                    if excel_data:
+                        st.download_button(
+                            label="📥 Скачать Excel",
+                            data=excel_data,
+                            file_name="transneft_benchmark_analysis.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            use_container_width=True
+                        )
+                    else:
+                        st.error("❌ Не удалось подготовить данные для Excel")
+                except Exception as e:
+                    st.error(f"❌ Ошибка при экспорте в Excel: {str(e)}")
+
+
+def display_detailed_statistics(analyzer: BenchmarkAnalyzer):
+    """Отображение детальной статистики"""
+
+    stats = analyzer.get_basic_stats()
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Мин. длина контекста", f"{stats.get('min_context_length', 0)} симв.")
+        st.metric("Макс. длина контекста", f"{stats.get('max_context_length', 0)} симв.")
+
+    with col2:
+        st.metric("Мин. слов в ответе", f"{stats.get('min_answer_words', 0)}")
+        st.metric("Макс. слов в ответе", f"{stats.get('max_answer_words', 0)}")
+
+    with col3:
+        st.metric("Сред. слов в ответе", f"{stats.get('avg_answer_words', 0):.1f}")
+        st.metric("Всего уникальных слов", stats.get('unique_words', 0))
+
+
+def display_section_analysis(analyzer: BenchmarkAnalyzer):
+    """Анализ по секциям"""
+
+    try:
+        section_stats = analyzer.get_section_statistics()
+
+        if not section_stats:
+            st.info("ℹ️ Нет данных по секциям для анализа")
+            return
+
+        # Создаем DataFrame для отображения
+        section_df = pd.DataFrame(section_stats)
+
+        # Отображаем таблицу
+        st.dataframe(
+            section_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+    except Exception as e:
+        st.error(f"❌ Ошибка при анализе секций: {str(e)}")
+
+
+def display_length_analysis(analyzer: BenchmarkAnalyzer):
+    """Анализ по длине контента"""
+
+    try:
+        length_stats = analyzer.get_length_distribution()
+
+        if not length_stats:
+            st.info("ℹ️ Нет данных о распределении длин")
+            return
+
+        # Создаем визуализацию распределения длин
+        fig = go.Figure()
+
+        fig.add_trace(go.Histogram(
+            x=length_stats.get('context_lengths', []),
+            name="Длина контекста",
+            opacity=0.7,
+            nbinsx=20
+        ))
+
+        fig.update_layout(
+            title="Распределение длины контекстов",
+            xaxis_title="Длина (символы)",
+            yaxis_title="Количество",
+            showlegend=True
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+    except Exception as e:
+        st.error(f"❌ Ошибка при анализе длин: {str(e)}")
 
 def display_admin_interface():
     """Отображение интерфейса администрирования"""
-    
+
     st.markdown("## 🔧 Администрирование системы")
-    
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.markdown("### 💾 База данных")
-        
+
         # Статистика БД
         db_stats = db_manager.get_chat_statistics()
         st.metric("Всего сообщений", db_stats['total_messages'])
         st.metric("Оцененных сообщений", db_stats['rated_messages'])
-        st.metric("Средняя оценка", 
-                 f"{db_stats['avg_rating']:.1f}⭐" if db_stats['avg_rating'] > 0 else "Нет оценок")
-        
+        st.metric("Средняя оценка",
+                  f"{db_stats['avg_rating']:.1f}⭐" if db_stats['avg_rating'] > 0 else "Нет оценок")
+
         # Управление БД
         st.markdown("### 🛠️ Управление")
-        
+
         if st.button("🔄 Очистить кэш", use_container_width=True):
             st.info("Функция очистки кэша в разработке")
-        
+
         if st.button("📋 Создать бэкап", use_container_width=True):
             st.info("Функция бэкапа в разработке")
-    
+
     with col2:
         st.markdown("### 📊 Системная информация")
-        
+
         # Информация о системе
         st.metric("Версия Python", sys.version.split()[0])
         st.metric("Память БД", f"{os.path.getsize('data/chat_history.db') / 1024 / 1024:.1f} МБ")
-        
+
         # Логи
         st.markdown("### 📝 Последние действия")
         st.info("""
