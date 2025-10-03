@@ -1,11 +1,12 @@
+// src/components/chat/ChatInterface.jsx
 import React, { useState, useRef, useEffect } from "react";
-import Message from "../components/chat/Message";
-import QuickActions from "../components/chat/QuickActions";
-import SourceDocuments from "../components/chat/SourceDocuments";
-import { useChat } from "../hooks/useChat";
+import Message from "./Message";
+import QuickActions from "./QuickActions";
+import SourceDocuments from "./SourceDocuments";
+import { useChat } from "../../hooks/useChat";
 
-const Chat = () => {
-  const { messages, sendMessage, isLoading, systemReady, error } = useChat();
+const ChatInterface = () => {
+  const { messages, sendMessage, isLoading, systemReady } = useChat();
 
   const [inputMessage, setInputMessage] = useState("");
   const messagesEndRef = useRef(null);
@@ -31,7 +32,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full">
       {/* Quick Actions */}
       <QuickActions onActionClick={handleQuickAction} />
 
@@ -39,17 +40,13 @@ const Chat = () => {
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.length === 0 ? (
           <div className="text-center text-gray-500 mt-12">
-            <div className="text-6xl mb-4">💡</div>
-            <p className="text-lg font-medium mb-2">
-              Добро пожаловать в экспертную систему ПАО "Транснефть"
-            </p>
-            <p className="text-sm">
-              Задайте вопрос или выберите один из примеров ниже
+            <p className="text-lg">
+              💡 Задайте первый вопрос о ПАО "Транснефть"
             </p>
           </div>
         ) : (
-          messages.map((message) => (
-            <div key={message.id || message.timestamp}>
+          messages.map((message, index) => (
+            <div key={index}>
               <Message message={message} isUser={message.role === "user"} />
               {message.sources && message.sources.length > 0 && (
                 <SourceDocuments sources={message.sources} />
@@ -60,25 +57,15 @@ const Chat = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Error Display */}
-      {error && (
-        <div className="mx-6 mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-center text-red-700">
-            <span className="text-lg mr-2">⚠️</span>
-            <span className="text-sm">{error}</span>
-          </div>
-        </div>
-      )}
-
       {/* Input Area */}
-      <div className="border-t border-gray-200 p-6 bg-white">
+      <div className="border-t border-gray-200 p-6">
         <form onSubmit={handleSubmit} className="flex space-x-4">
           <div className="flex-1">
             <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="Например: Каков размер уставного капитала Транснефти? Или: Когда компания была основана?"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-colors"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               rows="3"
               disabled={isLoading || !systemReady}
             />
@@ -86,7 +73,7 @@ const Chat = () => {
           <button
             type="submit"
             disabled={!inputMessage.trim() || isLoading || !systemReady}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed self-end transition-colors font-medium"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed self-end"
           >
             {isLoading ? (
               <div className="flex items-center">
@@ -100,8 +87,7 @@ const Chat = () => {
         </form>
 
         {!systemReady && (
-          <div className="mt-2 text-sm text-orange-600 flex items-center">
-            <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
+          <div className="mt-2 text-sm text-orange-600">
             ⚠️ Система инициализируется...
           </div>
         )}
@@ -110,4 +96,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default ChatInterface;
