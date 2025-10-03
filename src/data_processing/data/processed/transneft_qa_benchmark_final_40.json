@@ -1,0 +1,802 @@
+[
+  {
+    "context": "Реестр данных о компании ПАО «Транснефть» для хакатона весна-лета 2026. С сайта транснефть.рф. Информация. ПАО «Транснефть» осуществляет свою деятельность с даты государственной регистрации — 26.08.1993. ПАО «Транснефть» учреждено в соответствии с постановлением Правительства РФ от 14.08.1993 №810, принятым во исполнение Указа Президента РФ от 17.11.1992 №1403.",
+    "question": "Когда была зарегистрирована ПАО «Транснефть»?",
+    "answer": "26.08.1993.",
+    "triplet_id": 1,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "foundation",
+    "metadata": {
+      "context_length": 363,
+      "answer_length": 11,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "1992-2026"
+    }
+  },
+  {
+    "context": "Реестр данных о компании ПАО «Транснефть» для хакатона весна-лета 2026. С сайта транснефть.рф. Информация. ПАО «Транснефть» осуществляет свою деятельность с даты государственной регистрации — 26.08.1993. ПАО «Транснефть» учреждено в соответствии с постановлением Правительства РФ от 14.08.1993 №810, принятым во исполнение Указа Президента РФ от 17.11.1992 №1403.",
+    "question": "На основании какого постановления учреждена ПАО «Транснефть»?",
+    "answer": "Постановление Правительства РФ от 14.08.1993 №810.",
+    "triplet_id": 2,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "foundation",
+    "metadata": {
+      "context_length": 363,
+      "answer_length": 50,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "1992-2026"
+    }
+  },
+  {
+    "context": "Уставный капитал Компании сформирован в результате размещения обыкновенных акций, оплаченных Российской Федерацией 100% пакетами акций 17 акционерных обществ, и в результате размещения привилегированных акций на безвозмездной основе среди членов трудового коллектива и приравненных к ним лиц как Компании, так и указанных акционерных обществ.",
+    "question": "Как был сформирован уставный капитал ПАО «Транснефть»?",
+    "answer": "В результате размещения обыкновенных акций, оплаченных Российской Федерацией 100% пакетами акций 17 акционерных обществ, и размещения привилегированных акций на безвозмездной основе среди членов трудового коллектива.",
+    "triplet_id": 3,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 342,
+      "answer_length": 216,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "На основании Указа Президента РФ от 13.04.2007 № 473 и распоряжения Правительства РФ от 10.05.2007 №585-р в уставный капитал Компании в порядке оплаты государством размещаемых Компанией дополнительных обыкновенных акций в связи с увеличением её уставного капитала внесены находившиеся в федеральной собственности 100% обыкновенных акций АО «Транснефтепродукт».",
+    "question": "Что было внесено в уставный капитал ПАО «Транснефть» в 2007 году?",
+    "answer": "100% обыкновенных акций АО «Транснефтепродукт».",
+    "triplet_id": 4,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "foundation",
+    "metadata": {
+      "context_length": 360,
+      "answer_length": 47,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2007-2007"
+    }
+  },
+  {
+    "context": "Впоследствии уставный капитал эмитента увеличивался еще 2 раза: в 2017 и 2018 годах путем выпуска и размещения Российской Федерации дополнительных обыкновенных акций, оплаченных находившимся в федеральной собственности недвижимым имуществом согласно приложению к распоряжению Правительства РФ от 26.12.2015 №2723-р и 100% обыкновенных акций компаний «КТК Компани» и «КТК Инвестментс Компани» (Острова Кайман).",
+    "question": "Сколько раз увеличивался уставный капитал ПАО «Транснефть» после 2007 года?",
+    "answer": "Еще 2 раза: в 2017 и 2018 годах.",
+    "triplet_id": 5,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 409,
+      "answer_length": 32,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2015-2018"
+    }
+  },
+  {
+    "context": "На основании решения внеочередного общего собрания акционеров (распоряжение Росимущества от 14.11.2023 № 1500-р) 19.02.2024 осуществлено дробление акций Компании, в результате которого одна акция номинальной стоимостью 1 рубль конвертирована в 100 акций той же категории номинальной стоимостью 0,01 рубля (1 копейка) каждая.",
+    "question": "Когда произошло дробление акций ПАО «Транснефть»?",
+    "answer": "19.02.2024.",
+    "triplet_id": 6,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "foundation",
+    "metadata": {
+      "context_length": 324,
+      "answer_length": 11,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2023-2024"
+    }
+  },
+  {
+    "context": "Основные направления деятельности · Оказание услуг в области транспортировки нефти и нефтепродуктов по системе магистральных трубопроводов в Российской Федерации и за ее пределы; · Проведение профилактических, диагностических и аварийновосстановительных работ на магистральных трубопроводах; · Коordination деятельности по комплексному развитию сети магистральных трубопроводов и других объектов трубопроводного транспорта;",
+    "question": "Какие основные направления деятельности ПАО «Транснефть»?",
+    "answer": "Оказание услуг в области транспортировки нефти и нефтепродуктов по системе магистральных трубопроводов в Российской Федерации и за ее пределы; Проведение профилактических, диагностических и аварийновосстановительных работ на магистральных трубопроводах; Координация деятельности по комплексному развитию сети магистральных трубопроводов и других объектов трубопроводного транспорта.",
+    "triplet_id": 7,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 423,
+      "answer_length": 382,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "ПАО «Транснефть» является субъектом естественных монополий, 100% голосующих акций компании находятся в федеральной собственности.",
+    "question": "Кто владеет 100% голосующих акций ПАО «Транснефть»?",
+    "answer": "Федеральная собственность.",
+    "triplet_id": 8,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 129,
+      "answer_length": 26,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Уставный капитал Компании разделен на 724 934 300 (семьсот двадцать четыре миллиона девятьсот тридцать четыре тысячи триста) акции номинальной стоимостью 0,01 (ноль целых одна сотая) рубля каждая, в том числе: · 569 446 800 обыкновенных акций номинальной стоимостью 0,01 рубля каждая на сумму 5 694 468 рублей; · 155 487 500 привилегированных акций номинальной стоимостью 0,01 рубля каждая на сумму 1 554 875 рублей.",
+    "question": "Сколько акций в уставном капитале ПАО «Транснефть»?",
+    "answer": "724 934 300 акций.",
+    "triplet_id": 9,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 416,
+      "answer_length": 18,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Держатель реестра акционеров — Акционерное общество «Независимая регистраторская компания Р.О.С.Т.» (АО «НРК — Р.О.С.Т.») · 107076, г. Москва, ул. Стромынка, д. 18, корп. 5Б, пом. IX · ИНН: 7726030449 · ОГРН: 1027739216757.",
+    "question": "Кто является держателем реестра акционеров ПАО «Транснефть»?",
+    "answer": "Акционерное общество «Независимая регистраторская компания Р.О.С.Т.» (АО «НРК — Р.О.С.Т.»).",
+    "triplet_id": 10,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 223,
+      "answer_length": 91,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Лицензия на осуществление деятельности по ведению реестра владельцев ценных бумаг № 045-13976-000001 выдана ФКЦБ России 03.12.2002 без ограничения срока действия. Дата, с которой регистратор осуществляет ведение реестра владельцев ценных бумаг ПАО «Транснефть»: 01.11.2000.",
+    "question": "Когда регистратор начал вести реестр акционеров ПАО «Транснефть»?",
+    "answer": "01.11.2000.",
+    "triplet_id": 11,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "general",
+    "metadata": {
+      "context_length": 273,
+      "answer_length": 11,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2000-2002"
+    }
+  },
+  {
+    "context": "Аудитор — Акционерное общество «Кэпт» (АО «Кэпт») · 123317, г. Москва, Пресненская наб., 10, блок 'С' · Телефон: +7 (495) 937-44-77.",
+    "question": "Кто является аудитором ПАО «Транснефть»?",
+    "answer": "Акционерное общество «Кэпт» (АО «Кэпт»).",
+    "triplet_id": 12,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 132,
+      "answer_length": 40,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Сто процентов голосующих обыкновенных акций Компании принадлежит Российской Федерации в лице Федерального агентства по управлению государственным имуществом, привилегированные акции находятся в котировальном списке Первого уровня Московской Биржи.",
+    "question": "Кому принадлежат 100% голосующих акций ПАО «Транснефть»?",
+    "answer": "Российской Федерации в лице Федерального агентства по управлению государственным имуществом.",
+    "triplet_id": 13,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 247,
+      "answer_length": 92,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Органами управления ПАО «Транснефть» являются Общее собрание акционеров, Совет директоров, Правление и Президент, органом контроля — Ревизионная комиссия.",
+    "question": "Какие органы управления в ПАО «Транснефть»?",
+    "answer": "Общее собрание акционеров, Совет директоров, Правление и Президент.",
+    "triplet_id": 14,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 154,
+      "answer_length": 67,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "С конца 2015 года в Компании начат процесс формирования корпоративной Системы управления рисками (СУР). Координацию всех процессов формирования и функционирования СУР осуществляет сформированный Правлением Совет по управлению рисками.",
+    "question": "Когда начат процесс формирования Системы управления рисками в ПАО «Транснефть»?",
+    "answer": "С конца 2015 года.",
+    "triplet_id": 15,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "management",
+    "metadata": {
+      "context_length": 234,
+      "answer_length": 18,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2015-2015"
+    }
+  },
+  {
+    "context": "Функцию внутреннего аудита в Компании осуществляет Департамент внутреннего аудита и анализа основных направлений.",
+    "question": "Какой департамент осуществляет функцию внутреннего аудита в ПАО «Транснефть»?",
+    "answer": "Департамент внутреннего аудита и анализа основных направлений.",
+    "triplet_id": 16,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "general",
+    "metadata": {
+      "context_length": 113,
+      "answer_length": 62,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "В соответствии с законодательством Российской Федерации, договор на проведение обязательного аудита бухгалтерской (финансовой) отчетности организации, в уставном капитале которой доля государственной собственности составляет не менее 25%, заключается на основе открытого конкурса.",
+    "question": "Как выбирается аудитор для ПАО «Транснефть»?",
+    "answer": "На основе открытого конкурса в соответствии с Федеральным законом от 05.04.2013 № 44-ФЗ.",
+    "triplet_id": 17,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "financial",
+    "metadata": {
+      "context_length": 280,
+      "answer_length": 88,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Комитет по стратегии, инвестициям и инновациям образован для подготовки рекомендаций и предложений Совету директоров, направленных на повышение эффективности деятельности ПАО «Транснефть».",
+    "question": "Для чего образован Комитет по стратегии, инвестициям и инновациям в ПАО «Транснефть»?",
+    "answer": "Для подготовки рекомендаций и предложений Совету директоров, направленных на повышение эффективности деятельности ПАО «Транснефть».",
+    "triplet_id": 18,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "management",
+    "metadata": {
+      "context_length": 188,
+      "answer_length": 131,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Проектом предусматривается строительство резервуаров на узловых нефтеперекачивающих станциях системы магистральных трубопроводов Компании.",
+    "question": "Что предусматривает проект по обеспечению надежности системы магистральных трубопроводов?",
+    "answer": "Строительство резервуаров на узловых нефтеперекачивающих станциях.",
+    "triplet_id": 19,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 138,
+      "answer_length": 66,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Цель реализации проекта 1. Увеличение емкости резервуарных парков для обеспечения сохранения качественных показателей нефти в системе магистральных нефтепроводов.",
+    "question": "Какова цель проекта по сохранению качества экспортных потоков нефти?",
+    "answer": "Увеличение емкости резервуарных парков для обеспечения сохранения качественных показателей нефти.",
+    "triplet_id": 20,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 162,
+      "answer_length": 97,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Магистральный нефтепровод Заполярье – Пурпе — Самотлор обеспечивает прием в систему магистральных нефтепроводов нефти новых месторождений районов Ямало-Ненецкого автономного округа.",
+    "question": "Что обеспечивает магистральный нефтепровод Заполярье – Пурпе — Самотлор?",
+    "answer": "Прием в систему магистральных нефтепроводов нефти новых месторождений районов Ямало-Ненецкого автономного округа.",
+    "triplet_id": 21,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 181,
+      "answer_length": 113,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Строительство нефтепровода Пурпе — Самотлор. Южная часть магистрали Пурпе — Самотлор построена в сжатые сроки — за полтора года.",
+    "question": "За сколько времени построена южная часть нефтепровода Пурпе — Самотлор?",
+    "answer": "За полтора года.",
+    "triplet_id": 22,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 128,
+      "answer_length": 16,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Магистральный нефтепровод Куюмба — Тайшет обеспечивает прием в систему магистральных нефтепроводов нефти новых месторождений Красноярского края Куюмбинского и Юрубчено-Тохомского.",
+    "question": "Какие месторождения обеспечивает нефтепровод Куюмба — Тайшет?",
+    "answer": "Куюмбинского и Юрубчено-Тохомского в Красноярском крае.",
+    "triplet_id": 23,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 179,
+      "answer_length": 55,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Балтийская трубопроводная система «БТС-2» обеспечивает диверсификацию поставок нефти в Западную Европу за счет перераспределения отгрузок нефти с зарубежных портов в российский порт на Балтийском море.",
+    "question": "Какова цель Балтийской трубопроводной системы «БТС-2»?",
+    "answer": "Диверсификация поставок нефти в Западную Европу за счет перераспределения отгрузок нефти с зарубежных портов в российский порт на Балтийском море.",
+    "triplet_id": 24,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 201,
+      "answer_length": 146,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Трубопроводная система «Восточная Сибирь — Тихий океан». Обеспечение транспортировки нефти месторождений Восточной Сибири на НПЗ России и на экспорт в Китайскую Народную Республику и в страны АТР через порт Козьмино.",
+    "question": "Куда обеспечивает транспортировку нефти система «Восточная Сибирь — Тихий океан»?",
+    "answer": "На НПЗ России и на экспорт в Китайскую Народную Республику и в страны АТР через порт Козьмино.",
+    "triplet_id": 25,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 216,
+      "answer_length": 94,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "В 2019 году введено в эксплуатацию шесть перекачивающих станций — нефтепровод выведен на максимальную проектную мощность.",
+    "question": "Когда нефтепровод ВСТО выведен на максимальную мощность?",
+    "answer": "В 2019 году.",
+    "triplet_id": 26,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 121,
+      "answer_length": 12,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2019-2019"
+    }
+  },
+  {
+    "context": "Магистральный нефтепровод Сковородино — Мохэ. В 2017 году введены в эксплуатацию объекты расширения нефтепровода Сковородино – Мохэ, которые обеспечили увеличение пропускной способности нефтепровода до 30 млн тонн нефти в год.",
+    "question": "До какой мощности увеличена пропускная способность нефтепровода Сковородино — Мохэ?",
+    "answer": "До 30 млн тонн нефти в год.",
+    "triplet_id": 27,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 226,
+      "answer_length": 27,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2017-2017"
+    }
+  },
+  {
+    "context": "НПС № 3 «Амурская», расположенная недалеко от Амурска, является самой восточной точкой «Транснефти».",
+    "question": "Какая самая восточная точка системы ПАО «Транснефть»?",
+    "answer": "НПС № 3 «Амурская».",
+    "triplet_id": 28,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "general",
+    "metadata": {
+      "context_length": 100,
+      "answer_length": 19,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "АО «Транснефть – Сибирь» — самое крупное дочернее общество в системе «Транснефти».",
+    "question": "Какое самое крупное дочернее общество в системе ПАО «Транснефть»?",
+    "answer": "АО «Транснефть – Сибирь».",
+    "triplet_id": 29,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "general",
+    "metadata": {
+      "context_length": 82,
+      "answer_length": 25,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "ПАО «Транснефть» занимает первое место в мире по протяженности магистральных нефтепроводов. Более 67 000 км — совокупная длина всех трубопроводов компании.",
+    "question": "Какова протяженность трубопроводов ПАО «Транснефть»?",
+    "answer": "Более 67 000 км.",
+    "triplet_id": 30,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 155,
+      "answer_length": 16,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "1950. Нефтепроводный бум. В начале 1950-х годов в стране началось интенсивное строительство магистральных нефтепроводов. В 1950 году был введен в эксплуатацию нефтепровод Туймазы — Уфа. В 1951 году — нефтепровод Малгобек — Грозный. В 1953 году — нефтепровод Омск — Иркутск. В 1954 году был построен нефтепровод Туймазы — Омск протяженностью 1 232 км.",
+    "question": "Какие нефтепроводы были введены в эксплуатацию в начале 1950-х годов?",
+    "answer": "В 1950 году — Туймазы — Уфа; в 1951 году — Малгобек — Грозный; в 1953 году — Омск — Иркутск; в 1954 году — Туймазы — Омск.",
+    "triplet_id": 31,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 350,
+      "answer_length": 122,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "1950-1954"
+    }
+  },
+  {
+    "context": "1960. Прирастать Сибирью. В середине 1960-х годов началась разработка крупных месторождений Западной Сибири. Только в 1965 году там было получено около 1 млн тонн нефти. Однако места добычи от ближайших железнодорожных станций отделяли сотни километров. В конце 1965 года было завершено строительство первого сибирского нефтепровода Шаим — Тюмень протяженностью 410 км.",
+    "question": "Когда началась разработка крупных месторождений Западной Сибири?",
+    "answer": "В середине 1960-х годов.",
+    "triplet_id": 32,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 369,
+      "answer_length": 24,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "1960-1965"
+    }
+  },
+  {
+    "context": "1970. Рекорды на фоне застоя. К 1970-м годам по 37,4 тыс. км магистралей ежегодно перекачивалось без малого 306 млн тонн углеводородного сырья. За девятую пятилетку (1971 — 1975 годы) в СССР было проложено рекордное по протяженности количество магистральных трубопроводов — почти 19,2 тыс. км.",
+    "question": "Сколько километров магистральных трубопроводов было проложено в СССР за 1971–1975 годы?",
+    "answer": "Почти 19,2 тыс. км.",
+    "triplet_id": 33,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 293,
+      "answer_length": 19,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "1970-1975"
+    }
+  },
+  {
+    "context": "1987. Ветер перестройки. К 1987 году в стране было построено 94 тыс. км магистральных нефтепроводов и нефтепродуктопроводов. В 1988 году, несмотря на то, что СССР уже испытывал очевидные экономические трудности, в эксплуатацию были введены нефтепроводы Красноленинск — Конда, Уренгой — Холмогоры, Чимкент — Чарджоу.",
+    "question": "Какие нефтепроводы были введены в эксплуатацию в 1988 году?",
+    "answer": "Красноленинск — Конда, Уренгой — Холмогоры, Чимкент — Чарджоу.",
+    "triplet_id": 34,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 315,
+      "answer_length": 62,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "1987-1988"
+    }
+  },
+  {
+    "context": "1993. Эпоха возрождения. Когда СССР исчез с политической карты мира, 15 новых государств разделили между собой общее имущество, в том числе и нефтепроводы. Единая система осталась только в России. Это 48 тыс. км магистралей, 404 насосные станции, резервуарный парк вместимостью 13,2 млн куб.",
+    "question": "Сколько километров магистралей осталось в России после распада СССР?",
+    "answer": "48 тыс. км.",
+    "triplet_id": 35,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "foundation",
+    "metadata": {
+      "context_length": 291,
+      "answer_length": 11,
+      "question_type": "factual",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "1993-1993"
+    }
+  },
+  {
+    "context": "2000. Динамичные нулевые. Весной 2000 года в эксплуатацию был введен 312-километровый нефтепровод в обход территории Чеченской Республики. Это повысило надежность транзита азербайджанской нефти через РФ по маршруту Баку — Тихорецк — Новороссийск.",
+    "question": "Для чего был введен нефтепровод в обход Чеченской Республики в 2000 году?",
+    "answer": "Для повышения надежности транзита азербайджанской нефти через РФ по маршруту Баку — Тихорецк — Новороссийск.",
+    "triplet_id": 36,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 246,
+      "answer_length": 108,
+      "question_type": "general",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2000-2000"
+    }
+  },
+  {
+    "context": "«Транснефть» присутствует в большинстве регионов России. География компании охватывает все федеральные округа Российской Федерации, а также малоосвоенные территории. Общая численность работников всех организаций системы «Транснефть» составляет более 125 тысяч человек. Наибольшее число работников в Приволжском федеральном округе, а наименьшее — в Северо-Кавказском федеральном округе.",
+    "question": "В каких регионах работает Транснефть?",
+    "answer": "Во всех федеральных округах Российской Федерации, а также в малоосвоенных территориях; наибольшее число работников в Приволжском федеральном округе, наименьшее — в Северо-Кавказском.",
+    "triplet_id": 37,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "geography",
+    "metadata": {
+      "context_length": 385,
+      "answer_length": 182,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Участие в решении задач научно-технического и инновационного развития в трубопроводном транспорте, внедрение нового оборудования, технологий и материалов; В ходе работы над проектом ПАО «Транснефть» получено 25 патентов на изобретения и 17 патентов на полезные модели.",
+    "question": "Какие технологии использует Транснефть для мониторинга?",
+    "answer": "Новое оборудование, технологии и материалы для научно-технического и инновационного развития в трубопроводном транспорте, включая 25 патентов на изобретения и 17 на полезные модели из проектов.",
+    "triplet_id": 38,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 268,
+      "answer_length": 193,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "Организация работы по обеспечению охраны окружающей среды в районах размещения объектов трубопроводного транспорта.",
+    "question": "Какие экологические программы реализует Транснефть?",
+    "answer": "Организация работы по обеспечению охраны окружающей среды в районах размещения объектов трубопроводного транспорта.",
+    "triplet_id": 39,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 115,
+      "answer_length": 115,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "unknown"
+    }
+  },
+  {
+    "context": "2022. Фундамент энергетической безопасности страны. Основные приоритеты ПАО «Транснефть» на ближайшие годы — это инновационное развитие производственной деятельности и повышение уровня надежности, промышленной и экологической безопасности, энергоэффективности системы магистральных трубопроводов. Важнейшими направлениями развития определены цифровизация и импортозамещение.",
+    "question": "Какие приоритеты ПАО «Транснефть» на ближайшие годы?",
+    "answer": "Инновационное развитие производственной деятельности, повышение уровня надежности, промышленной и экологической безопасности, энергоэффективности; цифровизация и импортозамещение.",
+    "triplet_id": 40,
+    "sections": [
+      "transneft_benchmark"
+    ],
+    "content_type": "infrastructure",
+    "metadata": {
+      "context_length": 374,
+      "answer_length": 179,
+      "question_type": "analytical",
+      "quality_score": 1.0,
+      "generation_source": "manual_expert",
+      "content_quality": "high",
+      "qa_potential": 1.0,
+      "time_period": "2022-2022"
+    }
+  }
+]
