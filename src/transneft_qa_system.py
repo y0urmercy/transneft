@@ -21,6 +21,7 @@ from config import TransneftConfig, EvaluationCriteria
 from benchmark_utils import BenchmarkAnalyzer, export_benchmark_report
 from ui_components import StyleUI, AvatarManager, DatabaseUI
 from database_models import DatabaseManager, ChatMessage, EvaluationResult, db_manager
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction  
 
 os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
 warnings.filterwarnings("ignore", category=UserWarning, module="nltk")
@@ -138,7 +139,59 @@ class TransneftBenchmarkQA:
             st.error(f"❌ Ошибка инициализации системы: {str(e)}")
             return 0
 
-    def ask_question(self, question: str, session_id: str, user_id: str = "default") -> Dict[str, Any]:
+
+def ask_question(self, question: str, session_id: str, user_id: str = "default") -> Dict[str, Any]:
+    # ПРОВЕРЯЕМ что RAG система инициализирована
+    if self.rag_system is None:
+        print("❌ RAG system is not initialized!")
+        return {
+            'result': "Система временно недоступна. Идет инициализация...",
+            'source_documents': [],
+            'confidence': 0.0
+        }
+    
+    start_time = time.time()
+
+    try:
+        # Теперь безопасно используем rag_system
+        result = self.rag_system.answer_question(question)
+        response_time = time.time() - start_time
+
+        chat_message = ChatMessage(
+            session_id=session_id,
+            user_id=user_id,
+            question=question,
+            answer=result['answer'],
+            sources=json.dumps(result['sources'], ensure_ascii=False),
+            timestamp=datetime.now(),
+            response_time=response_time,
+            model_used="simple_rag_system"
+        )
+
+        message_id = self.db_manager.save_chat_message(chat_message)
+        
+        return {
+            'result': result['answer'],
+            'source_documents': result['sources'],
+            'message_id': message_id,
+            'confidence': result['confidence']
+        }
+
+    except Exception as e:
+        # Обработка других ошибок
+        response_time = time.time() - start_time
+        error_message = ChatMessage(
+            session_id=session_id,
+            user_id=user_id,
+            question=question,
+            answer=f"Ошибка: {str(e)}",
+            timestamp=datetime.now(),
+            response_time=response_time,
+            model_used="error"
+        )
+        self.db_manager.save_chat_message(error_message)
+        raise e
+    '''def ask_question(self, question: str, session_id: str, user_id: str = "default") -> Dict[str, Any]:
         start_time = time.time()
 
         try:
@@ -178,7 +231,7 @@ class TransneftBenchmarkQA:
             )
             self.db_manager.save_chat_message(error_message)
             raise e
-
+'''
     def evaluate_system(self, sample_size: int = None) -> Dict[str, Any]:
         if not self.rag_system:
             raise ValueError("RAG система не инициализирована")
