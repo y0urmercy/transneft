@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
 import { ChatProvider } from "./hooks/useChat";
 import Layout from "./components/layout/Layout";
 import Chat from "./pages/Chat";
@@ -64,7 +58,6 @@ function App() {
         <SystemStatus />
         <Layout currentPage={currentPage} onPageChange={handlePageChange}>
           {renderPage()}
-          <Chat />
         </Layout>
       </div>
     </ChatProvider>

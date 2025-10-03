@@ -1,44 +1,42 @@
-// src/services/api.js
+import axios from "axios";
+
+// Для разработки - используем localhost
+// Для продакшена нужно будет настроить переменные окружения в Vite
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:8000/api";
+  import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 30000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Интерцептор для обработки ошибок
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Error:", error);
+    return Promise.reject(error);
+  }
+);
 
 export const chatAPI = {
-  initialize: async () => {
-    const response = await fetch(`${API_BASE_URL}/initialize`, {
-      method: "POST",
-    });
-    return response.json();
-  },
+  health: () => api.get("/health"),
 
-  sendMessage: async (data) => {
-    const response = await fetch(`${API_BASE_URL}/chat`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    return response.json();
-  },
+  initialize: () => api.post("/initialize"),
 
-  getChatHistory: async (sessionId) => {
-    const response = await fetch(`${API_BASE_URL}/history/${sessionId}`);
-    return response.json();
-  },
+  sendMessage: (data) => api.post("/chat", data),
 
-  evaluateSystem: async (sampleSize) => {
-    const response = await fetch(`${API_BASE_URL}/evaluate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ sample_size: sampleSize }),
-    });
-    return response.json();
-  },
+  getChatHistory: (sessionId) => api.get(`/history/${sessionId}`),
 
-  getAnalytics: async () => {
-    const response = await fetch(`${API_BASE_URL}/analytics`);
-    return response.json();
-  },
+  evaluateSystem: (sampleSize) =>
+    api.post("/evaluate", { sample_size: sampleSize }),
+
+  getAnalytics: () => api.get("/analytics"),
+
+  getAdminStats: () => api.get("/admin/stats"),
 };
+
+export default api;
