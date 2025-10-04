@@ -11,18 +11,24 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 import json
 import asyncio
+import sys
+import io
+
+# Настройка кодировки для Windows
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Добавляем пути для импорта
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-src_dir = os.path.join(parent_dir, 'src')
+from transneft_qa_system import TransneftBenchmarkQA
+from config import TransneftConfig, EvaluationCriteria
+from benchmark_utils import BenchmarkAnalyzer
+from database_models import DatabaseManager, ChatMessage, EvaluationResult, db_manager
 
-sys.path.insert(0, src_dir)
-sys.path.insert(0, parent_dir)
+
 
 print("=== Starting Transneft RAG API ===")
 
@@ -36,7 +42,6 @@ async def lifespan(app: FastAPI):
     
     try:
         # Пробуем загрузить систему
-        from transneft_qa_system import TransneftBenchmarkQA
         qa_system = TransneftBenchmarkQA()
         qa_system.initialize_system()
         system_modules_loaded = True
@@ -68,7 +73,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-app = FastAPI()
 
 # CORS middleware ДО всех других middleware
 app.add_middleware(
@@ -168,18 +172,18 @@ def initialize_on_demand():
     """Инициализация по требованию"""
     global qa_system, system_modules_loaded
     
-    if system_modules_loaded:
+    if system_modules_loaded and qa_system and hasattr(qa_system, 'rag_system'):
         return True
         
     try:
-        from transneft_qa_system import TransneftBenchmarkQA
+        print(">>> On-demand initialization...")
         qa_system = TransneftBenchmarkQA()
-        qa_system.initialize_system()
+        success = qa_system.initialize_system()
         system_modules_loaded = True
-        logger.info("System initialized on demand")
+        print(f">>> On-demand init completed: {success}")
         return True
     except Exception as e:
-        logger.error(f"On-demand initialization failed: {e}")
+        print(f">>> On-demand initialization failed: {e}")
         return False
 
 # Временное хранилище для демонстрации (в продакшене использовать БД)
@@ -284,7 +288,6 @@ async def get_chat_history(session_id: str):
     """Получить историю чата по session_id"""
     try:
         # Пробуем получить из базы данных
-        from database_models import db_manager
         db_messages = db_manager.get_chat_history(session_id)
         
         if db_messages:
@@ -352,11 +355,9 @@ async def get_analytics(qa_system = Depends(get_qa_system)):
     """Получить аналитику использования"""
     try:
         # Получаем статистику из базы данных
-        from database_models import db_manager
         db_stats = db_manager.get_chat_statistics()
         
         # Получаем статистику бенчмарка
-        from benchmark_utils import BenchmarkAnalyzer
         analyzer = BenchmarkAnalyzer()
         benchmark_stats = analyzer.get_basic_stats() if analyzer.data else {}
         
@@ -381,7 +382,6 @@ async def get_analytics(qa_system = Depends(get_qa_system)):
 async def get_admin_stats(qa_system = Depends(get_qa_system)):
     """Статистика для админа"""
     try:
-        from database_models import db_manager
         db_stats = db_manager.get_chat_statistics()
         
         return AdminStatsResponse(
@@ -412,7 +412,6 @@ async def get_admin_stats(qa_system = Depends(get_qa_system)):
 async def submit_feedback(request: FeedbackRequest):
     """Добавление отзыва к сообщению"""
     try:
-        from database_models import db_manager
         success = db_manager.add_feedback(request.message_id, request.rating, request.feedback)
         
         if success:
@@ -430,7 +429,6 @@ async def submit_feedback(request: FeedbackRequest):
 async def system_status(qa_system = Depends(get_qa_system)):
     """Детальный статус системы"""
     try:
-        from database_models import db_manager
         db_stats = db_manager.get_chat_statistics()
         
         return {
@@ -467,7 +465,6 @@ async def reload_system():
 async def get_benchmark_stats(qa_system = Depends(get_qa_system)):
     """Статистика бенчмарка"""
     try:
-        from benchmark_utils import BenchmarkAnalyzer
         analyzer = BenchmarkAnalyzer()
         
         if analyzer.data:

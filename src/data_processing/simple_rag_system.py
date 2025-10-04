@@ -1,6 +1,9 @@
 # scripts/simple_rag_system.py
 import json
-from src.data_processing.vector_store import VectorStore
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from .vector_store import VectorStore
 from typing import List, Dict
 
 

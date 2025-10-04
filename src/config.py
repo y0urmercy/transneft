@@ -10,7 +10,7 @@ class TransneftConfig:
     """Основной класс конфигурации для системы Транснефть"""
     
     # ==================== ПУТИ К ДАННЫМ ====================
-    BENCHMARK_PATH = "data/full_benchmark/transneft_benchmark.json"
+    BENCHMARK_PATH = "src/data_processing/data/processed/qa_benchmark_final.json"
     VECTOR_STORE_PATH = "vector_stores/transneft_faiss"
     RESULTS_PATH = "results"
     MODEL_CACHE_DIR = "models"
