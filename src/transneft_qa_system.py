@@ -20,7 +20,7 @@ from benchmark_utils import BenchmarkAnalyzer, export_benchmark_report
 from ui_components import StyleUI, AvatarManager, DatabaseUI
 from database_models import DatabaseManager, ChatMessage, EvaluationResult, db_manager
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction  
-from data_processing.simple_rag_system import SimpleRAGSystem
+#from data_processing.simple_rag_system import SimpleRAGSystem
 
 os.environ['HF_HUB_DISABLE_SYMLINKS_WARNING'] = '1'
 warnings.filterwarnings("ignore", category=UserWarning, module="nltk")
@@ -35,7 +35,7 @@ class TransneftBenchmarkQA:
     def __init__(self, benchmark_path: str = None):
         self.benchmark_path = benchmark_path or TransneftConfig.BENCHMARK_PATH
         self.benchmark_data = None
-        self.rag_system = SimpleRAGSystem()
+        self.rag_system = None
         self.qa_pairs = []
         self.sections = []
         self.db_manager = db_manager
@@ -69,8 +69,27 @@ class TransneftBenchmarkQA:
             return 0
 
     def answer_question(self, question: str):
-        ans = self.rag_system.answer_question(question)
-        return ans['answer']
+        #ans = self.rag_system.answer_question(question)
+        ans = {
+    "result": "Текст ответа на вопрос",  # строка с ответом
+    "source_documents": [  # список источников
+        {
+            "source": "название_источника_1",
+            "content": "текст из источника",
+            "relevance": 0.85,
+            "metadata": {}  # опционально
+        },
+        {
+            "source": "название_источника_2", 
+            "content": "текст из источника",
+            "relevance": 0.78,
+            "metadata": {}
+        }
+    ],
+    "message_id": 123,  # ID сообщения из БД (целое число)
+    "confidence": 0.82  # уверенность ответа (float от 0.0 до 1.0)
+}
+        return ans
     def ask_question(self, question: str, session_id: str, user_id: str = "default") -> Dict[str, Any]:
         """Безопасный метод для вопросов с защитой от None"""
         print(f"🎯 Ask question called: {question}")
