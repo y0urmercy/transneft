@@ -30,9 +30,7 @@ const Layout = ({ children, currentPage, onPageChange }) => {
           <div className="w-80 border-r border-gray-200 bg-white hidden lg:flex flex-col items-center p-6">
             <Avatar state={avatarState} onStateChange={setAvatarState} />
             <div className="mt-4 text-center">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Алексей Петров
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-800">-</h3>
               <p className="text-sm text-gray-600">
                 Эксперт по ПАО "Транснефть"
               </p>
