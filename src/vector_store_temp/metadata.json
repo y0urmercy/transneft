@@ -1,0 +1,922 @@
+[
+  {
+    "chunk_id": 0,
+    "sections": [
+      "Информация"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 241,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 1,
+    "sections": [
+      "Основные направления деятельности"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 8,
+    "word_count": 105,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 2,
+    "sections": [
+      "Уставный капитал. Акции"
+    ],
+    "element_types": [
+      "numbered_item",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 135,
+    "is_structured": true,
+    "has_header": true
+  },
+  {
+    "chunk_id": 3,
+    "sections": [
+      "Держатель реестра акционеров — Акционерное общество «Независимая регистраторская компания Р.О.С.Т.» (АО «НРК — Р.О.С.Т.»)"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 9,
+    "word_count": 72,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 4,
+    "sections": [
+      "Корпоративное управление"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 139,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 5,
+    "sections": [
+      "Система корпоративного управления ПАО «Транснефть»"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 149,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 6,
+    "sections": [
+      "Аудитор"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 116,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 7,
+    "sections": [
+      "Информация об аудиторе"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 9,
+    "word_count": 114,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 8,
+    "sections": [
+      "Устав и внутренние документы"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 5,
+    "word_count": 137,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 9,
+    "sections": [
+      "Обеспечение надежности системы магистральных трубопроводов и сохранение качества экспортных потоков нефти"
+    ],
+    "element_types": [
+      "numbered_item",
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 8,
+    "word_count": 119,
+    "is_structured": true,
+    "has_header": true
+  },
+  {
+    "chunk_id": 10,
+    "sections": [
+      "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 54,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 11,
+    "sections": [
+      "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 4,
+    "word_count": 64,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 12,
+    "sections": [
+      "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 3,
+    "word_count": 136,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 13,
+    "sections": [
+      "Магистральный нефтепровод Куюмба — Тайшет"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 56,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 14,
+    "sections": [
+      "Магистральный нефтепровод Куюмба — Тайшет"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 7,
+    "word_count": 122,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 15,
+    "sections": [
+      "Балтийская трубопроводная система «БТС-2»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 63,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 16,
+    "sections": [
+      "Балтийская трубопроводная система «БТС-2»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 5,
+    "word_count": 78,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 17,
+    "sections": [
+      "Трубопроводная система «Восточная Сибирь — Тихий океан»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 75,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 18,
+    "sections": [
+      "Трубопроводная система «Восточная Сибирь — Тихий океан»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 8,
+    "word_count": 191,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 19,
+    "sections": [
+      "Трубопроводная система «Восточная Сибирь — Тихий океан»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 4,
+    "word_count": 81,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 20,
+    "sections": [
+      "Трубопроводная система «Восточная Сибирь — Тихий океан»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 7,
+    "word_count": 170,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 21,
+    "sections": [
+      "Магистральный нефтепровод Сковородино — Мохэ"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 5,
+    "word_count": 70,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 22,
+    "sections": [
+      "Магистральный нефтепровод Сковородино — Мохэ"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 5,
+    "word_count": 56,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 23,
+    "sections": [
+      "Магистральный нефтепровод Сковородино — Мохэ"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 5,
+    "word_count": 70,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 24,
+    "sections": [
+      "Расширение КТК"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 10,
+    "word_count": 273,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 25,
+    "sections": [
+      "Расширение КТК"
+    ],
+    "element_types": [
+      "paragraph"
+    ],
+    "num_elements": 4,
+    "word_count": 108,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 26,
+    "sections": [
+      "Проект «Север»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 61,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 27,
+    "sections": [
+      "Проект «Север»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 6,
+    "word_count": 129,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 28,
+    "sections": [
+      "Проект «ЮГ»"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 82,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 29,
+    "sections": [
+      "Проект «ЮГ»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 9,
+    "word_count": 98,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 30,
+    "sections": [
+      "Проект «ЮГ»"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 4,
+    "word_count": 108,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 31,
+    "sections": [
+      "Реконструкция системы магистральных трубопроводов для увеличения объемов транспортировки нефтепродуктов в Московский регион"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 4,
+    "word_count": 69,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 32,
+    "sections": [
+      "Реконструкция системы магистральных трубопроводов для увеличения объемов транспортировки нефтепродуктов в Московский регион"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 8,
+    "word_count": 147,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 33,
+    "sections": [
+      "Нефтепровод–отвод ТС «ВСТО» — Комсомольский НПЗ"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 55,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 34,
+    "sections": [
+      "Реконструкция магистральных нефтепроводов для транспортировки нефти на НПЗ Краснодарского края"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 66,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 35,
+    "sections": [
+      "Реконструкция магистральных нефтепроводов для транспортировки нефти на НПЗ Краснодарского края"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 8,
+    "word_count": 74,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 36,
+    "sections": [
+      "У истоков инноваций"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 120,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 37,
+    "sections": [
+      "Трубу видно с Шаболовки"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 5,
+    "word_count": 247,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 38,
+    "sections": [
+      "Магистральная эра"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 100,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 39,
+    "sections": [
+      "Первые советские"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 185,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 40,
+    "sections": [
+      "Для фронта и тыла"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 153,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 41,
+    "sections": [
+      "От Волги до Байкала"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 262,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 42,
+    "sections": [
+      "Испытание «Дружбой»"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 4,
+    "word_count": 247,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 43,
+    "sections": [
+      "Испытание «Дружбой»"
+    ],
+    "element_types": [
+      "paragraph"
+    ],
+    "num_elements": 1,
+    "word_count": 59,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 44,
+    "sections": [
+      "Прирастать Сибирью"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 139,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 45,
+    "sections": [
+      "Рекорды на фоне застоя"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 4,
+    "word_count": 237,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 46,
+    "sections": [
+      "Рекорды на фоне застоя"
+    ],
+    "element_types": [
+      "paragraph"
+    ],
+    "num_elements": 1,
+    "word_count": 65,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 47,
+    "sections": [
+      "Ветер перестройки"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 4,
+    "word_count": 169,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 48,
+    "sections": [
+      "Эпоха возрождения"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 5,
+    "word_count": 256,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 49,
+    "sections": [
+      "Динамичные нулевые"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 5,
+    "word_count": 287,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 50,
+    "sections": [
+      "Курс на восток"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 141,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 51,
+    "sections": [
+      "Время новых возможностей"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 6,
+    "word_count": 246,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 52,
+    "sections": [
+      "Глобальная модернизация"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 4,
+    "word_count": 122,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 53,
+    "sections": [
+      "Глобальная модернизация"
+    ],
+    "element_types": [
+      "project_header",
+      "paragraph"
+    ],
+    "num_elements": 5,
+    "word_count": 186,
+    "is_structured": false,
+    "has_header": false
+  },
+  {
+    "chunk_id": 54,
+    "sections": [
+      "На полную мощность"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 64,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 55,
+    "sections": [
+      "Фундамент энергетической безопасности страны"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 63,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 56,
+    "sections": [
+      "Самая восточная точка системы"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 76,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 57,
+    "sections": [
+      "Самое крупное общество системы"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 78,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 58,
+    "sections": [
+      "Диаметр труб «Транснефти»"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 63,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 59,
+    "sections": [
+      "Самый протяженный нефтепровод"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 68,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 60,
+    "sections": [
+      "Крупнейшие подводные переходы"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 2,
+    "word_count": 59,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 61,
+    "sections": [
+      "Количество НПС"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 74,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 62,
+    "sections": [
+      "Старейшая организация системы"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 82,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 63,
+    "sections": [
+      "Численность сотрудников"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 58,
+    "is_structured": false,
+    "has_header": true
+  },
+  {
+    "chunk_id": 64,
+    "sections": [
+      "Дата учреждения ПАО «Транснефть»"
+    ],
+    "element_types": [
+      "paragraph",
+      "section_header"
+    ],
+    "num_elements": 3,
+    "word_count": 68,
+    "is_structured": false,
+    "has_header": true
+  }
+]
