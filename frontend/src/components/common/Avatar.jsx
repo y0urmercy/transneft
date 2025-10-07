@@ -13,11 +13,11 @@ const Avatar = ({
   const [isTyping, setIsTyping] = useState(false);
 
   const animations = {
-    welcome: "/public/avatars/welcome.gif",
-    idle: "/public/avatars/idle.gif",
-    engagement: "/public/avatars/engagement.gif",
-    goodbye: "/public/avatars/goodbye.gif",
-    typing: "/public/avatars/typing.gif", // Новая анимация для набора текста
+    welcome: "/avatars/welcome.gif",
+    idle: "/avatars/idle.gif",
+    engagement: "/avatars/engagement.gif",
+    goodbye: "/avatars/goodbye.gif",
+    typing: "/avatars/typing.gif", // Новая анимация для набора текста
   };
 
   // Отслеживание ввода текста в ChatInterface

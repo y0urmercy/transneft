@@ -237,8 +237,8 @@
         "Обеспечение надежности системы магистральных трубопроводов и сохранение качества экспортных потоков нефти"
       ],
       "element_types": [
-        "numbered_item",
         "project_header",
+        "numbered_item",
         "paragraph",
         "section_header"
       ],
