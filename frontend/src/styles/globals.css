@@ -8,13 +8,15 @@
   }
 
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply text-gray-900;
+    background-color: #f4f4f4;
   }
 }
 
 @layer components {
   .metric-card {
-    @apply bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow duration-200;
+    background-color: #f4f4f4;
   }
 
   .message-bubble {
@@ -26,11 +28,13 @@
   }
 
   .message-assistant {
-    @apply bg-gray-100 text-gray-800;
+    @apply text-gray-800;
+    background-color: #f4f4f4;
   }
 
   .source-document {
-    @apply border-l-4 border-blue-500 bg-blue-50 px-4 py-2 text-sm text-gray-700;
+    @apply border-l-4 border-blue-500 px-4 py-2 text-sm text-gray-700;
+    background-color: #f4f4f4;
   }
 
   .btn-primary {
@@ -38,7 +42,83 @@
   }
 
   .btn-secondary {
-    @apply px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors;
+    @apply px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors;
+    background-color: #f4f4f4;
+  }
+
+  /* Стили для аватаров */
+  .avatar-container {
+    background-color: #f4f4f4;
+  }
+
+  .avatar-placeholder {
+    background-color: #f4f4f4;
+  }
+
+  /* Стили для карточек и контейнеров */
+  .card {
+    background-color: #f4f4f4;
+  }
+
+  .container-bg {
+    background-color: #f4f4f4;
+  }
+
+  .sidebar {
+    background-color: #f4f4f4;
+  }
+
+  .header {
+    background-color: #f4f4f4;
+  }
+
+  .footer {
+    background-color: #f4f4f4;
+  }
+
+  /* Стили для инпутов и текстовых полей */
+  .input-bg {
+    background-color: #f4f4f4;
+  }
+
+  .textarea-bg {
+    background-color: #f4f4f4;
+  }
+
+  /* Стили для навигации */
+  .nav-item {
+    background-color: #f4f4f4;
+  }
+
+  .tab {
+    background-color: #f4f4f4;
+  }
+
+  /* Стили для модальных окон */
+  .modal-backdrop {
+    background-color: #f4f4f4;
+  }
+
+  .modal-content {
+    background-color: #f4f4f4;
+  }
+
+  /* Стили для выпадающих списков */
+  .dropdown {
+    background-color: #f4f4f4;
+  }
+
+  .dropdown-item {
+    background-color: #f4f4f4;
+  }
+
+  /* Стили для панелей инструментов */
+  .toolbar {
+    background-color: #f4f4f4;
+  }
+
+  .panel {
+    background-color: #f4f4f4;
   }
 }
 
@@ -73,6 +153,11 @@
     animation: slideUp 0.3s ease-out;
   }
 
+  /* Утилита для фона #f4f4f4 */
+  .bg-custom-gray {
+    background-color: #f4f4f4;
+  }
+
   /* Скрыть scrollbar но оставить функциональность */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -88,6 +173,7 @@
 input:focus,
 textarea:focus {
   @apply outline-none ring-2 ring-blue-500 ring-offset-1;
+  background-color: #f4f4f4;
 }
 
 /* Анимации для загрузки */
@@ -103,4 +189,41 @@ textarea:focus {
 
 .animate-pulse-slow {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Дополнительные глобальные стили для элементов с фоном #f4f4f4 */
+.bg-white {
+  background-color: #f4f4f4 !important;
+}
+
+.bg-gray-50 {
+  background-color: #f4f4f4 !important;
+}
+
+.bg-gray-100 {
+  background-color: #f4f4f4 !important;
+}
+
+.bg-slate-50 {
+  background-color: #f4f4f4 !important;
+}
+
+.bg-slate-100 {
+  background-color: #f4f4f4 !important;
+}
+
+/* Стили для аватаров в сообщениях */
+.avatar-user,
+.avatar-assistant {
+  background-color: #f4f4f4;
+}
+
+/* Стили для статусных индикаторов */
+.status-indicator {
+  background-color: #f4f4f4;
+}
+
+/* Стили для разделителей */
+.divider {
+  background-color: #f4f4f4;
 }

@@ -20,6 +20,44 @@ const Avatar = ({
     typing: "/avatars/typing.gif", // Новая анимация для набора текста
   };
 
+  // Функция для поиска последнего сообщения пользователя
+  const findLastUserMessage = () => {
+    if (!chatInterfaceRef?.current) return "";
+
+    try {
+      // Ищем все сообщения в чате
+      const messageElements = chatInterfaceRef.current.querySelectorAll(
+        '[class*="message"], [class*="bg-blue"], .user-message, .message-user'
+      );
+
+      let lastUserMessage = "";
+
+      // Проходим по всем сообщениям с конца
+      for (let i = messageElements.length - 1; i >= 0; i--) {
+        const element = messageElements[i];
+        const text = element.textContent?.toLowerCase().trim() || "";
+
+        // Определяем, является ли сообщение пользовательским по классам или содержимому
+        const isUserMessage =
+          element.className.includes("bg-blue") ||
+          element.className.includes("user-message") ||
+          element.className.includes("message-user") ||
+          element.textContent.includes("Вы:") ||
+          element.querySelector(".bg-blue-500"); // Аватар пользователя
+
+        if (isUserMessage && text) {
+          lastUserMessage = text;
+          break;
+        }
+      }
+
+      return lastUserMessage;
+    } catch (error) {
+      console.error("Error finding user message:", error);
+      return "";
+    }
+  };
+
   // Отслеживание ввода текста в ChatInterface
   useEffect(() => {
     if (!chatInterfaceRef?.current) return;
@@ -27,12 +65,8 @@ const Avatar = ({
     const checkUserInput = () => {
       try {
         // Получаем элементы ввода из ChatInterface
-        const inputElement = chatInterfaceRef.current?.querySelector?.(
-          'input[type="text"], textarea'
-        );
-        const messageContainer = chatInterfaceRef.current?.querySelector?.(
-          ".messages, .chat-messages"
-        );
+        const inputElement =
+          chatInterfaceRef.current?.querySelector?.("textarea");
 
         let userText = "";
 
@@ -41,18 +75,12 @@ const Avatar = ({
           userText = inputElement.value.toLowerCase().trim();
         }
 
-        // Ищем последние сообщения пользователя
-        if (messageContainer) {
-          const userMessages = messageContainer.querySelectorAll(
-            ".user-message, .message-user"
-          );
-          if (userMessages.length > 0) {
-            const lastUserMessage = userMessages[userMessages.length - 1];
-            userText = lastUserMessage.textContent.toLowerCase().trim();
-          }
+        // Если в поле ввода нет текста, ищем последнее сообщение пользователя
+        if (!userText) {
+          userText = findLastUserMessage();
         }
 
-        // Проверяем на прощание
+        // Проверяем на прощание в последнем сообщении пользователя
         const goodbyeKeywords = [
           "до свидания",
           "пока",
@@ -61,12 +89,23 @@ const Avatar = ({
           "выход",
           "bye",
           "goodbye",
+          "спасибо пока",
+          "всего хорошего",
+          "до встречи",
+          "прощай",
+          "закончим",
+          "закончили",
+          "хватит",
+          "стоп",
+          "закрыть",
         ];
+
         const isGoodbye = goodbyeKeywords.some((keyword) =>
           userText.includes(keyword)
         );
 
         if (isGoodbye && state !== "goodbye") {
+          console.log("Обнаружено прощание:", userText);
           onStateChange("goodbye");
           return;
         }
@@ -105,7 +144,7 @@ const Avatar = ({
         case "welcome":
           timeoutRef.current = setTimeout(() => {
             onStateChange("idle");
-          }, 1500);
+          }, 2700);
           break;
 
         case "engagement":
@@ -130,7 +169,7 @@ const Avatar = ({
           // Случайные микро-анимации в режиме ожидания
           if (!isTyping) {
             timeoutRef.current = setTimeout(() => {
-              if (Math.random() > 0.7) {
+              if (Math.random() > 0.5) {
                 onStateChange("engagement");
               }
             }, 5000 + Math.random() * 10000);
@@ -144,7 +183,7 @@ const Avatar = ({
     return () => clearTimeout(timeoutRef.current);
   }, [state, onStateChange, isTyping]);
 
-  // Расширенное приветствие на первые 7 секунд
+  // Приветствие при загрузке
   useEffect(() => {
     if (state === "idle" && !hasWelcomed) {
       const welcomeTimer = setTimeout(() => {

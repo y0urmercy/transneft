@@ -133,9 +133,9 @@
     ],
     "element_types": [
       "project_header",
-      "numbered_item",
       "paragraph",
-      "section_header"
+      "section_header",
+      "numbered_item"
     ],
     "num_elements": 8,
     "word_count": 119,

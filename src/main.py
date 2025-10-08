@@ -338,23 +338,112 @@ async def get_chat_history(session_id: str):
         return HistoryResponse(session_id=session_id, history=history)
 
 @api_router.post("/evaluate", response_model=EvaluateResponse)
+@api_router.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest, qa_system = Depends(get_qa_system)):
+    """Основной endpoint для вопросов"""
+    try:
+        # Обновляем аналитику
+        analytics_data["total_questions"] += 1
+        analytics_data["total_requests"] += 1
+        
+        # Получаем ответ от системы
+        result = qa_system.ask_question(
+            request.question,
+            request.session_id,
+            "user"
+        )
+        
+        # Сохраняем в историю
+        if request.session_id not in chat_history_storage:
+            chat_history_storage[request.session_id] = []
+        
+        chat_history_storage[request.session_id].append({
+            "question": request.question,
+            "answer": result.get("result", ""),
+            "sources": result.get("source_documents", []),
+            "timestamp": datetime.now().isoformat(),
+            "message_id": result.get("message_id"),
+            "confidence": result.get("confidence", 0.0)
+        })
+        
+        # Преобразуем результат в ожидаемый формат
+        return ChatResponse(
+            result=result.get("result", ""),
+            source_documents=result.get("source_documents", []),
+            confidence=result.get("confidence", 0.0),
+            message_id=result.get("message_id")
+        )
+        
+    except Exception as e:
+        logger.error(f"Error processing chat request: {e}")
+        analytics_data["total_requests"] += 1
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Ошибка обработки запроса: {str(e)}"
+        )
+
+@api_router.get("/history/{session_id}", response_model=HistoryResponse)
+async def get_chat_history(session_id: str):
+    """Получить историю чата по session_id"""
+    try:
+        # Пробуем получить из базы данных
+        db_messages = db_manager.get_chat_history(session_id)
+        
+        if db_messages:
+            history = []
+            for msg in db_messages:
+                try:
+                    sources = json.loads(msg['sources']) if msg['sources'] else []
+                except:
+                    sources = []
+                    
+                history.append({
+                    "question": msg['question'],
+                    "answer": msg['answer'],
+                    "sources": sources,
+                    "timestamp": msg['timestamp'],
+                    "message_id": msg['id'],
+                    "response_time": msg.get('response_time', 0.0)
+                })
+            return HistoryResponse(session_id=session_id, history=history)
+        else:
+            # Используем временное хранилище
+            history = chat_history_storage.get(session_id, [])
+            return HistoryResponse(session_id=session_id, history=history)
+            
+    except Exception as e:
+        logger.error(f"Error getting chat history: {e}")
+        history = chat_history_storage.get(session_id, [])
+        return HistoryResponse(session_id=session_id, history=history)
+
+@api_router.post("/evaluate", response_model=EvaluateResponse)
 async def evaluate_system(request: EvaluateRequest, background_tasks: BackgroundTasks, qa_system = Depends(get_qa_system)):
     """Оценка системы"""
     try:
-        # Упрощенная оценка для демонстрации
-        evaluation_results = {
-            "status": "success",
-            "num_evaluated": 5,
-            "average_accuracy": 0.85,
-            "average_response_time": 1.2,
-            "timestamp": datetime.now().isoformat()
-        }
+        # Запускаем оценку в фоновом режиме
+        async def run_evaluation():
+            try:
+                evaluation_results = qa_system.evaluate_system(request.sample_size)
+                return evaluation_results
+            except Exception as e:
+                logger.error(f"Evaluation error: {e}")
+                return None
         
-        return EvaluateResponse(
-            status="success",
-            results=evaluation_results,
-            message=f"Evaluation completed for {evaluation_results['num_evaluated']} samples"
-        )
+        # Запускаем асинхронно
+        evaluation_results = await run_evaluation()
+        
+        if evaluation_results:
+            metrics = evaluation_results.get('metrics', {})
+            eval_result = evaluation_results.get('evaluation_result')
+            
+            return EvaluateResponse(
+                status="success",
+                results=metrics,
+                message=f"Evaluation completed for {metrics.get('num_evaluated', 0)} samples",
+                evaluation_id=eval_result.evaluation_id if hasattr(eval_result, 'evaluation_id') else None
+            )
+        else:
+            raise HTTPException(status_code=500, detail="Evaluation failed")
             
     except Exception as e:
         logger.error(f"Evaluation error: {e}")
@@ -364,13 +453,19 @@ async def evaluate_system(request: EvaluateRequest, background_tasks: Background
 async def get_analytics(qa_system = Depends(get_qa_system)):
     """Получить аналитику использования"""
     try:
-        # Упрощенная аналитика
+        # Получаем статистику из базы данных
+        db_stats = db_manager.get_chat_statistics()
+        
+        # Получаем статистику бенчмарка
+        analyzer = BenchmarkEvaluator()
+        benchmark_stats = analyzer.results
+        
         return AnalyticsResponse(
-            total_questions=analytics_data["total_questions"],
-            average_confidence=0.75,
+            total_questions=db_stats.get('total_messages', analytics_data["total_questions"]),
+            average_confidence=analyzer.evaluate_system(),  # Можно вычислить из реальных данных
             system_uptime=analytics_data.get("start_time", "Unknown"),
             active_sessions=len(chat_history_storage),
-            benchmark_stats={"status": "basic", "accuracy": 0.8}
+            benchmark_stats=benchmark_stats
         )
     except Exception as e:
         logger.error(f"Error getting analytics: {e}")
@@ -386,17 +481,19 @@ async def get_analytics(qa_system = Depends(get_qa_system)):
 async def get_admin_stats(qa_system = Depends(get_qa_system)):
     """Статистика для админа"""
     try:
+        db_stats = db_manager.get_chat_statistics()
+        
         return AdminStatsResponse(
             system_status="operational" if system_modules_loaded else "degraded",
             total_requests=analytics_data["total_requests"],
-            error_rate=0.02,
-            memory_usage="512MB / 2GB",
+            error_rate=0.02,  # Можно вычислить из реальных данных
+            memory_usage="512MB / 2GB",  # Демо-значение
             active_connections=len(chat_history_storage),
             database_stats={
-                "total_messages": analytics_data["total_questions"],
-                "rated_messages": 0,
-                "avg_rating": 0,
-                "avg_response_time": 0
+                "total_messages": db_stats.get('total_messages', 0),
+                "rated_messages": db_stats.get('rated_messages', 0),
+                "avg_rating": db_stats.get('avg_rating', 0),
+                "avg_response_time": db_stats.get('avg_response_time', 0)
             }
         )
     except Exception as e:
@@ -414,10 +511,12 @@ async def get_admin_stats(qa_system = Depends(get_qa_system)):
 async def submit_feedback(request: FeedbackRequest):
     """Добавление отзыва к сообщению"""
     try:
-        # Упрощенная реализация без БД
-        logger.info(f"Feedback received - Message: {request.message_id}, Rating: {request.rating}, Feedback: {request.feedback}")
+        success = db_manager.add_feedback(request.message_id, request.rating, request.feedback)
         
-        return {"status": "success", "message": "Feedback submitted successfully"}
+        if success:
+            return {"status": "success", "message": "Feedback submitted successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to submit feedback")
             
     except Exception as e:
         logger.error(f"Error submitting feedback: {e}")
