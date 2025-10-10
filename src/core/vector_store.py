@@ -2,118 +2,39 @@ import os
 import sys
 import json
 import numpy as np
+from sentence_transformers import SentenceTransformer
 import faiss
+import torch
 from typing import List, Dict, Tuple
-import warnings
-
-# Отключаем предупреждения
-warnings.filterwarnings("ignore")
 
 # Добавляем путь для импортов
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_root = os.path.dirname(os.path.dirname(current_dir))
 sys.path.insert(0, src_root)
 
-from utils.config import VECTOR_STORE_DIR
-
-# Принудительно используем безопасную модель
-SAFE_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-
-class SimpleEmbeddings:
-    """Простая реализация эмбеддингов без TensorFlow"""
-    
-    def __init__(self, model_name=SAFE_MODEL_NAME):
-        print(f"🔧 Загрузка модели: {model_name}")
-        
-        try:
-            # Прямой импорт transformers
-            from transformers import AutoTokenizer, AutoModel
-            import torch
-            import torch.nn.functional as F
-            
-            self.device = "cuda" if torch.cuda.is_available() else "cpu"
-            print(f"📱 Используется устройство: {self.device}")
-            
-            # Принудительно загружаем безопасную модель
-            self.tokenizer = AutoTokenizer.from_pretrained(SAFE_MODEL_NAME)
-            self.model = AutoModel.from_pretrained(SAFE_MODEL_NAME)
-            self.model.to(self.device)
-            self.model.eval()
-            
-            self.torch = torch
-            self.F = F
-            
-        except ImportError as e:
-            print(f"❌ Ошибка загрузки transformers: {e}")
-            print("📦 Установите: pip install transformers torch")
-            raise
-    
-    def embed_documents(self, texts):
-        """Создает эмбеддинги для списка документов"""
-        print(f"📥 Обработка {len(texts)} документов...")
-        embeddings = []
-        
-        # Обрабатываем батчами для экономии памяти
-        batch_size = 8
-        for i in range(0, len(texts), batch_size):
-            batch_texts = texts[i:i + batch_size]
-            batch_embeddings = self._embed_batch(batch_texts)
-            embeddings.extend(batch_embeddings)
-            
-            if i % 32 == 0:
-                print(f"📊 Обработано {min(i + batch_size, len(texts))}/{len(texts)} документов")
-        
-        return np.array(embeddings)
-    
-    def embed_query(self, text):
-        """Создает эмбеддинг для одного запроса"""
-        return self._embed_batch([text])[0]
-    
-    def _embed_batch(self, texts):
-        """Внутренний метод для обработки батча"""
-        with self.torch.no_grad():
-            inputs = self.tokenizer(
-                texts, 
-                padding=True, 
-                truncation=True, 
-                max_length=512, 
-                return_tensors="pt"
-            ).to(self.device)
-            
-            outputs = self.model(**inputs)
-            embeddings = self._mean_pooling(outputs, inputs['attention_mask'])
-            embeddings = self.F.normalize(embeddings, p=2, dim=1)
-            
-            return embeddings.cpu().numpy()
-    
-    def _mean_pooling(self, model_output, attention_mask):
-        """Mean pooling для получения sentence embeddings"""
-        token_embeddings = model_output[0]
-        input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-        return self.torch.sum(token_embeddings * input_mask_expanded, 1) / self.torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+from utils.config import MODEL_NAME, VECTOR_STORE_DIR, EMBEDDING_DIMENSION
 
 
 class VectorStore:
     """Векторное хранилище для семантического поиска"""
 
-    def __init__(self, model_name: str = SAFE_MODEL_NAME):
-        print(f"🔧 Инициализация VectorStore с моделью: {model_name}")
+    def __init__(self, model_name: str = MODEL_NAME):
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"🔧 Инициализация VectorStore на {self.device}")
 
         try:
-            self.embeddings = SimpleEmbeddings(model_name)
+            self.model = SentenceTransformer(model_name, device=self.device)
             self.index = None
             self.chunks = []
             self.chunk_metadata = []
             self.is_initialized = False
-            print("✅ VectorStore инициализирован")
         except Exception as e:
-            print(f"❌ Ошибка инициализации VectorStore: {e}")
+            print(f"❌ Ошибка инициализации модели: {e}")
             raise
 
-    # Остальные методы остаются без изменений...
     def create_embeddings(self, chunks: List[Dict]) -> None:
         """Создает эмбеддинги для всех chunks"""
-        print(f"📥 Создание эмбеддингов для {len(chunks)} chunks...")
+        print("📥 Создание эмбеддингов...")
 
         if not chunks:
             raise ValueError("❌ Нет chunks для обработки")
@@ -122,14 +43,20 @@ class VectorStore:
         self.chunk_metadata = [chunk['metadata'] for chunk in chunks]
 
         try:
-            # Создаем эмбеддинги
-            embeddings = self.embeddings.embed_documents(self.chunks)
-            
-            # Конвертируем в numpy массив
-            embeddings_np = np.array(embeddings).astype('float32')
+            # Создаем эмбеддинги с прогресс-баром
+            embeddings = self.model.encode(
+                self.chunks,
+                batch_size=16,
+                show_progress_bar=True,
+                convert_to_tensor=True,
+                normalize_embeddings=True
+            )
+
+            # Конвертируем в numpy
+            embeddings_np = embeddings.cpu().numpy() if self.device == "cuda" else embeddings.numpy()
 
             # Создаем FAISS индекс для косинусного сходства
-            self.index = faiss.IndexFlatIP(embeddings_np.shape[1])
+            self.index = faiss.IndexFlatIP(EMBEDDING_DIMENSION)
             self.index.add(embeddings_np)
 
             self.is_initialized = True
@@ -149,15 +76,21 @@ class VectorStore:
 
         try:
             # Создаем эмбеддинг для запроса
-            query_embedding = self.embeddings.embed_query(query)
-            query_embedding_np = np.array([query_embedding]).astype('float32')
+            query_embedding = self.model.encode(
+                [query],
+                convert_to_tensor=True,
+                normalize_embeddings=True
+            )
+
+            query_embedding_np = query_embedding.cpu().numpy() if self.device == "cuda" else query_embedding.numpy()
 
             # Выполняем поиск
-            scores, indices = self.index.search(query_embedding_np, min(k, len(self.chunks)))
+            scores, indices = self.index.search(query_embedding_np, k)
 
             results = []
             for score, idx in zip(scores[0], indices[0]):
-                if 0 <= idx < len(self.chunks) and score >= threshold:
+                # Проверяем границы и порог схожести
+                if idx < len(self.chunks) and score >= threshold:
                     results.append((
                         self.chunks[idx],
                         self.chunk_metadata[idx],
@@ -174,10 +107,23 @@ class VectorStore:
         """Сохраняет индекс и метаданные"""
         if not self.is_initialized:
             raise ValueError("❌ Хранилище не инициализировано")
-        
         try:
+            # Явно создаем директорию с проверками
             os.makedirs(save_path, exist_ok=True)
-            
+
+            # Проверяем, что директория создана и доступна для записи
+            if not os.path.exists(save_path):
+                raise OSError(f"Не удалось создать директорию: {save_path}")
+
+            # Проверяем права на запись
+            test_file = os.path.join(save_path, "test_write.tmp")
+            try:
+                with open(test_file, 'w') as f:
+                    f.write("test")
+                os.remove(test_file)
+            except Exception as e:
+                raise OSError(f"Нет прав на запись в директорию {save_path}: {e}")
+
             # Сохраняем FAISS индекс
             index_path = os.path.join(save_path, "faiss.index")
             print(f"💾 Сохранение FAISS индекса: {index_path}")
@@ -186,6 +132,7 @@ class VectorStore:
             # Сохраняем chunks и метаданные
             chunks_path = os.path.join(save_path, "chunks.json")
             metadata_path = os.path.join(save_path, "metadata.json")
+            model_info_path = os.path.join(save_path, "model_info.json")
 
             with open(chunks_path, "w", encoding="utf-8") as f:
                 json.dump(self.chunks, f, ensure_ascii=False, indent=2)
@@ -193,15 +140,62 @@ class VectorStore:
             with open(metadata_path, "w", encoding="utf-8") as f:
                 json.dump(self.chunk_metadata, f, ensure_ascii=False, indent=2)
 
+            # Сохраняем информацию о модели
+            model_info = {
+                "model_name": MODEL_NAME,
+                "embedding_dimension": EMBEDDING_DIMENSION,
+                "total_vectors": self.index.ntotal,
+                "device": self.device
+            }
+
+            with open(model_info_path, "w", encoding="utf-8") as f:
+                json.dump(model_info, f, ensure_ascii=False, indent=2)
+
             print(f"✅ Векторное хранилище сохранено: {save_path}")
 
         except Exception as e:
-            print(f"❌ Ошибка сохранения: {e}")
+            print(f"❌ Ошибка сохранения векторного хранилища: {e}")
+
+            # Пробуем альтернативный путь
+            print("🔄 Попытка сохранения в альтернативную директорию...")
+            self._save_to_alternative_location()
+
+    def _save_to_alternative_location(self):
+        """Сохраняет в альтернативную директорию при ошибках"""
+        try:
+            # Пробуем сохранить в текущую директорию
+            alt_path = "vector_store_temp"
+            os.makedirs(alt_path, exist_ok=True)
+
+            faiss.write_index(self.index, f"{alt_path}/faiss.index")
+
+            with open(f"{alt_path}/chunks.json", "w", encoding="utf-8") as f:
+                json.dump(self.chunks, f, ensure_ascii=False, indent=2)
+
+            with open(f"{alt_path}/metadata.json", "w", encoding="utf-8") as f:
+                json.dump(self.chunk_metadata, f, ensure_ascii=False, indent=2)
+
+            print(f"✅ Векторное хранилище сохранено в альтернативную директорию: {alt_path}")
+            return alt_path
+
+        except Exception as e:
+            print(f"❌ Критическая ошибка: не удалось сохранить векторное хранилище: {e}")
             raise
 
     def load_index(self, load_path: str = VECTOR_STORE_DIR):
         """Загружает индекс и метаданные"""
         try:
+            # Проверяем существование файлов
+            required_files = [
+                os.path.join(load_path, "faiss.index"),
+                os.path.join(load_path, "chunks.json"),
+                os.path.join(load_path, "metadata.json")
+            ]
+
+            for file_path in required_files:
+                if not os.path.exists(file_path):
+                    raise FileNotFoundError(f"Файл не найден: {file_path}")
+
             # Загружаем FAISS индекс
             self.index = faiss.read_index(os.path.join(load_path, "faiss.index"))
 
@@ -214,9 +208,10 @@ class VectorStore:
 
             self.is_initialized = True
             print(f"📂 Векторное хранилище загружено: {load_path}")
+            print(f"📊 Размер: {len(self.chunks)} chunks, {self.index.ntotal} векторов")
 
         except Exception as e:
-            print(f"❌ Ошибка загрузки: {e}")
+            print(f"❌ Ошибка загрузки векторного хранилища: {e}")
             raise
 
     def get_stats(self) -> Dict:
@@ -227,6 +222,33 @@ class VectorStore:
         return {
             "total_chunks": len(self.chunks),
             "total_vectors": self.index.ntotal,
-            "embedding_dimension": self.index.d,
-            "device": self.embeddings.device
+            "embedding_dimension": EMBEDDING_DIMENSION,
+            "device": self.device,
+            "model": MODEL_NAME
         }
+
+
+if __name__ == "__main__":
+    # Тестирование векторного хранилища
+    from utils.config import CHUNKS_PATH
+
+    with open(CHUNKS_PATH, 'r', encoding='utf-8') as f:
+        chunks = json.load(f)
+
+    vector_store = VectorStore()
+    vector_store.create_embeddings(chunks)
+    vector_store.save_index()
+
+    # Тестовый поиск
+    test_queries = [
+        "Сколько акций в уставном капитале?",
+        "Основные направления деятельности",
+        "Дата регистрации компании"
+    ]
+
+    print("\n🔍 ТЕСТИРОВАНИЕ ПОИСКА:")
+    for query in test_queries:
+        print(f"\nЗапрос: '{query}'")
+        results = vector_store.search(query, k=2)
+        for i, (chunk, metadata, score) in enumerate(results):
+            print(f"  {i + 1}. [Score: {score:.3f}] {chunk[:80]}...")

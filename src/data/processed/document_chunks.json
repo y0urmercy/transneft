@@ -59,8 +59,8 @@
         "Уставный капитал. Акции"
       ],
       "element_types": [
-        "numbered_item",
         "paragraph",
+        "numbered_item",
         "section_header"
       ],
       "num_elements": 6,
@@ -237,10 +237,10 @@
         "Обеспечение надежности системы магистральных трубопроводов и сохранение качества экспортных потоков нефти"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
-        "section_header",
-        "numbered_item"
+        "project_header",
+        "numbered_item",
+        "section_header"
       ],
       "num_elements": 8,
       "word_count": 119,
@@ -266,8 +266,8 @@
         "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 6,
@@ -337,8 +337,8 @@
         "Магистральный нефтепровод Куюмба — Тайшет"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 6,
@@ -389,8 +389,8 @@
         "Балтийская трубопроводная система «БТС-2»"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 6,
@@ -439,8 +439,8 @@
         "Трубопроводная система «Восточная Сибирь — Тихий океан»"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 6,
@@ -541,8 +541,8 @@
         "Магистральный нефтепровод Сковородино — Мохэ"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 5,
@@ -614,8 +614,8 @@
         "Расширение КТК"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 10,
@@ -666,8 +666,8 @@
         "Проект «Север»"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 6,
@@ -790,8 +790,8 @@
         "Реконструкция системы магистральных трубопроводов для увеличения объемов транспортировки нефтепродуктов в Московский регион"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 4,
@@ -841,8 +841,8 @@
         "Нефтепровод–отвод ТС «ВСТО» — Комсомольский НПЗ"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 6,
@@ -867,8 +867,8 @@
         "Реконструкция магистральных нефтепроводов для транспортировки нефти на НПЗ Краснодарского края"
       ],
       "element_types": [
-        "project_header",
         "paragraph",
+        "project_header",
         "section_header"
       ],
       "num_elements": 6,

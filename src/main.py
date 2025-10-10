@@ -450,22 +450,35 @@ async def evaluate_system(request: EvaluateRequest, background_tasks: Background
         raise HTTPException(status_code=500, detail=f"Evaluation failed: {str(e)}")
 
 @api_router.get("/analytics", response_model=AnalyticsResponse)
-async def get_analytics(qa_system = Depends(get_qa_system)):
+async def get_analytics(qa_system=Depends(get_qa_system)):
     """Получить аналитику использования"""
     try:
         # Получаем статистику из базы данных
         db_stats = db_manager.get_chat_statistics()
-        
-        # Получаем статистику бенчмарка
+
+        # Получаем статистику бенчмарка (исправленная версия)
         analyzer = BenchmarkEvaluator()
-        benchmark_stats = analyzer.results
-        
+        benchmark_summary = {
+            "total_benchmark_questions": len(analyzer.results) if hasattr(analyzer, 'results') else 0,
+            "last_evaluation": datetime.now().isoformat(),
+            "system_accuracy": analyzer.evaluate_system() if hasattr(analyzer, 'evaluate_system') else 0.0
+        }
+
         return AnalyticsResponse(
             total_questions=db_stats.get('total_messages', analytics_data["total_questions"]),
-            average_confidence=analyzer.evaluate_system(),  # Можно вычислить из реальных данных
+            average_confidence=analyzer.evaluate_system() if hasattr(analyzer, 'evaluate_system') else 0.0,
             system_uptime=analytics_data.get("start_time", "Unknown"),
             active_sessions=len(chat_history_storage),
-            benchmark_stats=benchmark_stats
+            benchmark_stats=benchmark_summary  # ← ТЕПЕРЬ СЛОВАРЬ!
+        )
+    except Exception as e:
+        logger.error(f"Error getting analytics: {e}")
+        return AnalyticsResponse(
+            total_questions=analytics_data["total_questions"],
+            average_confidence=0.0,
+            system_uptime=analytics_data.get("start_time", "Unknown"),
+            active_sessions=len(chat_history_storage),
+            benchmark_stats={"error": "Unable to load benchmark stats"}
         )
     except Exception as e:
         logger.error(f"Error getting analytics: {e}")
