@@ -5,7 +5,6 @@ import Chat from "./pages/Chat";
 import History from "./pages/History";
 import Analytics from "./pages/Analytics";
 import Evaluation from "./pages/Evaluation";
-import Admin from "./pages/Admin";
 import SystemStatus from "./components/common/SystemStatus";
 import "./styles/globals.css";
 
@@ -18,7 +17,7 @@ function App() {
       const hash = window.location.hash.replace("#", "");
       if (
         hash &&
-        ["chat", "history", "analytics", "evaluation", "admin"].includes(hash)
+        ["chat", "history", "analytics", "evaluation"].includes(hash)
       ) {
         setCurrentPage(hash);
       }
@@ -45,8 +44,6 @@ function App() {
         return <Analytics />;
       case "evaluation":
         return <Evaluation />;
-      case "admin":
-        return <Admin />;
       default:
         return <Chat />;
     }

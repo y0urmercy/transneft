@@ -69,7 +69,6 @@ class BenchmarkEvaluator:
         accuracy = correct_answers / len(benchmark)
 
         # Показываем результаты
-        self._show_results(accuracy, len(benchmark), correct_answers)
 
         # Сохраняем детальные результаты
         self._save_results()
@@ -116,25 +115,13 @@ class BenchmarkEvaluator:
         common_words = set(system_lower.split()) & set(expected_lower.split())
         return len(common_words) >= min(2, len(expected_lower.split()) // 2)
 
-    def _show_results(self, accuracy: float, total: int, correct: int):
-        """Показывает результаты оценки"""
-        print(f"\n📈 РЕЗУЛЬТАТЫ ОЦЕНКИ:")
-        print(f"   📊 Всего вопросов: {total}")
-        print(f"   ✅ Правильных ответов: {correct}")
-        print(f"   🎯 Точность: {accuracy:.1%}")
-
-        # Анализ по категориям
-        self._analyze_by_category()
-
-        print("\n" + "=" * 50)
-        if accuracy >= 0.9:
-            print("🎉 ОТЛИЧНОЕ КАЧЕСТВО! Максимальный балл обеспечен!")
-        elif accuracy >= 0.8:
-            print("✅ ВЫСОКОЕ КАЧЕСТВО! Хорошие шансы на максимальный балл!")
-        elif accuracy >= 0.7:
-            print("⚠️  УДОВЛЕТВОРИТЕЛЬНОЕ КАЧЕСТВО")
-        else:
-            print("❌ ТРЕБУЕТСЯ ДОРАБОТКА")
+    def get_results(self, accuracy: float, total: int, correct: int):
+        self.evaluate_system()
+        res = {'accuracy': accuracy,
+               'total': total, 
+               'correct': correct
+}
+        return res
 
     def _analyze_by_category(self):
         """Анализирует результаты по категориям"""

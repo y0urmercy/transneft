@@ -30,11 +30,7 @@ const Message = ({ message, isUser }) => {
           }`}
         >
           {formatTime(message.timestamp)}
-          {message.confidence && !isUser && (
-            <span className="ml-2">
-              • Уверенность: {(message.confidence * 100).toFixed(1)}%
-            </span>
-          )}
+
           {message.isError && <span className="ml-2">• Ошибка</span>}
         </div>
       </div>

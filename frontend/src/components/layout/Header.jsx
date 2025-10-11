@@ -9,7 +9,6 @@ const Header = ({ onMenuClick, currentPage }) => {
     history: "📊 История",
     analytics: "📈 Аналитика",
     evaluation: "🧪 Оценка качества",
-    admin: "🔧 Администрирование",
   };
 
   return (
@@ -88,22 +87,6 @@ const Header = ({ onMenuClick, currentPage }) => {
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                 >
                   🧪 Оценка качества
-                </button>
-                <button
-                  onClick={() => {
-                    setShowSettings(false);
-                    window.location.hash = "#admin";
-                  }}
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                >
-                  🔧 Администрирование
-                </button>
-                <div className="border-t border-gray-200 my-1"></div>
-                <button className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                  ⚙️ Настройки системы
-                </button>
-                <button className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                  🆘 Помощь
                 </button>
               </div>
             )}

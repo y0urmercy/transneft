@@ -6,7 +6,6 @@ const Sidebar = ({ isOpen, onClose, currentPage, onPageChange }) => {
     { id: "history", icon: "📊", label: "История" },
     { id: "analytics", icon: "📈", label: "Аналитика" },
     { id: "evaluation", icon: "🧪", label: "Оценка качества" },
-    { id: "admin", icon: "🔧", label: "Администрирование" },
   ];
 
   const handleMenuItemClick = (pageId) => {

@@ -28,40 +28,38 @@ const Analytics = () => {
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">📊 Аналитика системы</h1>
 
-      {/* Статистика бенчмарка */}
+      {/* Основная статистика */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="metric-card">
-          <h3 className="text-sm font-medium text-gray-500">Всего QA пар</h3>
+          <h3 className="text-sm font-medium text-gray-500">Всего вопросов</h3>
           <p className="text-2xl font-bold text-gray-900">
-            {analyticsData?.benchmark_stats?.total_qa_pairs || 0}
+            {analyticsData?.total_questions || 0}
           </p>
         </div>
         <div className="metric-card">
-          <h3 className="text-sm font-medium text-gray-500">
-            Уникальные секции
-          </h3>
+          <h3 className="text-sm font-medium text-gray-500">Активных сессий</h3>
           <p className="text-2xl font-bold text-gray-900">
-            {analyticsData?.system_metrics?.unique_sections || 0}
-          </p>
-        </div>
-        <div className="metric-card">
-          <h3 className="text-sm font-medium text-gray-500">Всего сообщений</h3>
-          <p className="text-2xl font-bold text-gray-900">
-            {analyticsData?.database_stats?.total_messages || 0}
+            {analyticsData?.active_sessions || 0}
           </p>
         </div>
       </div>
 
-      {/* Дополнительная информация */}
+      {/* Статистика базы данных */}
       <div className="metric-card">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          📈 Статистика системы
+          📈 Статистика базы данных
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <div className="text-sm text-gray-500">Активных сессий</div>
+            <div className="text-sm text-gray-500">Всего сообщений</div>
             <div className="text-lg font-semibold">
-              {analyticsData?.database_stats?.total_sessions || 0}
+              {analyticsData?.database_stats?.total_messages || 0}
+            </div>
+          </div>
+          <div>
+            <div className="text-sm text-gray-500">Оцененных сообщений</div>
+            <div className="text-lg font-semibold">
+              {analyticsData?.database_stats?.rated_messages || 0}
             </div>
           </div>
           <div>
@@ -73,14 +71,63 @@ const Analytics = () => {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Оцененных сообщений</div>
+            <div className="text-sm text-gray-500">Среднее время ответа</div>
             <div className="text-lg font-semibold">
-              {analyticsData?.database_stats?.rated_messages || 0}
+              {analyticsData?.database_stats?.avg_response_time?.toFixed(2) ||
+                "0.00"}
+              с
             </div>
           </div>
-          <div>
-            <div className="text-sm text-gray-500">Время работы</div>
-            <div className="text-lg font-semibold text-green-600">Активна</div>
+        </div>
+      </div>
+
+      {/* Статистика бенчмарка */}
+      {analyticsData?.benchmark_stats && (
+        <div className="metric-card">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            🎯 Статистика бенчмарка
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+              <div className="text-sm text-gray-500">Точность</div>
+              <div className="text-lg font-semibold text-green-600">
+                {((analyticsData.benchmark_stats.accuracy || 0) * 100).toFixed(
+                  1
+                )}
+                %
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Время ответа</div>
+              <div className="text-lg font-semibold">
+                {analyticsData.benchmark_stats.response_time?.toFixed(2) ||
+                  "0.00"}
+                с
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Всего чанков</div>
+              <div className="text-lg font-semibold">
+                {analyticsData.benchmark_stats.total_chunks || 0}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Информация о системе */}
+      <div className="metric-card">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          ℹ️ Информация о системе
+        </h3>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-gray-500">Время работы:</span>
+            <span>{analyticsData?.system_uptime || "Неизвестно"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Статус:</span>
+            <span className="text-green-600 font-medium">Активна</span>
           </div>
         </div>
       </div>
