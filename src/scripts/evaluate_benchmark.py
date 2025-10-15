@@ -45,6 +45,7 @@ class BenchmarkEvaluator:
 
             # Получаем ответ системы
             system_answer = self.qa_system.answer_question(question)
+            system_answer = system_answer['result']
 
             # Проверяем корректность
             is_correct = self._check_answer_quality(system_answer, expected_answer, question)
@@ -65,13 +66,7 @@ class BenchmarkEvaluator:
                 'category': item['metadata']['content_type']
             })
 
-        # Вычисляем точность
         accuracy = correct_answers / len(benchmark)
-
-        # Показываем результаты
-
-        # Сохраняем детальные результаты
-        self._save_results()
 
         return accuracy
 

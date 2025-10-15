@@ -24,7 +24,6 @@ const ChatInterface = () => {
     console.log(`[${type.toUpperCase()}] ${message}`);
   };
 
-  // Диагностика при монтировании
   useEffect(() => {
     addDebugLog("Компонент ChatInterface смонтирован", "info");
     addDebugLog(`systemReady: ${systemReady}`, "info");
@@ -33,7 +32,6 @@ const ChatInterface = () => {
     addDebugLog(`messages count: ${messages.length}`, "info");
   }, []);
 
-  // Отслеживаем изменения состояния
   useEffect(() => {
     addDebugLog(`systemReady изменился на: ${systemReady}`, "state");
   }, [systemReady]);
@@ -80,7 +78,6 @@ const ChatInterface = () => {
     addDebugLog("Тестирование API endpoints...", "action");
 
     try {
-      // Тест health endpoint
       const { chatAPI } = await import("../../services/api");
       const healthResponse = await chatAPI.health();
       addDebugLog(
@@ -88,7 +85,6 @@ const ChatInterface = () => {
         "success"
       );
 
-      // Тест initialize endpoint
       const initResponse = await chatAPI.initialize();
       addDebugLog(
         `Initialize endpoint: ${JSON.stringify(initResponse.data)}`,
@@ -106,11 +102,10 @@ const ChatInterface = () => {
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      {/* Панель диагностики */}
       <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-800">
-            🔧 Диагностика системы
+            Диагностика системы
           </h2>
           <div className="flex space-x-2">
             <button
@@ -180,9 +175,7 @@ const ChatInterface = () => {
         </div>
       </div>
 
-      {/* Основной интерфейс чата */}
       <div className="flex-1 flex flex-col">
-        {/* Сообщения */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {messages.length === 0 ? (
             <div className="text-center text-gray-500 mt-12">
@@ -232,7 +225,6 @@ const ChatInterface = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Поле ввода */}
         <div className="border-t border-gray-200 p-6 bg-white">
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -262,7 +254,7 @@ const ChatInterface = () => {
                   Поиск...
                 </div>
               ) : (
-                "🚀 Отправить"
+                "Отправить"
               )}
             </button>
           </form>

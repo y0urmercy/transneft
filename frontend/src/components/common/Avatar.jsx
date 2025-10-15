@@ -21,14 +21,12 @@ const Avatar = ({ state = "idle", onStateChange }) => {
     typing: "/avatars/typing.gif",
   };
 
-  // Функция для логирования в консоль
   const log = (message, type = "info") => {
     const timestamp = new Date().toLocaleTimeString();
     const logMessage = `[Avatar] ${message}`;
     console.log(`[${type.toUpperCase()}] ${logMessage}`);
   };
 
-  // Проверяем только новые сообщения пользователя
   useEffect(() => {
     if (hasSaidGoodbye) {
       return;
@@ -38,19 +36,15 @@ const Avatar = ({ state = "idle", onStateChange }) => {
       return;
     }
 
-    // Получаем последнее сообщение
     const lastMessage = messages[messages.length - 1];
 
-    // Если это сообщение уже обрабатывали - пропускаем
     if (lastMessage.id === lastProcessedMessageId) {
       return;
     }
 
-    // Проверяем только пользовательские сообщения
     if (lastMessage.role === "user") {
       const userText = lastMessage.content?.toLowerCase().trim() || "";
 
-      // Проверяем на прощание
       const goodbyeKeywords = [
         "до свидания",
         "пока",
@@ -82,11 +76,9 @@ const Avatar = ({ state = "idle", onStateChange }) => {
       }
     }
 
-    // Помечаем сообщение как обработанное
     setLastProcessedMessageId(lastMessage.id);
-  }, [messages, state, onStateChange, hasSaidGoodbye, lastProcessedMessageId]); // Зависимость от messages
+  }, [messages, state, onStateChange, hasSaidGoodbye, lastProcessedMessageId]);
 
-  // Автоматическое переключение анимаций
   useEffect(() => {
     log(`Состояние изменилось на: ${state}`);
 
@@ -136,7 +128,6 @@ const Avatar = ({ state = "idle", onStateChange }) => {
     };
   }, [state, onStateChange, isTyping, hasSaidGoodbye]);
 
-  // Приветствие при загрузке
   useEffect(() => {
     if (state === "idle" && !hasWelcomed) {
       const welcomeTimer = setTimeout(() => {
@@ -148,7 +139,6 @@ const Avatar = ({ state = "idle", onStateChange }) => {
     }
   }, [state, hasWelcomed, onStateChange]);
 
-  // Обработчик активности пользователя
   useEffect(() => {
     const handleUserActivity = () => {
       if (state === "engagement" || state === "welcome") {
@@ -168,9 +158,7 @@ const Avatar = ({ state = "idle", onStateChange }) => {
     };
   }, [state, onStateChange]);
 
-  // Сброс состояния при очистке чата (опционально)
   useEffect(() => {
-    // Если сообщений стало 0 (чат очищен), сбрасываем состояние
     if (messages.length === 0 && lastProcessedMessageId !== null) {
       setLastProcessedMessageId(null);
       setHasSaidGoodbye(false);

@@ -32,10 +32,7 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col h-full bg-white">
-      {/* Quick Actions */}
       <QuickActions onActionClick={handleQuickAction} />
-
-      {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.length === 0 ? (
           <div className="text-center text-gray-500 mt-12">
@@ -60,7 +57,6 @@ const Chat = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Error Display */}
       {error && (
         <div className="mx-6 mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-center text-red-700">
@@ -70,7 +66,6 @@ const Chat = () => {
         </div>
       )}
 
-      {/* Input Area */}
       <div className="border-t border-gray-200 p-6 bg-white">
         <form onSubmit={handleSubmit} className="flex space-x-4">
           <div className="flex-1">
@@ -94,7 +89,7 @@ const Chat = () => {
                 Поиск...
               </div>
             ) : (
-              "🚀 Отправить"
+              "Отправить"
             )}
           </button>
         </form>
@@ -102,7 +97,7 @@ const Chat = () => {
         {!systemReady && (
           <div className="mt-2 text-sm text-orange-600 flex items-center">
             <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
-            ⚠️ Система инициализируется...
+            Система инициализируется...
           </div>
         )}
       </div>

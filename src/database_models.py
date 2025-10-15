@@ -1,7 +1,3 @@
-"""
-Модели базы данных для системы Транснефть QA
-"""
-
 import sqlite3
 import json
 from datetime import datetime
@@ -14,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class ChatMessage:
-    """Модель сообщения чата"""
     session_id: str
     user_id: str = "default"
     question: str = ""
@@ -33,7 +28,6 @@ class ChatMessage:
 
 @dataclass
 class EvaluationResult:
-    """Модель результата оценки"""
     evaluation_date: datetime
     sample_size: int
     rouge1: float
@@ -51,14 +45,12 @@ class EvaluationResult:
 
 
 class DatabaseManager:
-    """Менеджер базы данных"""
 
     def __init__(self, db_path: str = "data/transneft_qa.db"):
         self.db_path = db_path
         self._init_database()
 
     def _init_database(self):
-        """Инициализация таблиц базы данных"""
         try:
             import os
             os.makedirs("data", exist_ok=True)
@@ -66,7 +58,6 @@ class DatabaseManager:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
 
-                # Таблица сообщений чата
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS chat_messages (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,7 +74,6 @@ class DatabaseManager:
                     )
                 ''')
 
-                # Таблица результатов оценки
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS evaluation_results (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -108,7 +98,6 @@ class DatabaseManager:
             raise
 
     def save_chat_message(self, chat_message: ChatMessage) -> int:
-        """Сохранение сообщения чата"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -138,7 +127,6 @@ class DatabaseManager:
             return -1
 
     def save_evaluation_result(self, eval_result: EvaluationResult) -> int:
-        """Сохранение результата оценки"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -168,7 +156,6 @@ class DatabaseManager:
             return -1
 
     def get_chat_history(self, session_id: str, limit: int = 50) -> List[Dict[str, Any]]:
-        """Получение истории чата для сессии"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
@@ -189,7 +176,6 @@ class DatabaseManager:
             return []
 
     def get_evaluation_history(self, limit: int = 10) -> List[EvaluationResult]:
-        """Получение истории оценок"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -224,7 +210,6 @@ class DatabaseManager:
             return []
 
     def get_chat_statistics(self, user_id: str = None) -> Dict[str, Any]:
-        """Получение статистики чата"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -239,8 +224,6 @@ class DatabaseManager:
 
                 cursor.execute(query, params)
                 total_messages = cursor.fetchone()[0]
-
-                # Сообщения с оценкой
                 query = "SELECT COUNT(*) FROM chat_messages WHERE rating > 0"
                 if user_id:
                     query += " AND user_id = ?"
@@ -248,8 +231,6 @@ class DatabaseManager:
 
                 cursor.execute(query, params)
                 rated_messages = cursor.fetchone()[0]
-
-                # Средняя оценка
                 query = "SELECT AVG(rating) FROM chat_messages WHERE rating > 0"
                 if user_id:
                     query += " AND user_id = ?"
@@ -259,7 +240,6 @@ class DatabaseManager:
                 avg_rating_result = cursor.fetchone()[0]
                 avg_rating = float(avg_rating_result) if avg_rating_result else 0.0
 
-                # Среднее время ответа
                 query = "SELECT AVG(response_time) FROM chat_messages WHERE response_time > 0"
                 if user_id:
                     query += " AND user_id = ?"
@@ -285,7 +265,6 @@ class DatabaseManager:
             }
 
     def get_user_sessions(self, user_id: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """Получение сессий пользователя"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
@@ -312,7 +291,6 @@ class DatabaseManager:
             return []
 
     def add_feedback(self, message_id: int, rating: int, feedback: str):
-        """Добавление отзыва к сообщению"""
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -331,12 +309,10 @@ class DatabaseManager:
             return False
 
     def export_chat_history(self, session_id: str = None, format_type: str = "json") -> str:
-        """Экспорт истории чата"""
         try:
             if session_id:
                 messages = self.get_chat_history(session_id, limit=1000)
             else:
-                # Все сообщения
                 with sqlite3.connect(self.db_path) as conn:
                     conn.row_factory = sqlite3.Row
                     cursor = conn.cursor()
@@ -354,6 +330,4 @@ class DatabaseManager:
             logger.error(f"Ошибка экспорта: {e}")
             return ""
 
-
-# Глобальный экземпляр менеджера базы данных
 db_manager = DatabaseManager()

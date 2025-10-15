@@ -14,14 +14,7 @@ const Evaluation = () => {
   }, []);
 
   const loadEvaluationHistory = async () => {
-    try {
-      // TODO: Добавить endpoint для получения истории оценок
-      // Пока используем пустой массив
-      setEvaluationHistory([]);
-    } catch (error) {
-      console.error("Error loading evaluation history:", error);
-      setEvaluationHistory([]);
-    }
+    setEvaluationHistory([]);
   };
 
   const runEvaluation = async () => {
@@ -47,16 +40,13 @@ const Evaluation = () => {
         throw new Error(results.message || "Ошибка при оценке системы");
       }
 
-      // ПРОСТАЯ НОРМАЛИЗАЦИЯ
       let metrics = {};
 
-      // Пробуем разные возможные пути к данным
       if (results.results) {
         metrics = { ...results.results };
       } else if (results.metrics) {
         metrics = { ...results.metrics };
       } else {
-        // Если данные на верхнем уровне
         metrics = {
           rouge1: results.rouge1,
           rouge2: results.rouge2,
@@ -67,7 +57,6 @@ const Evaluation = () => {
         };
       }
 
-      // Заполняем недостающие значения
       const filledMetrics = {
         rouge1: metrics.rouge1 || 0,
         rouge2: metrics.rouge2 || 0,
@@ -77,11 +66,10 @@ const Evaluation = () => {
         num_evaluated: metrics.num_evaluated || sampleSize,
       };
 
-      // Вычисляем общий балл
       const overall_score =
-        (filledMetrics.rouge1 +
-          filledMetrics.rouge2 +
-          filledMetrics.bertscore) /
+        (filledMetrics.bertscore +
+          filledMetrics.rouge1 +
+          filledMetrics.rouge2) /
         3;
 
       const normalizedResults = {
@@ -139,10 +127,9 @@ const Evaluation = () => {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">
-        🧪 Оценка качества системы
+        Оценка качества системы
       </h1>
 
-      {/* Показываем ошибку если есть */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-center">
@@ -164,13 +151,12 @@ const Evaluation = () => {
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
-          🎯 Запуск оценки
+          Запуск оценки
         </button>
       </div>
 
       {activeTab === "run" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Панель запуска оценки */}
           <div className="lg:col-span-1 space-y-6">
             <div className="metric-card">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -185,7 +171,7 @@ const Evaluation = () => {
                   <input
                     type="range"
                     min="5"
-                    max="50"
+                    max="40"
                     step="5"
                     value={sampleSize}
                     onChange={(e) => setSampleSize(parseInt(e.target.value))}
@@ -193,7 +179,7 @@ const Evaluation = () => {
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
                     <span>5</span>
-                    <span>50</span>
+                    <span>40</span>
                   </div>
                 </div>
 
@@ -228,7 +214,7 @@ const Evaluation = () => {
                       Запуск оценки...
                     </div>
                   ) : (
-                    "🎯 Запустить оценку"
+                    "Запустить оценку"
                   )}
                 </button>
 
@@ -241,7 +227,7 @@ const Evaluation = () => {
             {evaluationResults && (
               <div className="metric-card">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  📊 Общая оценка
+                  Общая оценка
                 </h3>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600 mb-2">
@@ -278,7 +264,6 @@ const Evaluation = () => {
             )}
           </div>
 
-          {/* Результаты оценки */}
           <div className="lg:col-span-2">
             {evaluationResults ? (
               <div className="space-y-6">
@@ -343,7 +328,7 @@ const Evaluation = () => {
 
                 <div className="metric-card">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    📋 Рекомендации по улучшению
+                    Рекомендации по улучшению
                   </h3>
                   <div className="space-y-3">
                     {(evaluationResults.metrics.rouge1 || 0) < 0.8 && (

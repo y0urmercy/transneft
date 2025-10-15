@@ -13,12 +13,10 @@ import json
 import asyncio
 import io
 
-# Настройка кодировки для Windows
 if sys.platform == "win32":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -29,9 +27,6 @@ from scripts.evaluate_benchmark import BenchmarkEvaluator
 from config import TransneftConfig, EvaluationCriteria
 from database_models import DatabaseManager, ChatMessage, EvaluationResult, db_manager
 
-print("=== Starting Transneft RAG API ===")
-
-# Глобальные переменные
 qa_system = None
 system_modules_loaded = False
 
@@ -40,7 +35,6 @@ async def lifespan(app: FastAPI):
     global qa_system, system_modules_loaded
     
     try:
-        # Пробуем загрузить систему
         qa_system = TransneftQASystem()
         setup_complete_system()
         system_modules_loaded = True
@@ -53,13 +47,10 @@ async def lifespan(app: FastAPI):
         system_modules_loaded = False
     
     yield
-    
-    # Cleanup
     if qa_system:
         pass
     logger.info("Shutting down...")
 
-# Создаем основное приложение
 app = FastAPI(
     title="Transneft RAG System API",
     description="API для вопросно-ответной системы Transneft",
@@ -67,7 +58,6 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -76,7 +66,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Дополнительный middleware для CORS
 @app.middleware("http")
 async def add_cors_headers(request: Request, call_next):
     response = await call_next(request)
@@ -88,7 +77,6 @@ async def add_cors_headers(request: Request, call_next):
     
     return response
 
-# Явная обработка OPTIONS запросов
 @app.options("/api/{rest:path}")
 async def options_handler():
     return JSONResponse(
@@ -100,7 +88,6 @@ async def options_handler():
         }
     )
 
-# Модели запросов/ответов
 class ChatRequest(BaseModel):
     question: str
     session_id: str = "default"
@@ -123,6 +110,7 @@ class EvaluateRequest(BaseModel):
 class EvaluateResponse(BaseModel):
     status: str
     results: Dict[str, Any] = {}
+    accuracy: float = 0.0
     message: str = ""
     evaluation_id: Optional[int] = None
 
@@ -149,43 +137,35 @@ class FeedbackRequest(BaseModel):
     rating: int
     feedback: str = ""
 
-# Создаем роутер с префиксом /api
 api_router = APIRouter(prefix="/api", tags=["API"])
 
-# Зависимости
 def get_qa_system():
-    """Зависимость для получения QA системы"""
     if not system_modules_loaded and not initialize_on_demand():
         raise HTTPException(status_code=503, detail="System is not ready")
     return qa_system
 
 def initialize_on_demand():
-    """Инициализация по требованию"""
     global qa_system, system_modules_loaded
     
     if system_modules_loaded and qa_system and hasattr(qa_system, 'initialized'):
         return True
         
     try:
-        print(">>> On-demand initialization...")
         qa_system = TransneftQASystem()
         setup_complete_system()
         system_modules_loaded = True
-        print(f">>> On-demand init completed")
         return True
     except Exception as e:
         print(f">>> On-demand initialization failed: {e}")
         traceback.print_exc()
         return False
 
-# Аналитика
 analytics_data = {
     "total_questions": 0,
     "total_requests": 0,
     "start_time": datetime.now().isoformat()
 }
 
-# Роуты без префикса
 @app.get("/", tags=["Root"])
 async def root():
     """Корневой endpoint"""
@@ -206,11 +186,8 @@ async def health_legacy():
         mode="normal" if system_modules_loaded else "fallback"
     )
 
-# === API ENDPOINTS ===
-
 @api_router.get("/health", response_model=HealthResponse)
 async def health():
-    """Health check endpoint"""
     return HealthResponse(
         status="ready" if system_modules_loaded else "initializing",
         system_ready=system_modules_loaded,
@@ -219,7 +196,6 @@ async def health():
 
 @api_router.post("/initialize")
 async def initialize_system():
-    """Явная инициализация системы"""
     global analytics_data
     
     if analytics_data["start_time"] is None:
@@ -232,20 +208,16 @@ async def initialize_system():
 
 @api_router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, qa_system = Depends(get_qa_system)):
-    """Основной endpoint для вопросов"""
     try:
-        # Обновляем аналитику
         analytics_data["total_questions"] += 1
         analytics_data["total_requests"] += 1
         
-        # Получаем ответ от системы
         result = qa_system.answer_question(
             question=request.question,
             session_id=request.session_id,
-            user_id="user"  # Можно добавить в модель запроса если нужно
+            user_id="user" 
         )
-        
-        # Преобразуем результат в ожидаемый формат
+
         response_data = {
             "result": result.get("result", ""),
             "source_documents": result.get("source_documents", []),
@@ -269,9 +241,7 @@ async def chat(request: ChatRequest, qa_system = Depends(get_qa_system)):
 
 @api_router.get("/history/{session_id}", response_model=HistoryResponse)
 async def get_chat_history(session_id: str):
-    """Получить историю чата по session_id"""
     try:
-        # Получаем из базы данных
         db_messages = db_manager.get_chat_history(session_id)
         
         history = []
@@ -301,17 +271,19 @@ async def get_chat_history(session_id: str):
 
 @api_router.post("/evaluate", response_model=EvaluateResponse)
 async def evaluate_system(request: EvaluateRequest, qa_system = Depends(get_qa_system)):
-    """Оценка системы"""
     try:
         evaluator = MetricsEvaluator()
         evaluation_results = evaluator.evaluate_all_metrics()
         res = evaluation_results['generation']
+        benchmark_evaluator = BenchmarkEvaluator()
+        benchmark_stat = benchmark_evaluator.evaluate_system()
         
         if evaluation_results:
             
             return EvaluateResponse(
                 status="success",
                 results=res,
+                accuracy=benchmark_stat,
                 message=f"Evaluation completed for 40 samples",
                 evaluation_id=getattr(1, 'evaluation_id', None)
             )
@@ -325,16 +297,12 @@ async def evaluate_system(request: EvaluateRequest, qa_system = Depends(get_qa_s
 
 @api_router.get("/analytics", response_model=AnalyticsResponse)
 async def get_analytics(qa_system = Depends(get_qa_system)):
-    """Получить аналитику использования"""
     try:
-        # Получаем статистику из базы данных
         db_stats = db_manager.get_chat_statistics()
         
-        # Получаем статистику бенчмарка
         analyzer = BenchmarkEvaluator()
         benchmark_stats = analyzer.results if hasattr(analyzer, 'results') else {}
         
-        # Получаем сессии из БД
         sessions = db_manager.get_user_sessions("user", limit=100)  # Можно адаптировать под реальные сессии
         
         return AnalyticsResponse(
@@ -356,11 +324,8 @@ async def get_analytics(qa_system = Depends(get_qa_system)):
 
 @api_router.get("/admin/stats", response_model=AdminStatsResponse)
 async def get_admin_stats(qa_system = Depends(get_qa_system)):
-    """Статистика для администратора"""
     try:
         db_stats = db_manager.get_chat_statistics()
-        
-        # Получаем реальные сессии
         sessions = db_manager.get_user_sessions("user", limit=1000)
         
         return AdminStatsResponse(
@@ -377,7 +342,6 @@ async def get_admin_stats(qa_system = Depends(get_qa_system)):
 
 @api_router.post("/feedback")
 async def submit_feedback(request: FeedbackRequest):
-    """Добавление отзыва к сообщению"""
     try:
         success = db_manager.add_feedback(request.message_id, request.rating, request.feedback)
         
@@ -390,13 +354,10 @@ async def submit_feedback(request: FeedbackRequest):
         logger.error(f"Error submitting feedback: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to submit feedback: {str(e)}")
 
-# === ДОПОЛНИТЕЛЬНЫЕ ENDPOINTS ===
 
 @api_router.get("/system/status")
 async def system_status(qa_system = Depends(get_qa_system)):
-    """Детальный статус системы"""
     try:
-        # Получаем реальные сессии из БД
         sessions = db_manager.get_user_sessions("user", limit=1000)
         
         return {
@@ -412,7 +373,6 @@ async def system_status(qa_system = Depends(get_qa_system)):
 
 @api_router.post("/system/reload")
 async def reload_system():
-    """Принудительная перезагрузка системы"""
     global qa_system, system_modules_loaded
     
     try:
@@ -425,16 +385,14 @@ async def reload_system():
 
 @api_router.get("/benchmark/stats")
 async def get_benchmark_stats(qa_system = Depends(get_qa_system)):
-    """Статистика бенчмарка"""
     try:
-        # Используем реальные данные из системы
         system_info = qa_system.get_system_info()
         search_stats = qa_system.get_search_stats("тест") if hasattr(qa_system, 'get_search_stats') else {}
         
         return {
             "status": "success",
             "benchmark_stats": {
-                "accuracy": 0.85,  # Можно вычислять из реальных оценок
+                "accuracy": 0.85, 
                 "response_time": search_stats.get('processing_time', 0),
                 "total_chunks": system_info.get('total_chunks', 0),
                 "timestamp": datetime.now().isoformat()
@@ -444,10 +402,7 @@ async def get_benchmark_stats(qa_system = Depends(get_qa_system)):
         logger.error(f"Error getting benchmark stats: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get benchmark stats: {str(e)}")
 
-# Подключаем роутер к приложению
 app.include_router(api_router)
-
-# Обработчики ошибок
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
     return JSONResponse(

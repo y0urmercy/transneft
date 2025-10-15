@@ -34,29 +34,23 @@ api.interceptors.response.use(
 );
 
 export const chatAPI = {
-  // Health & System
   health: () => api.get("/health"),
   initialize: () => api.post("/initialize"),
   getSystemStatus: () => api.get("/system/status"),
   reloadSystem: () => api.post("/system/reload"),
 
-  // Chat
   sendMessage: (data) => api.post("/chat", data),
   getChatHistory: (sessionId) => api.get(`/history/${sessionId}`),
 
-  // Evaluation & Analytics
   evaluateSystem: (sampleSize) =>
     api.post("/evaluate", { sample_size: sampleSize }),
   getAnalytics: () => api.get("/analytics"),
   getBenchmarkStats: () => api.get("/benchmark/stats"),
 
-  // Feedback
   submitFeedback: (data) => api.post("/feedback", data),
 };
 
-// Вспомогательные функции
 export const apiUtils = {
-  // Проверка доступности API
   checkAPIHealth: async () => {
     try {
       await chatAPI.health();
@@ -66,12 +60,10 @@ export const apiUtils = {
     }
   },
 
-  // Создание сессии
   generateSessionId: () => {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   },
 
-  // Обработка ошибок с повторными попытками
   retryRequest: async (request, retries = 3, delay = 1000) => {
     try {
       return await request();

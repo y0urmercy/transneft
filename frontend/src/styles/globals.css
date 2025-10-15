@@ -153,12 +153,10 @@
     animation: slideUp 0.3s ease-out;
   }
 
-  /* Утилита для фона #f4f4f4 */
   .bg-custom-gray {
     background-color: #f4f4f4;
   }
 
-  /* Скрыть scrollbar но оставить функциональность */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -169,14 +167,12 @@
   }
 }
 
-/* Кастомные стили для элементов формы */
 input:focus,
 textarea:focus {
   @apply outline-none ring-2 ring-blue-500 ring-offset-1;
   background-color: #f4f4f4;
 }
 
-/* Анимации для загрузки */
 @keyframes pulse {
   0%,
   100% {
@@ -191,7 +187,6 @@ textarea:focus {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Дополнительные глобальные стили для элементов с фоном #f4f4f4 */
 .bg-white {
   background-color: #f4f4f4 !important;
 }
@@ -212,18 +207,15 @@ textarea:focus {
   background-color: #f4f4f4 !important;
 }
 
-/* Стили для аватаров в сообщениях */
 .avatar-user,
 .avatar-assistant {
   background-color: #f4f4f4;
 }
 
-/* Стили для статусных индикаторов */
 .status-indicator {
   background-color: #f4f4f4;
 }
 
-/* Стили для разделителей */
 .divider {
   background-color: #f4f4f4;
 }

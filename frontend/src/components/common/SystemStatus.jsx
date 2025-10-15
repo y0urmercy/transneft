@@ -19,7 +19,7 @@ const SystemStatus = () => {
     return (
       <div className="bg-green-50 border-b border-green-200 px-4 py-2">
         <div className="flex items-center justify-center text-sm text-green-700">
-          <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>✅
+          <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
           Система готова к работе
         </div>
       </div>
@@ -30,7 +30,7 @@ const SystemStatus = () => {
     <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-2">
       <div className="flex items-center justify-center text-sm text-yellow-700">
         <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
-        ⚠️ Система инициализируется... Некоторые функции могут быть недоступны
+        Система инициализируется... Некоторые функции могут быть недоступны
       </div>
     </div>
   );

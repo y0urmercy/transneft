@@ -21,7 +21,7 @@ export const useSystemHealth = () => {
 
   useEffect(() => {
     checkHealth();
-    const interval = setInterval(checkHealth, 30000); // Проверка каждые 30 секунд
+    const interval = setInterval(checkHealth, 30000);
     return () => clearInterval(interval);
   }, [checkHealth]);
 
