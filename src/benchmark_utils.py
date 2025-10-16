@@ -12,14 +12,11 @@ from config import TransneftConfig
 
 
 class BenchmarkAnalyzer:
-    """Анализатор бенчмарка данных"""
-
     def __init__(self, benchmark_path: str = TransneftConfig.BENCHMARK_PATH):
         self.benchmark_path = benchmark_path
         self.data = self._load_benchmark()
 
     def _load_benchmark(self) -> Dict:
-        """Загрузка бенчмарка"""
         try:
             import os
             if os.path.exists(self.benchmark_path):
@@ -31,7 +28,6 @@ class BenchmarkAnalyzer:
             return {}
 
     def get_basic_stats(self) -> Dict[str, any]:
-        """Получение базовой статистики"""
         if not self.data:
             return {
                 'total_qa_pairs': 0,
@@ -43,11 +39,9 @@ class BenchmarkAnalyzer:
         qa_pairs = self.data.get('qa_pairs', [])
         sections = self.data.get('sections', [])
 
-        # Расчет статистики
         total_qa_pairs = len(qa_pairs)
         unique_sections = len(set([qa.get('section', '') for qa in qa_pairs]))
 
-        # Средняя длина контекста
         context_lengths = [len(qa.get('context', '')) for qa in qa_pairs]
         avg_context_length = sum(context_lengths) / len(context_lengths) if context_lengths else 0
 
@@ -59,10 +53,6 @@ class BenchmarkAnalyzer:
         }
 
     def visualize_benchmark(self) -> Tuple[Optional[go.Figure], Optional[go.Figure]]:
-        """
-        Создание визуализаций для бенчмарка
-        Возвращает 2 фигуры (графика)
-        """
         if not self.data:
             return None, None
 
@@ -70,13 +60,11 @@ class BenchmarkAnalyzer:
         if not qa_pairs:
             return None, None
 
-        # Создаем DataFrame для анализа
         df = pd.DataFrame(qa_pairs)
 
         figures = []
 
         try:
-            # 1. Распределение по секциям
             if 'section' in df.columns:
                 section_counts = df['section'].value_counts()
                 fig1 = px.bar(
@@ -94,7 +82,6 @@ class BenchmarkAnalyzer:
             figures.append(None)
 
         try:
-            # 2. Длина контекста
             if 'context' in df.columns:
                 df['context_length'] = df['context'].str.len()
                 fig2 = px.histogram(
@@ -110,12 +97,10 @@ class BenchmarkAnalyzer:
             print(f"Ошибка создания графика длины: {e}")
             figures.append(None)
 
-        # Возвращаем кортеж с двумя фигурами
         return tuple(figures) if figures else (None, None)
 
 
 def export_benchmark_report(analyzer: BenchmarkAnalyzer, output_path: str = "benchmark_report.html"):
-    """Экспорт отчета по бенчмарку"""
     try:
         stats = analyzer.get_basic_stats()
 

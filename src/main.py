@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, APIRouter, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Depends, APIRouter, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
@@ -11,30 +11,22 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 import json
 import asyncio
-import sys
 import io
 
-# Настройка кодировки для Windows
 if sys.platform == "win32":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+from scripts.evaluate_metrics import MetricsEvaluator
 from core.qa_system import TransneftQASystem
 from scripts.setup_system import setup_complete_system
 from scripts.evaluate_benchmark import BenchmarkEvaluator
 from config import TransneftConfig, EvaluationCriteria
-from scripts.evaluate_benchmark import BenchmarkEvaluator
-from scripts.evaluate_metrics import MetricsEvaluator
 from database_models import DatabaseManager, ChatMessage, EvaluationResult, db_manager
 
-
-print("=== Starting Transneft RAG API ===")
-
-# Глобальные переменные
 qa_system = None
 system_modules_loaded = False
 
@@ -43,7 +35,6 @@ async def lifespan(app: FastAPI):
     global qa_system, system_modules_loaded
     
     try:
-        # Пробуем загрузить систему
         qa_system = TransneftQASystem()
         setup_complete_system()
         system_modules_loaded = True
@@ -51,18 +42,15 @@ async def lifespan(app: FastAPI):
         
     except Exception as e:
         logger.error(f"System initialization failed: {e}")
+        logger.error(traceback.format_exc())
         logger.info("Running in fallback mode - system will initialize on first request")
         system_modules_loaded = False
     
     yield
-    
-    # Cleanup
     if qa_system:
-        # Добавьте метод cleanup если нужно
         pass
     logger.info("Shutting down...")
 
-# Создаем основное приложение
 app = FastAPI(
     title="Transneft RAG System API",
     description="API для вопросно-ответной системы Transneft",
@@ -70,26 +58,18 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-
-# CORS middleware ДО всех других middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Разрешаем все origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],   # Разрешаем все методы
-    allow_headers=["*"],   # Разрешаем все заголовки
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Дополнительный middleware для CORS
 @app.middleware("http")
 async def add_cors_headers(request: Request, call_next):
     response = await call_next(request)
     
-    # Добавляем CORS headers ко всем ответам
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
@@ -97,7 +77,6 @@ async def add_cors_headers(request: Request, call_next):
     
     return response
 
-# Явная обработка OPTIONS запросов
 @app.options("/api/{rest:path}")
 async def options_handler():
     return JSONResponse(
@@ -109,7 +88,6 @@ async def options_handler():
         }
     )
 
-# Модели запросов/ответов
 class ChatRequest(BaseModel):
     question: str
     session_id: str = "default"
@@ -132,6 +110,7 @@ class EvaluateRequest(BaseModel):
 class EvaluateResponse(BaseModel):
     status: str
     results: Dict[str, Any] = {}
+    accuracy: float = 0.0
     message: str = ""
     evaluation_id: Optional[int] = None
 
@@ -141,7 +120,6 @@ class HistoryResponse(BaseModel):
 
 class AnalyticsResponse(BaseModel):
     total_questions: int = 0
-    average_confidence: float = 0.0
     system_uptime: str = ""
     active_sessions: int = 0
     benchmark_stats: Dict[str, Any] = {}
@@ -159,42 +137,35 @@ class FeedbackRequest(BaseModel):
     rating: int
     feedback: str = ""
 
-# Создаем роутер с префиксом /api
 api_router = APIRouter(prefix="/api", tags=["API"])
 
-# Зависимости
 def get_qa_system():
-    """Зависимость для получения QA системы"""
     if not system_modules_loaded and not initialize_on_demand():
         raise HTTPException(status_code=503, detail="System is not ready")
     return qa_system
 
 def initialize_on_demand():
-    """Инициализация по требованию"""
     global qa_system, system_modules_loaded
     
-    if system_modules_loaded and qa_system and hasattr(qa_system, 'rag_system'):
+    if system_modules_loaded and qa_system and hasattr(qa_system, 'initialized'):
         return True
         
     try:
-        print(">>> On-demand initialization...")
         qa_system = TransneftQASystem()
+        setup_complete_system()
         system_modules_loaded = True
-        print(f">>> On-demand init completed")
         return True
     except Exception as e:
         print(f">>> On-demand initialization failed: {e}")
+        traceback.print_exc()
         return False
 
-# Временное хранилище для демонстрации (в продакшене использовать БД)
-chat_history_storage = {}
 analytics_data = {
     "total_questions": 0,
     "total_requests": 0,
     "start_time": datetime.now().isoformat()
 }
 
-# Роуты без префикса (для обратной совместимости)
 @app.get("/", tags=["Root"])
 async def root():
     """Корневой endpoint"""
@@ -215,11 +186,8 @@ async def health_legacy():
         mode="normal" if system_modules_loaded else "fallback"
     )
 
-# === ВСЕ ENDPOINTS ИЗ API КЛИЕНТА ===
-
 @api_router.get("/health", response_model=HealthResponse)
 async def health():
-    """Health check endpoint"""
     return HealthResponse(
         status="ready" if system_modules_loaded else "initializing",
         system_ready=system_modules_loaded,
@@ -228,7 +196,6 @@ async def health():
 
 @api_router.post("/initialize")
 async def initialize_system():
-    """Явная инициализация системы"""
     global analytics_data
     
     if analytics_data["start_time"] is None:
@@ -241,61 +208,30 @@ async def initialize_system():
 
 @api_router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, qa_system = Depends(get_qa_system)):
-    """Основной endpoint для вопросов"""
     try:
-        # Обновляем аналитику
         analytics_data["total_questions"] += 1
         analytics_data["total_requests"] += 1
         
-        # Получаем ответ от системы
         result = qa_system.answer_question(
-            request.question
+            question=request.question,
+            session_id=request.session_id,
+            user_id="user" 
         )
+
+        response_data = {
+            "result": result.get("result", ""),
+            "source_documents": result.get("source_documents", []),
+            "confidence": result.get("confidence", 0.0),
+            "message_id": result.get("message_id", -1)
+        }
         
-        # ОБРАБОТКА РЕЗУЛЬТАТА - ИСПРАВЛЕНИЕ ОШИБКИ
-        # Если result - строка, преобразуем в словарь
-        if isinstance(result, str):
-            response_data = {
-                "result": result,
-                "source_documents": [],
-                "confidence": 0.8,
-                "message_id": len(chat_history_storage.get(request.session_id, [])) + 1
-            }
-        else:
-            # Если уже словарь, используем как есть
-            response_data = {
-                "result": result.get("result", result.get("answer", str(result))),
-                "source_documents": result.get("source_documents", result.get("sources", [])),
-                "confidence": result.get("confidence", 0.8),
-                "message_id": result.get("message_id", len(chat_history_storage.get(request.session_id, [])) + 1)
-            }
-        
-        # Сохраняем в историю
-        if request.session_id not in chat_history_storage:
-            chat_history_storage[request.session_id] = []
-        
-        chat_history_storage[request.session_id].append({
-            "question": request.question,
-            "answer": response_data["result"],
-            "sources": response_data["source_documents"],
-            "timestamp": datetime.now().isoformat(),
-            "message_id": response_data["message_id"],
-            "confidence": response_data["confidence"]
-        })
-        
-        return ChatResponse(
-            result=response_data["result"],
-            source_documents=response_data["source_documents"],
-            confidence=response_data["confidence"],
-            message_id=response_data["message_id"]
-        )
+        return ChatResponse(**response_data)
         
     except Exception as e:
         logger.error(f"Error processing chat request: {e}")
         logger.error(traceback.format_exc())
         analytics_data["total_requests"] += 1
         
-        # Возвращаем понятную ошибку
         return ChatResponse(
             result=f"Извините, произошла ошибка при обработке запроса: {str(e)}",
             source_documents=[],
@@ -305,224 +241,107 @@ async def chat(request: ChatRequest, qa_system = Depends(get_qa_system)):
 
 @api_router.get("/history/{session_id}", response_model=HistoryResponse)
 async def get_chat_history(session_id: str):
-    """Получить историю чата по session_id"""
     try:
-        # Пробуем получить из базы данных
         db_messages = db_manager.get_chat_history(session_id)
         
-        if db_messages:
-            history = []
-            for msg in db_messages:
-                try:
-                    sources = json.loads(msg['sources']) if msg['sources'] else []
-                except:
-                    sources = []
-                    
-                history.append({
-                    "question": msg['question'],
-                    "answer": msg['answer'],
-                    "sources": sources,
-                    "timestamp": msg['timestamp'],
-                    "message_id": msg['id'],
-                    "response_time": msg.get('response_time', 0.0)
-                })
-            return HistoryResponse(session_id=session_id, history=history)
-        else:
-            # Используем временное хранилище
-            history = chat_history_storage.get(session_id, [])
-            return HistoryResponse(session_id=session_id, history=history)
-            
-    except Exception as e:
-        logger.error(f"Error getting chat history: {e}")
-        history = chat_history_storage.get(session_id, [])
-        return HistoryResponse(session_id=session_id, history=history)
-
-@api_router.post("/evaluate", response_model=EvaluateResponse)
-@api_router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest, qa_system = Depends(get_qa_system)):
-    """Основной endpoint для вопросов"""
-    try:
-        # Обновляем аналитику
-        analytics_data["total_questions"] += 1
-        analytics_data["total_requests"] += 1
-        
-        # Получаем ответ от системы
-        result = qa_system.ask_question(
-            request.question,
-            request.session_id,
-            "user"
-        )
-        
-        # Сохраняем в историю
-        if request.session_id not in chat_history_storage:
-            chat_history_storage[request.session_id] = []
-        
-        chat_history_storage[request.session_id].append({
-            "question": request.question,
-            "answer": result.get("result", ""),
-            "sources": result.get("source_documents", []),
-            "timestamp": datetime.now().isoformat(),
-            "message_id": result.get("message_id"),
-            "confidence": result.get("confidence", 0.0)
-        })
-        
-        # Преобразуем результат в ожидаемый формат
-        return ChatResponse(
-            result=result.get("result", ""),
-            source_documents=result.get("source_documents", []),
-            confidence=result.get("confidence", 0.0),
-            message_id=result.get("message_id")
-        )
-        
-    except Exception as e:
-        logger.error(f"Error processing chat request: {e}")
-        analytics_data["total_requests"] += 1
-        raise HTTPException(
-            status_code=500, 
-            detail=f"Ошибка обработки запроса: {str(e)}"
-        )
-
-@api_router.get("/history/{session_id}", response_model=HistoryResponse)
-async def get_chat_history(session_id: str):
-    """Получить историю чата по session_id"""
-    try:
-        # Пробуем получить из базы данных
-        db_messages = db_manager.get_chat_history(session_id)
-        
-        if db_messages:
-            history = []
-            for msg in db_messages:
-                try:
-                    sources = json.loads(msg['sources']) if msg['sources'] else []
-                except:
-                    sources = []
-                    
-                history.append({
-                    "question": msg['question'],
-                    "answer": msg['answer'],
-                    "sources": sources,
-                    "timestamp": msg['timestamp'],
-                    "message_id": msg['id'],
-                    "response_time": msg.get('response_time', 0.0)
-                })
-            return HistoryResponse(session_id=session_id, history=history)
-        else:
-            # Используем временное хранилище
-            history = chat_history_storage.get(session_id, [])
-            return HistoryResponse(session_id=session_id, history=history)
-            
-    except Exception as e:
-        logger.error(f"Error getting chat history: {e}")
-        history = chat_history_storage.get(session_id, [])
-        return HistoryResponse(session_id=session_id, history=history)
-
-@api_router.post("/evaluate", response_model=EvaluateResponse)
-async def evaluate_system(request: EvaluateRequest, background_tasks: BackgroundTasks, qa_system = Depends(get_qa_system)):
-    """Оценка системы"""
-    try:
-        # Запускаем оценку в фоновом режиме
-        async def run_evaluation():
+        history = []
+        for msg in db_messages:
             try:
-                evaluation_results = qa_system.evaluate_system(request.sample_size)
-                return evaluation_results
-            except Exception as e:
-                logger.error(f"Evaluation error: {e}")
-                return None
+                sources = json.loads(msg['sources']) if msg['sources'] else []
+            except:
+                sources = []
+                
+            history.append({
+                "question": msg['question'],
+                "answer": msg['answer'],
+                "sources": sources,
+                "timestamp": msg['timestamp'].isoformat() if hasattr(msg['timestamp'], 'isoformat') else str(msg['timestamp']),
+                "message_id": msg['id'],
+                "response_time": msg.get('response_time', 0.0),
+                "rating": msg.get('rating', 0),
+                "feedback": msg.get('feedback', '')
+            })
         
-        # Запускаем асинхронно
-        evaluation_results = await run_evaluation()
+        return HistoryResponse(session_id=session_id, history=history)
+            
+    except Exception as e:
+        logger.error(f"Error getting chat history: {e}")
+        logger.error(traceback.format_exc())
+        return HistoryResponse(session_id=session_id, history=[])
+
+@api_router.post("/evaluate", response_model=EvaluateResponse)
+async def evaluate_system(request: EvaluateRequest, qa_system = Depends(get_qa_system)):
+    try:
+        evaluator = MetricsEvaluator()
+        evaluation_results = evaluator.evaluate_all_metrics()
+        res = evaluation_results['generation']
+        benchmark_evaluator = BenchmarkEvaluator()
+        benchmark_stat = benchmark_evaluator.evaluate_system()
         
         if evaluation_results:
-            metrics = evaluation_results.get('metrics', {})
-            eval_result = evaluation_results.get('evaluation_result')
             
             return EvaluateResponse(
                 status="success",
-                results=metrics,
-                message=f"Evaluation completed for {metrics.get('num_evaluated', 0)} samples",
-                evaluation_id=eval_result.evaluation_id if hasattr(eval_result, 'evaluation_id') else None
+                results=res,
+                accuracy=benchmark_stat,
+                message=f"Evaluation completed for 40 samples",
+                evaluation_id=getattr(1, 'evaluation_id', None)
             )
         else:
             raise HTTPException(status_code=500, detail="Evaluation failed")
             
     except Exception as e:
         logger.error(f"Evaluation error: {e}")
+        logger.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Evaluation failed: {str(e)}")
 
 @api_router.get("/analytics", response_model=AnalyticsResponse)
-async def get_analytics(qa_system=Depends(get_qa_system)):
-    """Получить аналитику использования"""
+async def get_analytics(qa_system = Depends(get_qa_system)):
     try:
-        # Получаем статистику из базы данных
         db_stats = db_manager.get_chat_statistics()
-
-        # Получаем статистику бенчмарка (исправленная версия)
+        
         analyzer = BenchmarkEvaluator()
-        benchmark_summary = {
-            "total_benchmark_questions": len(analyzer.results) if hasattr(analyzer, 'results') else 0,
-            "last_evaluation": datetime.now().isoformat(),
-            "system_accuracy": analyzer.evaluate_system() if hasattr(analyzer, 'evaluate_system') else 0.0
-        }
-
+        benchmark_stats = analyzer.results if hasattr(analyzer, 'results') else {}
+        
+        sessions = db_manager.get_user_sessions("user", limit=100)  # Можно адаптировать под реальные сессии
+        
         return AnalyticsResponse(
             total_questions=db_stats.get('total_messages', analytics_data["total_questions"]),
-            average_confidence=analyzer.evaluate_system() if hasattr(analyzer, 'evaluate_system') else 0.0,
+            average_confidence=BenchmarkEvaluator.evaluate_system()['accuracy'],
             system_uptime=analytics_data.get("start_time", "Unknown"),
-            active_sessions=len(chat_history_storage),
-            benchmark_stats=benchmark_summary  # ← ТЕПЕРЬ СЛОВАРЬ!
+            active_sessions=len(sessions),
+            benchmark_stats=benchmark_stats
         )
     except Exception as e:
         logger.error(f"Error getting analytics: {e}")
+        logger.error(traceback.format_exc())
         return AnalyticsResponse(
             total_questions=analytics_data["total_questions"],
-            average_confidence=0.0,
             system_uptime=analytics_data.get("start_time", "Unknown"),
-            active_sessions=len(chat_history_storage),
-            benchmark_stats={"error": "Unable to load benchmark stats"}
-        )
-    except Exception as e:
-        logger.error(f"Error getting analytics: {e}")
-        return AnalyticsResponse(
-            total_questions=analytics_data["total_questions"],
-            average_confidence=0.0,
-            system_uptime=analytics_data.get("start_time", "Unknown"),
-            active_sessions=len(chat_history_storage),
+            active_sessions=0,
             benchmark_stats={}
         )
 
 @api_router.get("/admin/stats", response_model=AdminStatsResponse)
 async def get_admin_stats(qa_system = Depends(get_qa_system)):
-    """Статистика для админа"""
     try:
         db_stats = db_manager.get_chat_statistics()
+        sessions = db_manager.get_user_sessions("user", limit=1000)
         
         return AdminStatsResponse(
-            system_status="operational" if system_modules_loaded else "degraded",
+            system_status="active" if system_modules_loaded else "degraded",
             total_requests=analytics_data["total_requests"],
-            error_rate=0.02,  # Можно вычислить из реальных данных
-            memory_usage="512MB / 2GB",  # Демо-значение
-            active_connections=len(chat_history_storage),
-            database_stats={
-                "total_messages": db_stats.get('total_messages', 0),
-                "rated_messages": db_stats.get('rated_messages', 0),
-                "avg_rating": db_stats.get('avg_rating', 0),
-                "avg_response_time": db_stats.get('avg_response_time', 0)
-            }
+            error_rate=0.0,  
+            memory_usage="N/A",
+            active_connections=len(sessions),
+            database_stats=db_stats
         )
     except Exception as e:
         logger.error(f"Error getting admin stats: {e}")
-        return AdminStatsResponse(
-            system_status="degraded",
-            total_requests=analytics_data["total_requests"],
-            error_rate=0.0,
-            memory_usage="Unknown",
-            active_connections=0,
-            database_stats={}
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to get admin stats: {str(e)}")
 
 @api_router.post("/feedback")
 async def submit_feedback(request: FeedbackRequest):
-    """Добавление отзыва к сообщению"""
     try:
         success = db_manager.add_feedback(request.message_id, request.rating, request.feedback)
         
@@ -535,32 +354,25 @@ async def submit_feedback(request: FeedbackRequest):
         logger.error(f"Error submitting feedback: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to submit feedback: {str(e)}")
 
-# === ДОПОЛНИТЕЛЬНЫЕ ENDPOINTS ===
 
 @api_router.get("/system/status")
 async def system_status(qa_system = Depends(get_qa_system)):
-    """Детальный статус системы"""
     try:
+        sessions = db_manager.get_user_sessions("user", limit=1000)
+        
         return {
             "system_ready": system_modules_loaded,
             "mode": "normal" if system_modules_loaded else "fallback",
             "qa_system_available": qa_system is not None,
-            "chat_sessions_count": len(chat_history_storage),
+            "chat_sessions_count": len(sessions),
             "database_stats": {"total_messages": analytics_data["total_questions"]}
         }
     except Exception as e:
         logger.error(f"Error getting system status: {e}")
-        return {
-            "system_ready": system_modules_loaded,
-            "mode": "normal" if system_modules_loaded else "fallback",
-            "qa_system_available": qa_system is not None,
-            "chat_sessions_count": len(chat_history_storage),
-            "database_stats": {}
-        }
+        raise HTTPException(status_code=500, detail=f"Failed to get system status: {str(e)}")
 
 @api_router.post("/system/reload")
 async def reload_system():
-    """Принудительная перезагрузка системы"""
     global qa_system, system_modules_loaded
     
     try:
@@ -573,29 +385,24 @@ async def reload_system():
 
 @api_router.get("/benchmark/stats")
 async def get_benchmark_stats(qa_system = Depends(get_qa_system)):
-    """Статистика бенчмарка"""
     try:
+        system_info = qa_system.get_system_info()
+        search_stats = qa_system.get_search_stats("тест") if hasattr(qa_system, 'get_search_stats') else {}
+        
         return {
             "status": "success",
             "benchmark_stats": {
-                "accuracy": 0.85,
-                "response_time": 1.2,
-                "coverage": 0.9,
+                "accuracy": 0.85, 
+                "response_time": search_stats.get('processing_time', 0),
+                "total_chunks": system_info.get('total_chunks', 0),
                 "timestamp": datetime.now().isoformat()
             }
         }
     except Exception as e:
         logger.error(f"Error getting benchmark stats: {e}")
-        return {
-            "status": "error",
-            "message": str(e),
-            "benchmark_stats": {}
-        }
+        raise HTTPException(status_code=500, detail=f"Failed to get benchmark stats: {str(e)}")
 
-# Подключаем роутер к приложению
 app.include_router(api_router)
-
-# Обработчики ошибок
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
     return JSONResponse(

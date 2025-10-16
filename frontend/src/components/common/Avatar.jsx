@@ -1,142 +1,87 @@
 // src/components/common/Avatar.jsx
 import React, { useEffect, useRef, useState } from "react";
+import { useChat } from "../../hooks/useChat";
 
-const Avatar = ({
-  state = "idle",
-  onStateChange,
-  chatInterfaceRef, // Референс на компонент ChatInterface для отслеживания ввода текста
-}) => {
+const Avatar = ({ state = "idle", onStateChange }) => {
   const avatarRef = useRef(null);
   const timeoutRef = useRef(null);
-  const inputCheckRef = useRef(null);
   const [hasWelcomed, setHasWelcomed] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [hasSaidGoodbye, setHasSaidGoodbye] = useState(false);
+  const [lastProcessedMessageId, setLastProcessedMessageId] = useState(null); // Отслеживаем обработанные сообщения
+
+  // Получаем сообщения из хука useChat
+  const { messages } = useChat();
 
   const animations = {
     welcome: "/avatars/welcome.gif",
     idle: "/avatars/idle.gif",
     engagement: "/avatars/engagement.gif",
     goodbye: "/avatars/goodbye.gif",
-    typing: "/avatars/typing.gif", // Новая анимация для набора текста
+    typing: "/avatars/typing.gif",
   };
 
-  // Функция для поиска последнего сообщения пользователя
-  const findLastUserMessage = () => {
-    if (!chatInterfaceRef?.current) return "";
+  const log = (message, type = "info") => {
+    const timestamp = new Date().toLocaleTimeString();
+    const logMessage = `[Avatar] ${message}`;
+    console.log(`[${type.toUpperCase()}] ${logMessage}`);
+  };
 
-    try {
-      // Ищем все сообщения в чате
-      const messageElements = chatInterfaceRef.current.querySelectorAll(
-        '[class*="message"], [class*="bg-blue"], .user-message, .message-user'
+  useEffect(() => {
+    if (hasSaidGoodbye) {
+      return;
+    }
+
+    if (messages.length === 0) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage.id === lastProcessedMessageId) {
+      return;
+    }
+
+    if (lastMessage.role === "user") {
+      const userText = lastMessage.content?.toLowerCase().trim() || "";
+
+      const goodbyeKeywords = [
+        "до свидания",
+        "пока",
+        "завершить",
+        "закончить",
+        "выход",
+        "bye",
+        "goodbye",
+        "спасибо пока",
+        "всего хорошего",
+        "до встречи",
+        "прощай",
+        "закончим",
+        "закончили",
+        "хватит",
+        "стоп",
+        "закрыть",
+      ];
+
+      const foundKeywords = goodbyeKeywords.filter((keyword) =>
+        userText.includes(keyword)
       );
 
-      let lastUserMessage = "";
-
-      // Проходим по всем сообщениям с конца
-      for (let i = messageElements.length - 1; i >= 0; i--) {
-        const element = messageElements[i];
-        const text = element.textContent?.toLowerCase().trim() || "";
-
-        // Определяем, является ли сообщение пользовательским по классам или содержимому
-        const isUserMessage =
-          element.className.includes("bg-blue") ||
-          element.className.includes("user-message") ||
-          element.className.includes("message-user") ||
-          element.textContent.includes("Вы:") ||
-          element.querySelector(".bg-blue-500"); // Аватар пользователя
-
-        if (isUserMessage && text) {
-          lastUserMessage = text;
-          break;
-        }
-      }
-
-      return lastUserMessage;
-    } catch (error) {
-      console.error("Error finding user message:", error);
-      return "";
-    }
-  };
-
-  // Отслеживание ввода текста в ChatInterface
-  useEffect(() => {
-    if (!chatInterfaceRef?.current) return;
-
-    const checkUserInput = () => {
-      try {
-        // Получаем элементы ввода из ChatInterface
-        const inputElement =
-          chatInterfaceRef.current?.querySelector?.("textarea");
-
-        let userText = "";
-
-        // Получаем текст из поля ввода
-        if (inputElement) {
-          userText = inputElement.value.toLowerCase().trim();
-        }
-
-        // Если в поле ввода нет текста, ищем последнее сообщение пользователя
-        if (!userText) {
-          userText = findLastUserMessage();
-        }
-
-        // Проверяем на прощание в последнем сообщении пользователя
-        const goodbyeKeywords = [
-          "до свидания",
-          "пока",
-          "завершить",
-          "закончить",
-          "выход",
-          "bye",
-          "goodbye",
-          "спасибо пока",
-          "всего хорошего",
-          "до встречи",
-          "прощай",
-          "закончим",
-          "закончили",
-          "хватит",
-          "стоп",
-          "закрыть",
-        ];
-
-        const isGoodbye = goodbyeKeywords.some((keyword) =>
-          userText.includes(keyword)
-        );
-
-        if (isGoodbye && state !== "goodbye") {
-          console.log("Обнаружено прощание:", userText);
+      if (foundKeywords.length > 0) {
+        if (state !== "goodbye") {
+          setHasSaidGoodbye(true);
           onStateChange("goodbye");
-          return;
         }
-
-        // Проверяем, печатает ли пользователь
-        const currentlyTyping = inputElement && inputElement.value.length > 0;
-        if (currentlyTyping !== isTyping) {
-          setIsTyping(currentlyTyping);
-          if (currentlyTyping && state !== "typing" && state !== "goodbye") {
-            onStateChange("typing");
-          } else if (!currentlyTyping && state === "typing") {
-            onStateChange("idle");
-          }
-        }
-      } catch (error) {
-        console.error("Error checking user input:", error);
       }
-    };
+    }
 
-    // Проверяем ввод каждые 500ms
-    inputCheckRef.current = setInterval(checkUserInput, 500);
+    setLastProcessedMessageId(lastMessage.id);
+  }, [messages, state, onStateChange, hasSaidGoodbye, lastProcessedMessageId]);
 
-    return () => {
-      if (inputCheckRef.current) {
-        clearInterval(inputCheckRef.current);
-      }
-    };
-  }, [chatInterfaceRef, state, isTyping, onStateChange]);
-
-  // Автоматическое переключение анимаций
   useEffect(() => {
+    log(`Состояние изменилось на: ${state}`);
+
     const scheduleAnimation = () => {
       clearTimeout(timeoutRef.current);
 
@@ -154,25 +99,23 @@ const Avatar = ({
           break;
 
         case "typing":
-          // Анимация typing продолжается пока пользователь печатает
-          // Переключение обратно происходит в эффекте отслеживания ввода
           break;
 
         case "goodbye":
           timeoutRef.current = setTimeout(() => {
             onStateChange("idle");
             setHasWelcomed(false);
-          }, 1500);
+          }, 3000);
           break;
 
         case "idle":
-          // Случайные микро-анимации в режиме ожидания
-          if (!isTyping) {
+          if (!isTyping && !hasSaidGoodbye) {
+            const delay = 5000 + Math.random() * 10000;
             timeoutRef.current = setTimeout(() => {
               if (Math.random() > 0.5) {
                 onStateChange("engagement");
               }
-            }, 5000 + Math.random() * 10000);
+            }, delay);
           }
           break;
       }
@@ -180,31 +123,22 @@ const Avatar = ({
 
     scheduleAnimation();
 
-    return () => clearTimeout(timeoutRef.current);
-  }, [state, onStateChange, isTyping]);
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
+  }, [state, onStateChange, isTyping, hasSaidGoodbye]);
 
-  // Приветствие при загрузке
   useEffect(() => {
     if (state === "idle" && !hasWelcomed) {
       const welcomeTimer = setTimeout(() => {
         onStateChange("welcome");
         setHasWelcomed(true);
-
-        // После приветствия показываем дополнительные анимации вовлечения
-        const engagementTimer = setTimeout(() => {
-          if (state === "idle") {
-            onStateChange("engagement");
-          }
-        }, 3000);
-
-        return () => clearTimeout(engagementTimer);
       }, 1000);
 
       return () => clearTimeout(welcomeTimer);
     }
   }, [state, hasWelcomed, onStateChange]);
 
-  // Обработчик активности пользователя (прерывание анимаций)
   useEffect(() => {
     const handleUserActivity = () => {
       if (state === "engagement" || state === "welcome") {
@@ -224,7 +158,13 @@ const Avatar = ({
     };
   }, [state, onStateChange]);
 
-  // Определяем текущую анимацию с учетом состояния набора текста
+  useEffect(() => {
+    if (messages.length === 0 && lastProcessedMessageId !== null) {
+      setLastProcessedMessageId(null);
+      setHasSaidGoodbye(false);
+    }
+  }, [messages.length, lastProcessedMessageId]);
+
   const getCurrentAnimation = () => {
     if (state === "typing" && animations.typing) {
       return animations.typing;
@@ -240,7 +180,6 @@ const Avatar = ({
         alt="Аватар помощника"
         className="w-full h-full object-contain transition-opacity duration-300"
         onError={(e) => {
-          console.error(`Failed to load animation: ${getCurrentAnimation()}`);
           e.target.src = animations.idle;
         }}
       />

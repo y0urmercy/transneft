@@ -3,7 +3,6 @@ import sys
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-# Добавляем путь для импортов
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
@@ -11,17 +10,15 @@ from core.qa_system import TransneftQASystem
 
 app = Flask(__name__)
 CORS(app)
-
-# Глобальная переменная для системы
 qa_system = None
 
 
 def init_system():
     global qa_system
     try:
-        print("🚀 Инициализация QA системы...")
+        print("Инициализация QA системы...")
         qa_system = TransneftQASystem()
-        print("✅ Система готова!")
+        print("Система готова!")
         return True
     except Exception as e:
         print(f"❌ Ошибка: {e}")

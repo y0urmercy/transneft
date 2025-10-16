@@ -1,4 +1,3 @@
-// src/components/layout/Layout.jsx
 import React, { useState } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -10,7 +9,6 @@ const Layout = ({ children, currentPage, onPageChange }) => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -18,7 +16,6 @@ const Layout = ({ children, currentPage, onPageChange }) => {
         onPageChange={onPageChange}
       />
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header
           onMenuClick={() => setSidebarOpen(true)}
@@ -26,7 +23,6 @@ const Layout = ({ children, currentPage, onPageChange }) => {
         />
 
         <main className="flex-1 overflow-hidden flex">
-          {/* Avatar Section */}
           <div className="w-80 border-r border-gray-200 bg-white hidden lg:flex flex-col items-center p-6">
             <Avatar state={avatarState} onStateChange={setAvatarState} />
             <div className="mt-4 text-center">
@@ -37,7 +33,6 @@ const Layout = ({ children, currentPage, onPageChange }) => {
             </div>
           </div>
 
-          {/* Content Area */}
           <div className="flex-1 overflow-auto">{children}</div>
         </main>
       </div>

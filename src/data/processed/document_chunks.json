@@ -59,8 +59,8 @@
         "Уставный капитал. Акции"
       ],
       "element_types": [
-        "paragraph",
         "numbered_item",
+        "paragraph",
         "section_header"
       ],
       "num_elements": 6,
@@ -237,10 +237,10 @@
         "Обеспечение надежности системы магистральных трубопроводов и сохранение качества экспортных потоков нефти"
       ],
       "element_types": [
-        "paragraph",
-        "project_header",
         "numbered_item",
-        "section_header"
+        "project_header",
+        "section_header",
+        "paragraph"
       ],
       "num_elements": 8,
       "word_count": 119,
@@ -267,8 +267,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 6,
       "word_count": 54,
@@ -338,8 +338,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 6,
       "word_count": 56,
@@ -390,8 +390,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 6,
       "word_count": 63,
@@ -440,8 +440,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 6,
       "word_count": 75,
@@ -542,8 +542,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 5,
       "word_count": 70,
@@ -615,8 +615,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 10,
       "word_count": 273,
@@ -667,8 +667,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 6,
       "word_count": 61,
@@ -791,8 +791,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 4,
       "word_count": 69,
@@ -842,8 +842,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 6,
       "word_count": 55,
@@ -868,8 +868,8 @@
       ],
       "element_types": [
         "paragraph",
-        "project_header",
-        "section_header"
+        "section_header",
+        "project_header"
       ],
       "num_elements": 6,
       "word_count": 66,
