@@ -69,10 +69,11 @@ class TransneftQASystem:
         start_time = time.time()
 
         try:
+            # Увеличиваем количество результатов для лучшего покрытия
             search_results = self.vector_store.search(
                 question,
-                k=TOP_K_RESULTS,
-                threshold=SIMILARITY_THRESHOLD
+                k=8,  # Увеличили с 5 до 8
+                threshold=0.2  # Понизили порог для большего охвата
             )
 
             if not search_results:
@@ -82,20 +83,39 @@ class TransneftQASystem:
                     "confidence": 0.0
                 }
 
-            contexts = [chunk for chunk, metadata, score in search_results]
-            source_documents = [
-                {
-                    "content": chunk,
-                    "metadata": metadata,
-                    "score": float(score)
+            # Безопасная распаковка результатов
+            contexts = []
+            source_documents = []
+
+            for result in search_results:
+                try:
+                    if len(result) == 3:
+                        chunk, metadata, score = result
+                        contexts.append(chunk)
+                        source_documents.append({
+                            "content": chunk,
+                            "metadata": metadata,
+                            "score": float(score)
+                        })
+                    else:
+                        print(f"⚠️ Неправильный формат результата: {len(result)} элементов")
+                        continue
+                except Exception as e:
+                    print(f"⚠️ Ошибка обработки результата поиска: {e}")
+                    continue
+
+            if not contexts:
+                return {
+                    "result": "Не удалось обработать найденную информацию. Попробуйте переформулировать вопрос.",
+                    "source_documents": [],
+                    "confidence": 0.0
                 }
-                for chunk, metadata, score in search_results
-            ]
 
             answer = self.retrieval_engine.answer_question(question, contexts)
 
             self.processing_time = time.time() - start_time
 
+            # Сохраняем в базу данных
             message_id = -1
             try:
                 chat_message = ChatMessage(
@@ -115,15 +135,18 @@ class TransneftQASystem:
             return {
                 "result": answer,
                 "source_documents": source_documents,
-                "confidence": float(search_results[0][2]) if search_results else 0.8,
+                "confidence": float(search_results[0][2]) if search_results else 0.7,
                 "message_id": message_id,
                 "processing_time": self.processing_time
             }
 
         except Exception as e:
-            print(f"Ошибка при обработке вопроса: {e}")
+            print(f"❌ Ошибка при обработке вопроса: {e}")
+            import traceback
+            traceback.print_exc()
+
             return {
-                "result": f"Произошла ошибка при обработке вашего вопроса: {str(e)}",
+                "result": f"Произошла ошибка при обработке вашего вопроса. Пожалуйста, попробуйте еще раз.",
                 "source_documents": [],
                 "confidence": 0.0,
                 "error": str(e)

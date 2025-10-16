@@ -269,42 +269,52 @@ async def get_chat_history(session_id: str):
         logger.error(traceback.format_exc())
         return HistoryResponse(session_id=session_id, history=[])
 
+
 @api_router.post("/evaluate", response_model=EvaluateResponse)
-async def evaluate_system(request: EvaluateRequest, qa_system = Depends(get_qa_system)):
+async def evaluate_system(request: EvaluateRequest, qa_system=Depends(get_qa_system)):
     try:
         evaluator = MetricsEvaluator()
         evaluation_results = evaluator.evaluate_all_metrics()
-        res = evaluation_results['generation']
-        benchmark_evaluator = BenchmarkEvaluator()
-        benchmark_stat = benchmark_evaluator.evaluate_system()
-        
+
         if evaluation_results:
-            
+            generation_metrics = evaluation_results.get('generation', {})
+
+            # Получаем overall_score (уже в правильном формате 0.9 для 90%)
+            overall_score = generation_metrics.get('overall_score', 0.0)
+
+            # Конвертируем в проценты для фронтенда (умножаем на 100 только один раз!)
+            overall_score_percent = overall_score * 100
+
             return EvaluateResponse(
                 status="success",
-                results=res,
-                accuracy=benchmark_stat,
-                message=f"Evaluation completed for 40 samples",
-                evaluation_id=getattr(1, 'evaluation_id', None)
+                results=generation_metrics,
+                accuracy=overall_score_percent,  # Теперь правильно: 90.0 для 90%
+                message=f"Evaluation completed - {overall_score_percent:.1f}% accuracy",
+                evaluation_id=1
             )
         else:
-            raise HTTPException(status_code=500, detail="Evaluation failed")
-            
+            return EvaluateResponse(
+                status="error",
+                results={},
+                accuracy=0.0,
+                message="Evaluation failed",
+                evaluation_id=None
+            )
+
     except Exception as e:
         logger.error(f"Evaluation error: {e}")
-        logger.error(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Evaluation failed: {str(e)}")
+        return EvaluateResponse(
+            status="error",
+            results={},
+            accuracy=0.0,
+            message=f"Evaluation failed: {str(e)}",
+            evaluation_id=None
+        )
 
 @api_router.get("/analytics", response_model=AnalyticsResponse)
-<<<<<<< HEAD
 async def get_analytics(qa_system = Depends(get_qa_system)):
-=======
-async def get_analytics(qa_system=Depends(get_qa_system)):
-    """Получить аналитику использования"""
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     try:
         db_stats = db_manager.get_chat_statistics()
-<<<<<<< HEAD
         
         analyzer = BenchmarkEvaluator()
         benchmark_stats = analyzer.results if hasattr(analyzer, 'results') else {}
@@ -317,32 +327,6 @@ async def get_analytics(qa_system=Depends(get_qa_system)):
             system_uptime=analytics_data.get("start_time", "Unknown"),
             active_sessions=len(sessions),
             benchmark_stats=benchmark_stats
-=======
-
-        # Получаем статистику бенчмарка (исправленная версия)
-        analyzer = BenchmarkEvaluator()
-        benchmark_summary = {
-            "total_benchmark_questions": len(analyzer.results) if hasattr(analyzer, 'results') else 0,
-            "last_evaluation": datetime.now().isoformat(),
-            "system_accuracy": analyzer.evaluate_system() if hasattr(analyzer, 'evaluate_system') else 0.0
-        }
-
-        return AnalyticsResponse(
-            total_questions=db_stats.get('total_messages', analytics_data["total_questions"]),
-            average_confidence=analyzer.evaluate_system() if hasattr(analyzer, 'evaluate_system') else 0.0,
-            system_uptime=analytics_data.get("start_time", "Unknown"),
-            active_sessions=len(chat_history_storage),
-            benchmark_stats=benchmark_summary  # ← ТЕПЕРЬ СЛОВАРЬ!
-        )
-    except Exception as e:
-        logger.error(f"Error getting analytics: {e}")
-        return AnalyticsResponse(
-            total_questions=analytics_data["total_questions"],
-            average_confidence=0.0,
-            system_uptime=analytics_data.get("start_time", "Unknown"),
-            active_sessions=len(chat_history_storage),
-            benchmark_stats={"error": "Unable to load benchmark stats"}
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
         )
     except Exception as e:
         logger.error(f"Error getting analytics: {e}")

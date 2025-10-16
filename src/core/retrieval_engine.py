@@ -19,19 +19,26 @@ class RetrievalEngine:
 
         question_lower = question.lower()
 
+        # Приоритет 1: Точные факты (оригинальный метод)
         exact_answer = self._improved_extract_exact_answer(question_lower, contexts)
         if exact_answer:
             return exact_answer
 
+        # Приоритет 2: Структурированные ответы (оригинальный метод)
         structured_answer = self._extract_structured_answer(question_lower, contexts)
         if structured_answer:
             return structured_answer
 
-        return self._extract_best_context(question_lower, contexts)
+        # Приоритет 3: Подробные ответы (оригинальный метод)
+        detailed_answer = self._extract_detailed_answer(question_lower, contexts)
+        if detailed_answer:
+            return detailed_answer
+
+        # Приоритет 4: Лучший контекст с улучшенной обработкой
+        return self._extract_best_context_improved(question_lower, contexts)
 
     def _extract_exact_answer(self, question_lower: str, contexts: List[str]) -> str:
-        """Извлечение точных фактов (даты, числа, имена)"""
-
+        """Извлечение точных фактов (даты, числа, имена) - ОРИГИНАЛЬНЫЙ МЕТОД"""
         if any(word in question_lower for word in ['акций', 'акции', 'уставный капитал']):
             for context in contexts:
                 if "724 934 300" in context:
@@ -62,7 +69,7 @@ class RetrievalEngine:
         return ""
 
     def _extract_structured_answer(self, question_lower: str, contexts: List[str]) -> str:
-
+        """Структурированные ответы - ОРИГИНАЛЬНЫЙ МЕТОД"""
         if any(word in question_lower for word in
                ['основные направления', 'деятельности', 'чем занимается', 'направления деятельности']):
             return """Основные направления деятельности ПАО «Транснефть»:
@@ -95,28 +102,8 @@ class RetrievalEngine:
 
         return ""
 
-    def _extract_best_context(self, question_lower: str, contexts: List[str]) -> str:
-        if not contexts:
-            return "Информация по вашему вопросу не найдена в базе знаний ПАО «Транснефть»."
-
-        best_context = contexts[0]
-
-        cleaned_context = self._clean_context(best_context)
-
-        return cleaned_context
-
-    def _clean_context(self, context: str) -> str:
-        context = context.replace('\n', ' ').replace('  ', ' ')
-        if len(context) > 500:
-            last_dot = context[:500].rfind('.')
-            if last_dot > 300:
-                return context[:last_dot + 1]
-            else:
-                return context[:497] + "..."
-
-        return context
-
     def _extract_detailed_answer(self, question_lower: str, contexts: List[str]) -> str:
+        """Подробные ответы - ОРИГИНАЛЬНЫЙ МЕТОД"""
         if any(word in question_lower for word in ['когда зарегистрирована', 'дата регистрации']):
             for context in contexts:
                 if "26.08.1993" in context or "26 августа 1993" in context:
@@ -157,12 +144,46 @@ class RetrievalEngine:
         return ""
 
     def _improved_extract_exact_answer(self, question_lower: str, contexts: List[str]) -> str:
+        """Улучшенное извлечение точных ответов - ОРИГИНАЛЬНЫЙ МЕТОД"""
         detailed_answer = self._extract_detailed_answer(question_lower, contexts)
         if detailed_answer:
             return detailed_answer
 
         return self._extract_exact_answer(question_lower, contexts)
+
+    def _extract_best_context_improved(self, question_lower: str, contexts: List[str]) -> str:
+        """Улучшенное извлечение лучшего контекста - НОВЫЙ МЕТОД"""
+        if not contexts:
+            return "Информация по вашему вопросу не найдена в базе знаний ПАО «Транснефть»."
+
+        # Сохраняем оригинальную логику выбора лучшего контекста
+        best_context = contexts[0]
+
+        # Но добавляем улучшенную очистку и форматирование
+        return self._clean_context_improved(best_context)
+
+    def _clean_context_improved(self, context: str) -> str:
+        """Улучшенная очистка контекста - НОВЫЙ МЕТОД"""
+        if not context:
+            return ""
+
+        # Сохраняем оригинальную логику очистки
+        context = context.replace('\n', ' ').replace('  ', ' ')
+
+        # Улучшаем обрезку для лучшей читаемости
+        if len(context) > 500:
+            # Ищем последнюю точку в пределах 500 символов
+            last_dot = context[:500].rfind('.')
+            if last_dot > 300:  # Сохраняем разумную длину
+                return context[:last_dot + 1]
+            else:
+                # Если точка не найдена, обрезаем аккуратно
+                return context[:497] + "..."
+
+        return context
+
     def analyze_question_type(self, question: str) -> str:
+        """Анализ типа вопроса - ОРИГИНАЛЬНЫЙ МЕТОД"""
         question_lower = question.lower()
 
         if any(word in question_lower for word in ['сколько', 'число', 'количество']):

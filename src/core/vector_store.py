@@ -7,10 +7,7 @@ import faiss
 import torch
 from typing import List, Dict, Tuple
 
-<<<<<<< HEAD
-=======
 # Добавляем путь для импортов
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_root = os.path.dirname(os.path.dirname(current_dir))
 sys.path.insert(0, src_root)
@@ -19,11 +16,8 @@ from utils.config import MODEL_NAME, VECTOR_STORE_DIR, EMBEDDING_DIMENSION
 
 
 class VectorStore:
-<<<<<<< HEAD
-=======
     """Векторное хранилище для семантического поиска"""
 
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     def __init__(self, model_name: str = MODEL_NAME):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"🔧 Инициализация VectorStore на {self.device}")
@@ -39,10 +33,7 @@ class VectorStore:
             raise
 
     def create_embeddings(self, chunks: List[Dict]) -> None:
-<<<<<<< HEAD
-=======
         """Создает эмбеддинги для всех chunks"""
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
         print("📥 Создание эмбеддингов...")
 
         if not chunks:
@@ -76,6 +67,7 @@ class VectorStore:
             raise
 
     def search(self, query: str, k: int = 5, threshold: float = 0.3) -> List[Tuple[str, Dict, float]]:
+        """Поиск наиболее релевантных chunks"""
         if not self.is_initialized or self.index is None:
             raise ValueError("❌ Индекс не инициализирован. Сначала вызовите create_embeddings()")
 
@@ -83,39 +75,40 @@ class VectorStore:
             return []
 
         try:
-<<<<<<< HEAD
-=======
             # Создаем эмбеддинг для запроса
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             query_embedding = self.model.encode(
                 [query],
                 convert_to_tensor=True,
                 normalize_embeddings=True
             )
-<<<<<<< HEAD
-
-            query_embedding_np = query_embedding.cpu().numpy() if self.device == "cuda" else query_embedding.numpy()
-
-=======
 
             query_embedding_np = query_embedding.cpu().numpy() if self.device == "cuda" else query_embedding.numpy()
 
             # Выполняем поиск
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             scores, indices = self.index.search(query_embedding_np, k)
 
             results = []
-            for score, idx in zip(scores[0], indices[0]):
-<<<<<<< HEAD
-=======
+            for i, (score, idx) in enumerate(zip(scores[0], indices[0])):
                 # Проверяем границы и порог схожести
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
-                if idx < len(self.chunks) and score >= threshold:
-                    results.append((
-                        self.chunks[idx],
-                        self.chunk_metadata[idx],
-                        float(score)
-                    ))
+                if 0 <= idx < len(self.chunks) and score >= threshold:
+                    try:
+                        chunk_text = self.chunks[idx]
+                        metadata = self.chunk_metadata[idx]
+
+                        # Проверяем типы данных
+                        if not isinstance(chunk_text, str):
+                            chunk_text = str(chunk_text)
+                        if not isinstance(metadata, dict):
+                            metadata = {}
+
+                        results.append((
+                            chunk_text,
+                            metadata,
+                            float(score)
+                        ))
+                    except (IndexError, TypeError) as e:
+                        print(f"⚠️ Ошибка доступа к данным по индексу {idx}: {e}")
+                        continue
 
             return results
 
@@ -131,17 +124,11 @@ class VectorStore:
             # Явно создаем директорию с проверками
             os.makedirs(save_path, exist_ok=True)
 
-<<<<<<< HEAD
-            if not os.path.exists(save_path):
-                raise OSError(f"Не удалось создать директорию: {save_path}")
-
-=======
             # Проверяем, что директория создана и доступна для записи
             if not os.path.exists(save_path):
                 raise OSError(f"Не удалось создать директорию: {save_path}")
 
             # Проверяем права на запись
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             test_file = os.path.join(save_path, "test_write.tmp")
             try:
                 with open(test_file, 'w') as f:
@@ -150,14 +137,12 @@ class VectorStore:
             except Exception as e:
                 raise OSError(f"Нет прав на запись в директорию {save_path}: {e}")
 
-<<<<<<< HEAD
-=======
             # Сохраняем FAISS индекс
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             index_path = os.path.join(save_path, "faiss.index")
             print(f"💾 Сохранение FAISS индекса: {index_path}")
             faiss.write_index(self.index, index_path)
 
+            # Сохраняем chunks и метаданные
             chunks_path = os.path.join(save_path, "chunks.json")
             metadata_path = os.path.join(save_path, "metadata.json")
             model_info_path = os.path.join(save_path, "model_info.json")
@@ -168,10 +153,7 @@ class VectorStore:
             with open(metadata_path, "w", encoding="utf-8") as f:
                 json.dump(self.chunk_metadata, f, ensure_ascii=False, indent=2)
 
-<<<<<<< HEAD
-=======
             # Сохраняем информацию о модели
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             model_info = {
                 "model_name": MODEL_NAME,
                 "embedding_dimension": EMBEDDING_DIMENSION,
@@ -187,20 +169,14 @@ class VectorStore:
         except Exception as e:
             print(f"❌ Ошибка сохранения векторного хранилища: {e}")
 
-<<<<<<< HEAD
-=======
             # Пробуем альтернативный путь
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             print("🔄 Попытка сохранения в альтернативную директорию...")
             self._save_to_alternative_location()
 
     def _save_to_alternative_location(self):
         """Сохраняет в альтернативную директорию при ошибках"""
         try:
-<<<<<<< HEAD
-=======
             # Пробуем сохранить в текущую директорию
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             alt_path = "vector_store_temp"
             os.makedirs(alt_path, exist_ok=True)
 
@@ -222,10 +198,7 @@ class VectorStore:
     def load_index(self, load_path: str = VECTOR_STORE_DIR):
         """Загружает индекс и метаданные"""
         try:
-<<<<<<< HEAD
-=======
             # Проверяем существование файлов
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             required_files = [
                 os.path.join(load_path, "faiss.index"),
                 os.path.join(load_path, "chunks.json"),
@@ -236,12 +209,10 @@ class VectorStore:
                 if not os.path.exists(file_path):
                     raise FileNotFoundError(f"Файл не найден: {file_path}")
 
-<<<<<<< HEAD
-=======
             # Загружаем FAISS индекс
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
             self.index = faiss.read_index(os.path.join(load_path, "faiss.index"))
 
+            # Загружаем chunks и метаданные
             with open(os.path.join(load_path, "chunks.json"), "r", encoding="utf-8") as f:
                 self.chunks = json.load(f)
 
@@ -257,6 +228,7 @@ class VectorStore:
             raise
 
     def get_stats(self) -> Dict:
+        """Возвращает статистику хранилища"""
         if not self.is_initialized:
             return {"error": "Хранилище не инициализировано"}
 
@@ -270,23 +242,19 @@ class VectorStore:
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-=======
     # Тестирование векторного хранилища
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
+    from core.vector_store import VectorStore
     from utils.config import CHUNKS_PATH
+    import json
 
     with open(CHUNKS_PATH, 'r', encoding='utf-8') as f:
         chunks = json.load(f)
 
     vector_store = VectorStore()
     vector_store.create_embeddings(chunks)
-    vector_store.save_index()
+    vector_store.save_index("vector_store_improved")
 
-<<<<<<< HEAD
-=======
     # Тестовый поиск
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     test_queries = [
         "Сколько акций в уставном капитале?",
         "Основные направления деятельности",
@@ -298,8 +266,4 @@ if __name__ == "__main__":
         print(f"\nЗапрос: '{query}'")
         results = vector_store.search(query, k=2)
         for i, (chunk, metadata, score) in enumerate(results):
-<<<<<<< HEAD
             print(f"  {i + 1}. [Score: {score:.3f}] {chunk[:80]}...")
-=======
-            print(f"  {i + 1}. [Score: {score:.3f}] {chunk[:80]}...")
->>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
