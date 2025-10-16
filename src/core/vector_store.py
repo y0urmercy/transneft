@@ -7,7 +7,6 @@ import faiss
 import torch
 from typing import List, Dict, Tuple
 
-# Добавляем путь для импортов
 current_dir = os.path.dirname(os.path.abspath(__file__))
 src_root = os.path.dirname(os.path.dirname(current_dir))
 sys.path.insert(0, src_root)
@@ -16,8 +15,6 @@ from utils.config import MODEL_NAME, VECTOR_STORE_DIR, EMBEDDING_DIMENSION
 
 
 class VectorStore:
-    """Векторное хранилище для семантического поиска"""
-
     def __init__(self, model_name: str = MODEL_NAME):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"🔧 Инициализация VectorStore на {self.device}")
@@ -33,7 +30,6 @@ class VectorStore:
             raise
 
     def create_embeddings(self, chunks: List[Dict]) -> None:
-        """Создает эмбеддинги для всех chunks"""
         print("📥 Создание эмбеддингов...")
 
         if not chunks:
@@ -67,7 +63,6 @@ class VectorStore:
             raise
 
     def search(self, query: str, k: int = 5, threshold: float = 0.3) -> List[Tuple[str, Dict, float]]:
-        """Поиск наиболее релевантных chunks"""
         if not self.is_initialized or self.index is None:
             raise ValueError("❌ Индекс не инициализирован. Сначала вызовите create_embeddings()")
 
@@ -75,7 +70,6 @@ class VectorStore:
             return []
 
         try:
-            # Создаем эмбеддинг для запроса
             query_embedding = self.model.encode(
                 [query],
                 convert_to_tensor=True,
@@ -84,12 +78,10 @@ class VectorStore:
 
             query_embedding_np = query_embedding.cpu().numpy() if self.device == "cuda" else query_embedding.numpy()
 
-            # Выполняем поиск
             scores, indices = self.index.search(query_embedding_np, k)
 
             results = []
             for score, idx in zip(scores[0], indices[0]):
-                # Проверяем границы и порог схожести
                 if idx < len(self.chunks) and score >= threshold:
                     results.append((
                         self.chunks[idx],
@@ -108,14 +100,11 @@ class VectorStore:
         if not self.is_initialized:
             raise ValueError("❌ Хранилище не инициализировано")
         try:
-            # Явно создаем директорию с проверками
             os.makedirs(save_path, exist_ok=True)
 
-            # Проверяем, что директория создана и доступна для записи
             if not os.path.exists(save_path):
                 raise OSError(f"Не удалось создать директорию: {save_path}")
 
-            # Проверяем права на запись
             test_file = os.path.join(save_path, "test_write.tmp")
             try:
                 with open(test_file, 'w') as f:
@@ -124,12 +113,10 @@ class VectorStore:
             except Exception as e:
                 raise OSError(f"Нет прав на запись в директорию {save_path}: {e}")
 
-            # Сохраняем FAISS индекс
             index_path = os.path.join(save_path, "faiss.index")
             print(f"💾 Сохранение FAISS индекса: {index_path}")
             faiss.write_index(self.index, index_path)
 
-            # Сохраняем chunks и метаданные
             chunks_path = os.path.join(save_path, "chunks.json")
             metadata_path = os.path.join(save_path, "metadata.json")
             model_info_path = os.path.join(save_path, "model_info.json")
@@ -140,7 +127,6 @@ class VectorStore:
             with open(metadata_path, "w", encoding="utf-8") as f:
                 json.dump(self.chunk_metadata, f, ensure_ascii=False, indent=2)
 
-            # Сохраняем информацию о модели
             model_info = {
                 "model_name": MODEL_NAME,
                 "embedding_dimension": EMBEDDING_DIMENSION,
@@ -156,14 +142,12 @@ class VectorStore:
         except Exception as e:
             print(f"❌ Ошибка сохранения векторного хранилища: {e}")
 
-            # Пробуем альтернативный путь
             print("🔄 Попытка сохранения в альтернативную директорию...")
             self._save_to_alternative_location()
 
     def _save_to_alternative_location(self):
         """Сохраняет в альтернативную директорию при ошибках"""
         try:
-            # Пробуем сохранить в текущую директорию
             alt_path = "vector_store_temp"
             os.makedirs(alt_path, exist_ok=True)
 
@@ -185,7 +169,6 @@ class VectorStore:
     def load_index(self, load_path: str = VECTOR_STORE_DIR):
         """Загружает индекс и метаданные"""
         try:
-            # Проверяем существование файлов
             required_files = [
                 os.path.join(load_path, "faiss.index"),
                 os.path.join(load_path, "chunks.json"),
@@ -196,10 +179,8 @@ class VectorStore:
                 if not os.path.exists(file_path):
                     raise FileNotFoundError(f"Файл не найден: {file_path}")
 
-            # Загружаем FAISS индекс
             self.index = faiss.read_index(os.path.join(load_path, "faiss.index"))
 
-            # Загружаем chunks и метаданные
             with open(os.path.join(load_path, "chunks.json"), "r", encoding="utf-8") as f:
                 self.chunks = json.load(f)
 
@@ -215,7 +196,6 @@ class VectorStore:
             raise
 
     def get_stats(self) -> Dict:
-        """Возвращает статистику хранилища"""
         if not self.is_initialized:
             return {"error": "Хранилище не инициализировано"}
 
@@ -229,7 +209,6 @@ class VectorStore:
 
 
 if __name__ == "__main__":
-    # Тестирование векторного хранилища
     from utils.config import CHUNKS_PATH
 
     with open(CHUNKS_PATH, 'r', encoding='utf-8') as f:
@@ -239,7 +218,6 @@ if __name__ == "__main__":
     vector_store.create_embeddings(chunks)
     vector_store.save_index()
 
-    # Тестовый поиск
     test_queries = [
         "Сколько акций в уставном капитале?",
         "Основные направления деятельности",

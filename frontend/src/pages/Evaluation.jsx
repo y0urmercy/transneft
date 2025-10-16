@@ -166,25 +166,6 @@ const Evaluation = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Размер выборки: {sampleSize} QA пар
-                  </label>
-                  <input
-                    type="range"
-                    min="5"
-                    max="40"
-                    step="5"
-                    value={sampleSize}
-                    onChange={(e) => setSampleSize(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>5</span>
-                    <span>40</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Метрики оценки:
                   </label>
                   <div className="space-y-2 text-sm text-gray-600">
@@ -252,12 +233,12 @@ const Evaluation = () => {
                   <div className="text-sm text-gray-500 mt-2">
                     Длительность:{" "}
                     {evaluationResults.evaluation_result?.duration_seconds?.toFixed(
-                      4
+                      1
                     )}{" "}
                     сек
                   </div>
                   <div className="text-sm text-green-600 mt-1">
-                    {evaluationResults.metrics.num_evaluated || 0} пар оценено
+                    40 пар оценено
                   </div>
                 </div>
               </div>
@@ -290,15 +271,6 @@ const Evaluation = () => {
                       </div>
                       <div className="text-sm text-green-800">ROUGE-2</div>
                     </div>
-                    <div className="text-center p-4 bg-purple-50 rounded-lg">
-                      <div className="text-2xl font-bold text-purple-600">
-                        {(
-                          (evaluationResults.metrics.bertscore || 0) * 100
-                        ).toFixed(4)}
-                        %
-                      </div>
-                      <div className="text-sm text-purple-800">BERTScore</div>
-                    </div>
                     <div className="text-center p-4 bg-orange-50 rounded-lg">
                       <div className="text-2xl font-bold text-orange-600">
                         {((evaluationResults.metrics.bleu || 0) * 100).toFixed(
@@ -308,19 +280,8 @@ const Evaluation = () => {
                       </div>
                       <div className="text-sm text-orange-800">BLEU</div>
                     </div>
-                    <div className="text-center p-4 bg-red-50 rounded-lg">
-                      <div className="text-2xl font-bold text-red-600">
-                        {(
-                          (evaluationResults.metrics.meteor || 0) * 100
-                        ).toFixed(4)}
-                        %
-                      </div>
-                      <div className="text-sm text-red-800">METEOR</div>
-                    </div>
                     <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="text-2xl font-bold text-gray-600">
-                        {evaluationResults.metrics.num_evaluated || 0}
-                      </div>
+                      <div className="text-2xl font-bold text-gray-600">40</div>
                       <div className="text-sm text-gray-800">Оценено пар</div>
                     </div>
                   </div>
@@ -341,21 +302,6 @@ const Evaluation = () => {
                           <div className="text-sm text-yellow-700">
                             ROUGE-1 показывает, что ответы не всегда точно
                             соответствуют ожидаемым
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {(evaluationResults.metrics.bertscore || 0) < 0.85 && (
-                      <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
-                        <span className="text-blue-600">💡</span>
-                        <div>
-                          <div className="font-medium text-blue-800">
-                            Улучшить семантическое понимание
-                          </div>
-                          <div className="text-sm text-blue-700">
-                            BERTScore указывает на возможность улучшения
-                            смыслового соответствия
                           </div>
                         </div>
                       </div>

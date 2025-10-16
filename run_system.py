@@ -5,6 +5,7 @@ import time
 
 
 os.system("pip install -r requirements.txt")
+os.system("npm install lucide-react")
 
 if os.path.exists("src"):
     os.chdir("src")
