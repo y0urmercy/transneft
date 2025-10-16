@@ -183,6 +183,11 @@ const Avatar = ({ state = "idle", onStateChange }) => {
           e.target.src = animations.idle;
         }}
       />
+      <img
+        src="/avatars/logo.png"
+        alt="Transneft_logo"
+        className="absolute top-20 right-0 mr-24 w-5 h-5 object-contain"
+      />
       {isTyping && (
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
           Печатает...

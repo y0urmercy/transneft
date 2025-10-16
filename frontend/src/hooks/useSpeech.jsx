@@ -14,7 +14,7 @@ export const useSpeech = () => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ru-RU";
     utterance.rate = 1.0;
-    utterance.pitch = 1.0;
+    utterance.pitch = 2.0;
 
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
