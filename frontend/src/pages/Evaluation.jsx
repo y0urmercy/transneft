@@ -4,7 +4,7 @@ import { chatAPI } from "../services/api";
 const Evaluation = () => {
   const [evaluationResults, setEvaluationResults] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [sampleSize, setSampleSize] = useState(10);
+  const [sampleSize, setSampleSize] = useState(40);
   const [evaluationHistory, setEvaluationHistory] = useState([]);
   const [activeTab, setActiveTab] = useState("run");
   const [error, setError] = useState(null);
@@ -41,6 +41,7 @@ const Evaluation = () => {
       }
 
       let metrics = {};
+      let retrieval = {};
 
       if (results.results) {
         metrics = { ...results.results };
@@ -54,6 +55,9 @@ const Evaluation = () => {
           bleu: results.bleu,
           meteor: results.meteor,
           num_evaluated: results.num_evaluated || sampleSize,
+          ndcg: results.ndcg || 0,
+          mrr: results.mrr || 0,
+          precision: results.precision || 0,
         };
       }
 
@@ -64,6 +68,9 @@ const Evaluation = () => {
         bleu: metrics.bleu || 0,
         meteor: metrics.meteor || 0,
         num_evaluated: metrics.num_evaluated || sampleSize,
+        ndcg: metrics.ndcg,
+        mrr: metrics.mrr,
+        precision: metrics.precision,
       };
 
       const overall_score =
@@ -207,39 +214,15 @@ const Evaluation = () => {
 
             {evaluationResults && (
               <div className="metric-card">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Общая оценка
-                </h3>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">
-                    {(
-                      evaluationResults.evaluation_result?.overall_score * 100
-                    ).toFixed(4)}
-                    %
-                  </div>
-                  <div
-                    className={`text-lg font-semibold ${
-                      getQualityLevel(
-                        evaluationResults.evaluation_result?.overall_score
-                      ).color
-                    }`}
-                  >
-                    {
-                      getQualityLevel(
-                        evaluationResults.evaluation_result?.overall_score
-                      ).level
-                    }
-                  </div>
-                  <div className="text-sm text-gray-500 mt-2">
-                    Длительность:{" "}
-                    {evaluationResults.evaluation_result?.duration_seconds?.toFixed(
-                      1
-                    )}{" "}
-                    сек
-                  </div>
-                  <div className="text-sm text-green-600 mt-1">
-                    40 пар оценено
-                  </div>
+                <div className="text-sm text-gray-500 mt-2">
+                  Длительность:{" "}
+                  {evaluationResults.evaluation_result?.duration_seconds?.toFixed(
+                    1
+                  )}{" "}
+                  сек
+                </div>
+                <div className="text-sm text-green-600 mt-1">
+                  40 пар оценено
                 </div>
               </div>
             )}
@@ -252,7 +235,52 @@ const Evaluation = () => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     📈 Детальные метрики
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {((evaluationResults.metrics.ndcg || 0) * 100).toFixed(
+                          4
+                        )}
+                        %
+                      </div>
+                      <div className="text-sm text-blue-800">NDCG</div>
+                    </div>
+                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                      <div className="text-2xl font-bold text-orange-600">
+                        {((evaluationResults.metrics.mrr || 0) * 100).toFixed(
+                          4
+                        )}
+                        %
+                      </div>
+                      <div className="text-sm text-orange-800">MRR</div>
+                    </div>
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {(
+                          (evaluationResults.metrics.precision || 0) * 100
+                        ).toFixed(4)}
+                        %
+                      </div>
+                      <div className="text-sm text-blue-800">Precision</div>
+                    </div>
+                    <div className="text-center p-4 bg-purple-50 rounded-lg">
+                      <div className="text-2xl font-bold text-purple-600">
+                        {(
+                          (evaluationResults.metrics.meteor || 0) * 100
+                        ).toFixed(4)}
+                        %
+                      </div>
+                      <div className="text-sm text-purple-800">METEOR</div>
+                    </div>
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">
+                        {(
+                          (evaluationResults.metrics.bertscore || 0) * 100
+                        ).toFixed(4)}
+                        %
+                      </div>
+                      <div className="text-sm text-green-800">BERTScore</div>
+                    </div>
                     <div className="text-center p-4 bg-blue-50 rounded-lg">
                       <div className="text-2xl font-bold text-blue-600">
                         {(

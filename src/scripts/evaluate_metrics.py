@@ -119,8 +119,7 @@ class MetricsEvaluator:
                                     retrieval_metrics, generation_metrics)
 
         return {
-            'retrieval': retrieval_metrics,
-            'generation': generation_metrics,
+            'generation': generation_metrics | retrieval_metrics,
         }
         
 
@@ -218,10 +217,10 @@ class MetricsEvaluator:
             precision_at_10 = self._compute_precision_at_k(all_relevance_scores, k=10)
 
             return {
-                'ndcg@10': np.mean(ndcg_scores),
-                'mrr@10': np.mean(mrr_scores),
+                'ndcg': np.mean(ndcg_scores),
+                'mrr': np.mean(mrr_scores),
                 'map@100': np.mean(map_scores),
-                'precision@5': precision_at_5,
+                'precision': precision_at_5,
                 'precision@10': precision_at_10,
                 'details': {
                     'ndcg_scores': ndcg_scores,
@@ -232,10 +231,10 @@ class MetricsEvaluator:
         except Exception as e:
             logger.error(f"Error computing retrieval metrics: {e}")
             return {
-                'ndcg@10': 0.0,
-                'mrr@10': 0.0,
+                'ndcg': 0.0,
+                'mrr': 0.0,
                 'map@100': 0.0,
-                'precision@5': 0.0,
+                'precision': 0.0,
                 'precision@10': 0.0,
                 'details': {}
             }
@@ -379,10 +378,10 @@ class MetricsEvaluator:
         print("=" * 60)
 
         print("🔍 МЕТРИКИ РЕТРИВЕРА:")
-        print(f"   📊 NDCG@10:        {retrieval_metrics['ndcg@10']:.4f}")
-        print(f"   🎯 MRR@10:         {retrieval_metrics['mrr@10']:.4f}")
+        print(f"   📊 NDCG@10:        {retrieval_metrics['ndcg']:.4f}")
+        print(f"   🎯 MRR@10:         {retrieval_metrics['mrr']:.4f}")
         print(f"   🗺️  MAP@100:        {retrieval_metrics['map@100']:.4f}")
-        print(f"   ✅ Precision@5:     {retrieval_metrics['precision@5']:.4f}")
+        print(f"   ✅ Precision@5:     {retrieval_metrics['precision']:.4f}")
         print(f"   ✅ Precision@10:    {retrieval_metrics['precision@10']:.4f}")
 
         print("\n🤖 МЕТРИКИ ГЕНЕРАЦИИ ОТВЕТОВ:")
@@ -396,9 +395,9 @@ class MetricsEvaluator:
 
         # Интерпретация результатов
         print("\n📋 ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ:")
-        if retrieval_metrics['ndcg@10'] > 0.7:
+        if retrieval_metrics['ndcg'] > 0.7:
             print("   ✅ Ретривер: ОТЛИЧНОЕ качество поиска")
-        elif retrieval_metrics['ndcg@10'] > 0.5:
+        elif retrieval_metrics['ndcg'] > 0.5:
             print("   ✅ Ретривер: ХОРОШЕЕ качество поиска")
         else:
             print("   ⚠️  Ретривер: Требует улучшения")
