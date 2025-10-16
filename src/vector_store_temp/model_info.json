@@ -2,5 +2,9 @@
   "model_name": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
   "embedding_dimension": 768,
   "total_vectors": 65,
+<<<<<<< HEAD
   "device": "cpu"
+=======
+  "device": "cuda"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
 }

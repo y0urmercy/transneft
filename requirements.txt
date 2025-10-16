@@ -1,10 +1,22 @@
 streamlit>=1.28.0
 plotly>=5.15.0
+<<<<<<< HEAD
 pandas>=1.5.0
 numpy>=1.21.0
 langchain>=0.0.350
 langchain-community>=0.0.29
 langchain-core>=0.1.33
+=======
+pandas>=2.0.0
+numpy>=1.24.0
+
+# LangChain (СОВМЕСТИМЫЕ версии)
+langchain>=0.0.350
+langchain-community>=0.0.29
+langchain-core>=0.1.33
+
+# Векторные базы данных
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
 faiss-cpu>=1.7.4
 chromadb>=0.4.0
 python-docx>=0.8.11
@@ -22,10 +34,20 @@ beautifulsoup4>=4.12.0
 lxml>=4.9.0
 tabulate>=0.9.0
 openpyxl>=3.1.0
+<<<<<<< HEAD
+=======
+
+# FastAPI и веб-сервер
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
 fastapi>=0.104.1
 uvicorn>=0.24.0
 pydantic>=1.10.12
 python-multipart>=0.0.6
+<<<<<<< HEAD
+=======
+
+# ML и NLP зависимости
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
 torch>=2.0.0
 transformers>=4.30.2
 sentence-transformers>=2.2.2

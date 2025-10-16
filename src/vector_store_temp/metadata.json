@@ -33,9 +33,15 @@
       "Уставный капитал. Акции"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "numbered_item",
       "paragraph"
+=======
+      "paragraph",
+      "numbered_item",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 135,
@@ -132,10 +138,17 @@
       "Обеспечение надежности системы магистральных трубопроводов и сохранение качества экспортных потоков нефти"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "numbered_item",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "numbered_item",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 8,
     "word_count": 119,
@@ -148,9 +161,15 @@
       "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 54,
@@ -191,9 +210,15 @@
       "Магистральный нефтепровод Куюмба — Тайшет"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 56,
@@ -220,9 +245,15 @@
       "Балтийская трубопроводная система «БТС-2»"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 63,
@@ -249,9 +280,15 @@
       "Трубопроводная система «Восточная Сибирь — Тихий океан»"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 75,
@@ -306,9 +343,15 @@
       "Магистральный нефтепровод Сковородино — Мохэ"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 5,
     "word_count": 70,
@@ -349,9 +392,15 @@
       "Расширение КТК"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 10,
     "word_count": 273,
@@ -377,9 +426,15 @@
       "Проект «Север»"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 61,
@@ -448,9 +503,15 @@
       "Реконструкция системы магистральных трубопроводов для увеличения объемов транспортировки нефтепродуктов в Московский регион"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 4,
     "word_count": 69,
@@ -477,9 +538,15 @@
       "Нефтепровод–отвод ТС «ВСТО» — Комсомольский НПЗ"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 55,
@@ -492,9 +559,15 @@
       "Реконструкция магистральных нефтепроводов для транспортировки нефти на НПЗ Краснодарского края"
     ],
     "element_types": [
+<<<<<<< HEAD
       "section_header",
       "project_header",
       "paragraph"
+=======
+      "paragraph",
+      "project_header",
+      "section_header"
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
     ],
     "num_elements": 6,
     "word_count": 66,

@@ -334,12 +334,23 @@ class MetricsEvaluator:
             return 0.0
 
     def _compute_semantic_similarity(self, predictions: List[str], references: List[str]) -> float:
+<<<<<<< HEAD
         """Вычисляет семантическое сходство"""
         try:
             # Используем ту же модель, что и для ретривера
             if hasattr(self.vector_store, 'model'):
                 embeddings_pred = self.vector_store.model.encode(predictions, convert_to_tensor=True)
                 embeddings_ref = self.vector_store.model.encode(references, convert_to_tensor=True)
+=======
+        """Вычисляет семантическое сходство (упрощенная версия)"""
+        # Используем ту же модель, что и для ретривера
+        embeddings_pred = self.vector_store.model.encode(
+            predictions,
+            convert_to_tensor=True,
+            normalize_embeddings=True
+        )
+        embeddings_ref = self.vector_store.model.encode(references, convert_to_tensor=True)
+>>>>>>> 6a3b0e80468a88866f4022e5289662789536893c
 
                 # Вычисляем косинусное сходство
                 similarities = []
