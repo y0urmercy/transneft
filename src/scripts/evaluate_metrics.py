@@ -131,7 +131,7 @@ class MetricsEvaluator:
 
         return {
             'retrieval': retrieval_metrics,
-            'generation': generation_metrics,
+            'generation': generation_metrics | retrieval_metrics,
             'accuracy': accuracy
         }
 
@@ -262,9 +262,9 @@ class MetricsEvaluator:
             precision_at_10 = self._compute_precision_at_k(all_relevance_scores, k=10)
 
             return {
-                'ndcg@10': np.mean(ndcg_scores) if ndcg_scores else 0.0,
-                'mrr@10': np.mean(mrr_scores) if mrr_scores else 0.0,
-                'precision@5': precision_at_5,
+                'ndcg': np.mean(ndcg_scores) if ndcg_scores else 0.0,
+                'mrr': np.mean(mrr_scores) if mrr_scores else 0.0,
+                'precision': precision_at_5,
                 'precision@10': precision_at_10,
             }
         except Exception as e:
@@ -390,9 +390,9 @@ class MetricsEvaluator:
     def _get_empty_retrieval_metrics(self) -> Dict:
         """Возвращает пустые метрики ретривера"""
         return {
-            'ndcg@10': 0.0,
-            'mrr@10': 0.0,
-            'precision@5': 0.0,
+            'ndcg': 0.0,
+            'mrr': 0.0,
+            'precision': 0.0,
             'precision@10': 0.0,
         }
 
@@ -427,9 +427,9 @@ class MetricsEvaluator:
         print(f"   ⭐ Оценка для фронтенда: {generation_metrics['overall_score']:.2%}")
 
         print("\n🔍 МЕТРИКИ РЕТРИВЕРА:")
-        print(f"   📊 NDCG@10:        {retrieval_metrics['ndcg@10']:.4f}")
-        print(f"   🎯 MRR@10:         {retrieval_metrics['mrr@10']:.4f}")
-        print(f"   ✅ Precision@5:     {retrieval_metrics['precision@5']:.4f}")
+        print(f"   📊 NDCG@10:        {retrieval_metrics['ndcg']:.4f}")
+        print(f"   🎯 MRR@10:         {retrieval_metrics['mrr']:.4f}")
+        print(f"   ✅ Precision@5:     {retrieval_metrics['precision']:.4f}")
         print(f"   ✅ Precision@10:    {retrieval_metrics['precision@10']:.4f}")
 
         print("\n🤖 МЕТРИКИ ГЕНЕРАЦИИ ДЛЯ ФРОНТЕНДА:")
@@ -451,9 +451,9 @@ class MetricsEvaluator:
         else:
             print("   🔧 СИСТЕМА: Требует улучшения")
 
-        if retrieval_metrics['ndcg@10'] > 0.7:
+        if retrieval_metrics['ndcg'] > 0.7:
             print("   ✅ Ретривер: ОТЛИЧНОЕ качество поиска")
-        elif retrieval_metrics['ndcg@10'] > 0.5:
+        elif retrieval_metrics['ndcg'] > 0.5:
             print("   ✅ Ретривер: ХОРОШЕЕ качество поиска")
         else:
             print("   ⚠️  Ретривер: Требует улучшения")
