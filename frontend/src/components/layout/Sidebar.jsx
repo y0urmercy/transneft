@@ -2,9 +2,9 @@ import React from "react";
 
 const Sidebar = ({ isOpen, onClose, currentPage, onPageChange }) => {
   const menuItems = [
-    { id: "chat", icon: "💬", label: "Чат-бот" },
-    { id: "history", icon: "📊", label: "История" },
-    { id: "evaluation", icon: "🧪", label: "Оценка качества" },
+    { id: "chat", label: "Чат-бот" },
+    { id: "history", label: "История" },
+    { id: "evaluation", label: "Оценка качества" },
   ];
 
   const handleMenuItemClick = (pageId) => {
