@@ -4,9 +4,9 @@ const Header = ({ onMenuClick, currentPage }) => {
   const [showSettings, setShowSettings] = useState(false);
 
   const pageTitles = {
-    chat: "💬 Чат-бот",
-    history: "📊 История",
-    evaluation: "🧪 Оценка качества",
+    chat: "Чат-бот",
+    history: "История",
+    evaluation: "Оценка качества",
   };
 
   return (
