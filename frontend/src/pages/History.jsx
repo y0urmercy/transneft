@@ -120,7 +120,7 @@ const History = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">📊 История сессий</h1>
+        <h1 className="text-2xl font-bold text-gray-900">🟦История сессий</h1>
         <button
           onClick={() => {
             clearChat();
@@ -128,7 +128,7 @@ const History = () => {
           }}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
         >
-          🆕 Новая сессия
+          Новая сессия
         </button>
       </div>
 
@@ -199,105 +199,12 @@ const History = () => {
                   >
                     Просмотреть
                   </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      exportChatHistory(session.session_id);
-                    }}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs font-medium transition-colors"
-                  >
-                    Экспорт
-                  </button>
                 </div>
               </div>
             ))
           )}
         </div>
-        /
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">
-              {selectedSession
-                ? `Сообщения сессии ${selectedSession.slice(0, 8)}...`
-                : "Выберите сессию"}
-            </h2>
-            {selectedSession && (
-              <button
-                onClick={() => exportChatHistory(selectedSession)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
-              >
-                Экспорт
-              </button>
-            )}
-          </div>
-
-          {selectedSession ? (
-            <div className="space-y-4 max-h-96 overflow-y-auto">
-              {messagesLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                </div>
-              ) : sessionMessages.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>Нет сообщений в этой сессии</p>
-                </div>
-              ) : (
-                sessionMessages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`p-4 rounded-lg ${
-                      message.role === "user"
-                        ? "bg-blue-50 border border-blue-200"
-                        : "bg-gray-50 border border-gray-200"
-                    }`}
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          message.role === "user"
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {message.role === "user" ? "👤" : "🤖"}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <div className="text-sm font-medium text-gray-900">
-                            {message.role === "user"
-                              ? "Вы"
-                              : "Ассистент Транснефть"}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {formatDate(message.timestamp)}
-                          </div>
-                        </div>
-                        <div className="text-sm text-gray-700 mt-2 whitespace-pre-wrap">
-                          {message.content}
-                        </div>
-                        {message.role === "assistant" &&
-                          message.sources &&
-                          message.sources.length > 0 && (
-                            <div className="mt-2 text-xs text-gray-500">
-                              📚 Источники: {message.sources.length}
-                            </div>
-                          )}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-gray-500 bg-white rounded-lg border border-gray-200">
-              <div className="text-4xl mb-4">📋</div>
-              <p className="text-lg font-medium">Выберите сессию</p>
-              <p className="text-sm mt-2">для просмотра истории сообщений</p>
-            </div>
-          )}
-        </div>
       </div>
-
       {/* Информация о данных */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <div className="flex items-start">
