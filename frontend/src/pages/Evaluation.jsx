@@ -134,7 +134,7 @@ const Evaluation = () => {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">
-        Оценка качества системы
+        🟥Оценка качества системы
       </h1>
 
       {error && (
@@ -167,26 +167,78 @@ const Evaluation = () => {
           <div className="lg:col-span-1 space-y-6">
             <div className="metric-card">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                ⚙️ Настройки оценки
+                Метрики оценки
               </h3>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Метрики оценки:
-                  </label>
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                      ROUGE (схожесть текста)
+                  <div className="space-y-3 text-sm text-gray-600">
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium">ROUGE</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Измеряет overlap n-грамм между сгенерированным и
+                          эталонным текстом
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                      BLEU (качество перевода)
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium">BLEU</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Оценивает точность машинного перевода по n-граммам
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                      BERTScore (семантическая схожесть)
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium">BERTScore</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Сравнивает эмбеддинги BERT для оценки смысловой
+                          близости
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium">METEOR</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Учитывает синонимы и основы слов для более гибкой
+                          оценки
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-red-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium">NDCG</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Оценивает качество ранжирования с учетом позиции
+                          релевантных результатов
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-indigo-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium">MRR</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Средняя обратная позиция первого релевантного ответа
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-teal-500 rounded-full mr-2 mt-1.5 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium">Precision</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Доля релевантных результатов среди всех извлеченных
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -233,7 +285,7 @@ const Evaluation = () => {
               <div className="space-y-6">
                 <div className="metric-card">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    📈 Детальные метрики
+                    Детальные метрики
                   </h3>
                   <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
                     <div className="text-center p-4 bg-blue-50 rounded-lg">
@@ -322,7 +374,6 @@ const Evaluation = () => {
                   <div className="space-y-3">
                     {(evaluationResults.metrics.rouge1 || 0) < 0.8 && (
                       <div className="flex items-start space-x-3 p-3 bg-yellow-50 rounded-lg">
-                        <span className="text-yellow-600">⚠️</span>
                         <div>
                           <div className="font-medium text-yellow-800">
                             Улучшить точность ответов
@@ -338,7 +389,6 @@ const Evaluation = () => {
                     {(evaluationResults.metrics.rouge1 || 0) >= 0.8 &&
                       (evaluationResults.metrics.bertscore || 0) >= 0.85 && (
                         <div className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
-                          <span className="text-green-600">✅</span>
                           <div>
                             <div className="font-medium text-green-800">
                               Сильные стороны системы
@@ -362,7 +412,7 @@ const Evaluation = () => {
                 <p className="text-gray-600">
                   {error
                     ? "Произошла ошибка при оценке системы. Проверьте настройки и попробуйте снова."
-                    : "Нажмите кнопку 'Запустить оценку' для анализа качества работы системы на реальных данных"}
+                    : "Анализ качества работы системы"}
                 </p>
                 {error && (
                   <button
