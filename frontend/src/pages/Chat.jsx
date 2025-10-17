@@ -78,7 +78,7 @@ const Chat = () => {
             </p>
             <p className="text-sm mb-6">
               Задайте вопрос голосом или текстом, или выберите один из примеров
-              ниже
+              выше
             </p>
             <div className="flex justify-center">
               <VoiceInput
