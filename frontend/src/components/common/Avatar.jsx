@@ -7,6 +7,7 @@ const Avatar = ({ state = "idle", onStateChange }) => {
   const timeoutRef = useRef(null);
   const [hasWelcomed, setHasWelcomed] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [hasSaidWelcome, setHasSaidWelcome] = useState(false);
   const [hasSaidGoodbye, setHasSaidGoodbye] = useState(false);
   const [lastProcessedMessageId, setLastProcessedMessageId] = useState(null); // Отслеживаем обработанные сообщения
 
@@ -28,6 +29,9 @@ const Avatar = ({ state = "idle", onStateChange }) => {
   };
 
   useEffect(() => {
+    if (hasSaidWelcome) {
+      return;
+    }
     if (hasSaidGoodbye) {
       return;
     }
@@ -45,6 +49,61 @@ const Avatar = ({ state = "idle", onStateChange }) => {
     if (lastMessage.role === "user") {
       const userText = lastMessage.content?.toLowerCase().trim() || "";
 
+      const welcomeKeywords = [
+        "привет",
+        "здравствуй",
+        "здравствуйте",
+        "добрый день",
+        "доброе утро",
+        "добрый вечер",
+        "приветствую",
+        "хай",
+        "hello",
+        "hi",
+        "hey",
+        "здарова",
+        "приветик",
+        "салют",
+        "доброго времени суток",
+        "приветствую вас",
+        "рад вас видеть",
+        "начать",
+        "старт",
+        "помощь",
+        "help",
+        "меню",
+        "что ты умеешь",
+        "возможности",
+        "Привет",
+        "Здравствуй",
+        "Здравствуйте",
+        "Добрый день",
+        "Доброе утро",
+        "Добрый вечер",
+        "Приветствую",
+        "Хай",
+        "Hello",
+        "Hi",
+        "Hey",
+        "Здарова",
+        "Приветик",
+        "Салют",
+        "Доброго времени суток",
+        "Приветствую вас",
+        "Рад вас видеть",
+        "Начать",
+        "Старт",
+        "Помощь",
+        "Help",
+        "Меню",
+        "Что ты умеешь",
+        "Возможности",
+        "ПРИВЕТ",
+        "ЗДРАВСТВУЙТЕ",
+        "ДОБРЫЙ ДЕНЬ",
+        "HELLO",
+        "HI",
+      ];
       const goodbyeKeywords = [
         "до свидания",
         "пока",
@@ -62,16 +121,47 @@ const Avatar = ({ state = "idle", onStateChange }) => {
         "хватит",
         "стоп",
         "закрыть",
+        "До свидания",
+        "Пока",
+        "Завершить",
+        "Закончить",
+        "Выход",
+        "Bye",
+        "Goodbye",
+        "Спасибо пока",
+        "Всего хорошего",
+        "До встречи",
+        "Прощай",
+        "Закончим",
+        "Закончили",
+        "Хватит",
+        "Стоп",
+        "Закрыть",
+        "ДО СВИДАНИЯ",
+        "ПОКА",
+        "ВЫХОД",
+        "BYE",
+        "GOODBYE",
+        "СТОП",
       ];
-
-      const foundKeywords = goodbyeKeywords.filter((keyword) =>
+      const foundKeywords_goodbye = goodbyeKeywords.filter((keyword) =>
         userText.includes(keyword)
       );
 
-      if (foundKeywords.length > 0) {
+      const foundKeywords_hello = welcomeKeywords.filter((keyword) =>
+        userText.includes(keyword)
+      );
+
+      if (foundKeywords_goodbye.length > 0) {
         if (state !== "goodbye") {
           setHasSaidGoodbye(true);
           onStateChange("goodbye");
+        }
+      }
+      if (foundKeywords_hello.length > 0) {
+        if (state !== "welcome") {
+          setHasSaidWelcome(true);
+          onStateChange("welcome");
         }
       }
     }
