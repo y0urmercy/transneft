@@ -82,7 +82,7 @@ python run_system.py
 ```
 
 
-** Если возникли проблемы с запуском:
+**Если возникли проблемы с запуском:
 ```bash
 python setup_system.py
 python main.py
