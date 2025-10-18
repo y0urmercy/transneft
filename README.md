@@ -87,3 +87,4 @@ python run_system.py
 python setup_system.py
 python main.py
 ```
+## Инструкция по развертыванию в формате видео: https://disk.yandex.ru/d/YCgrYVURE7fxJg
