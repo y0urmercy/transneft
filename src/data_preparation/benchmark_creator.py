@@ -21,7 +21,7 @@ class BenchmarkCreator:
 
     def create_complete_benchmark(self) -> List[Dict]:
         """Создает полный бенчмарк из 40 QA-триплетов"""
-        print("📊 Создание QA-бенчмарка...")
+        print(" Создание QA-бенчмарка...")
 
         # Все 40 триплетов
         triplets = [
@@ -253,7 +253,7 @@ class BenchmarkCreator:
             }
             enriched_triplets.append(enriched_triplet)
 
-        print(f"✅ Создан бенчмарк: {len(enriched_triplets)} QA-триплетов")
+        print(f" Создан бенчмарк: {len(enriched_triplets)} QA-триплетов")
 
         # Сохраняем бенчмарк
         self._save_benchmark(enriched_triplets)
@@ -295,13 +295,13 @@ class BenchmarkCreator:
         try:
             with open(BENCHMARK_PATH, 'w', encoding='utf-8') as f:
                 json.dump(triplets, f, ensure_ascii=False, indent=2)
-            print(f"💾 Бенчмарк сохранен: {BENCHMARK_PATH}")
+            print(f" Бенчмарк сохранен: {BENCHMARK_PATH}")
         except Exception as e:
-            print(f"❌ Ошибка сохранения бенчмарка: {e}")
+            print(f" Ошибка сохранения бенчмарка: {e}")
 
     def analyze_benchmark(self, triplets: List[Dict]):
         """Анализирует созданный бенчмарк"""
-        print("\n📊 АНАЛИЗ БЕНЧМАРКА:")
+        print("\n АНАЛИЗ БЕНЧМАРКА:")
         print("-" * 40)
 
         total_triplets = len(triplets)
@@ -312,14 +312,14 @@ class BenchmarkCreator:
             question_types[triplet['metadata']['question_type']] += 1
             content_types[triplet['metadata']['content_type']] += 1
 
-        print(f"📈 Всего триплетов: {total_triplets}")
+        print(f" Всего триплетов: {total_triplets}")
 
-        print("\n❓ Распределение по типам вопросов:")
+        print("\n Распределение по типам вопросов:")
         for q_type, count in question_types.items():
             percentage = (count / total_triplets) * 100
             print(f"   - {q_type}: {count} ({percentage:.1f}%)")
 
-        print("\n📚 Распределение по типам контента:")
+        print("\n Распределение по типам контента:")
         for c_type, count in content_types.items():
             percentage = (count / total_triplets) * 100
             print(f"   - {c_type}: {count} ({percentage:.1f}%)")

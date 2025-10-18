@@ -21,7 +21,7 @@ def init_system():
         print("Система готова!")
         return True
     except Exception as e:
-        print(f"❌ Ошибка: {e}")
+        print(f" Ошибка: {e}")
         return False
 
 
@@ -96,8 +96,8 @@ def chat():
 
 if __name__ == '__main__':
     if init_system():
-        print("🌐 API запущен на http://localhost:5000")
-        print("📖 Откройте в браузере: http://localhost:5000")
+        print(" API запущен на http://localhost:5000")
+        print(" Откройте в браузере: http://localhost:5000")
         app.run(host='0.0.0.0', port=5000, debug=False)
     else:
-        print("❌ Не удалось запустить API")
+        print(" Не удалось запустить API")

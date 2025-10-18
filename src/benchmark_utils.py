@@ -70,7 +70,7 @@ class BenchmarkAnalyzer:
                 fig1 = px.bar(
                     x=section_counts.index,
                     y=section_counts.values,
-                    title="📊 Распределение QA пар по секциям",
+                    title=" Распределение QA пар по секциям",
                     labels={'x': 'Секция', 'y': 'Количество QA пар'}
                 )
                 fig1.update_layout(xaxis_tickangle=-45)

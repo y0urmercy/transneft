@@ -25,7 +25,7 @@ class BenchmarkEvaluator:
 
     def evaluate_system(self, benchmark_path: str = BENCHMARK_PATH) -> float:
         """Оценивает систему на всем бенчмарке"""
-        print("🎯 ОЦЕНКА КАЧЕСТВА QA-СИСТЕМЫ")
+        print(" ОЦЕНКА КАЧЕСТВА QA-СИСТЕМЫ")
         print("=" * 50)
 
         # Загружаем бенчмарк
@@ -33,7 +33,7 @@ class BenchmarkEvaluator:
         if not benchmark:
             return 0.0
 
-        print(f"🧪 Тестирование на {len(benchmark)} вопросах...")
+        print(f" Тестирование на {len(benchmark)} вопросах...")
 
         correct_answers = 0
 
@@ -52,9 +52,9 @@ class BenchmarkEvaluator:
 
             if is_correct:
                 correct_answers += 1
-                print("✅")
+                print("")
             else:
-                print("❌")
+                print("")
 
             # Сохраняем результат
             self.results.append({
@@ -76,10 +76,10 @@ class BenchmarkEvaluator:
             with open(benchmark_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
-            print(f"❌ Бенчмарк не найден: {benchmark_path}")
+            print(f" Бенчмарк не найден: {benchmark_path}")
             return []
         except Exception as e:
-            print(f"❌ Ошибка загрузки бенчмарка: {e}")
+            print(f" Ошибка загрузки бенчмарка: {e}")
             return []
 
     def _check_answer_quality(self, system_answer: str, expected_answer: str, question: str) -> bool:
@@ -129,7 +129,7 @@ class BenchmarkEvaluator:
             if result['is_correct']:
                 category_stats[category]['correct'] += 1
 
-        print(f"\n📊 РЕЗУЛЬТАТЫ ПО КАТЕГОРИЯМ:")
+        print(f"\n РЕЗУЛЬТАТЫ ПО КАТЕГОРИЯМ:")
         for category, stats in sorted(category_stats.items()):
             accuracy = stats['correct'] / stats['total'] if stats['total'] > 0 else 0
             print(f"   {category}: {stats['correct']}/{stats['total']} ({accuracy:.1%})")
@@ -144,9 +144,9 @@ class BenchmarkEvaluator:
             with open(results_path, 'w', encoding='utf-8') as f:
                 json.dump(self.results, f, ensure_ascii=False, indent=2)
 
-            print(f"💾 Детальные результаты сохранены: {results_path}")
+            print(f" Детальные результаты сохранены: {results_path}")
         except Exception as e:
-            print(f"❌ Ошибка сохранения результатов: {e}")
+            print(f" Ошибка сохранения результатов: {e}")
 
 
 def main():
@@ -159,7 +159,7 @@ def main():
         sys.exit(0 if accuracy >= 0.7 else 1)
 
     except Exception as e:
-        print(f"❌ Критическая ошибка оценки: {e}")
+        print(f" Критическая ошибка оценки: {e}")
         sys.exit(1)
 
 

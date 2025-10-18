@@ -21,7 +21,7 @@ class DocumentParser:
 
     def parse_document(self, doc_path: str) -> List[Dict]:
         """Парсит .docx документ и извлекает структурированные элементы"""
-        print("📄 Начало парсинга документа...")
+        print(" Начало парсинга документа...")
 
         try:
             if not os.path.exists(doc_path):
@@ -57,7 +57,7 @@ class DocumentParser:
                 elements.append(element)
                 element_id += 1
 
-            print(f"✅ Документ распарсен: {len(elements)} элементов")
+            print(f" Документ распарсен: {len(elements)} элементов")
 
             # Сохраняем элементы
             self._save_elements(elements)
@@ -65,7 +65,7 @@ class DocumentParser:
             return elements
 
         except Exception as e:
-            print(f"❌ Ошибка парсинга документа: {e}")
+            print(f" Ошибка парсинга документа: {e}")
             return []
 
     def _classify_element(self, text: str, style: str) -> str:
@@ -103,13 +103,13 @@ class DocumentParser:
         try:
             with open(ELEMENTS_PATH, 'w', encoding='utf-8') as f:
                 json.dump(elements, f, ensure_ascii=False, indent=2)
-            print(f"💾 Элементы сохранены: {ELEMENTS_PATH}")
+            print(f" Элементы сохранены: {ELEMENTS_PATH}")
         except Exception as e:
-            print(f"❌ Ошибка сохранения элементов: {e}")
+            print(f" Ошибка сохранения элементов: {e}")
 
     def analyze_document(self, elements: List[Dict]):
         """Анализирует структуру документа"""
-        print("\n📊 АНАЛИЗ ДОКУМЕНТА:")
+        print("\n АНАЛИЗ ДОКУМЕНТА:")
         print("-" * 40)
 
         total_elements = len(elements)
@@ -121,15 +121,15 @@ class DocumentParser:
             elem_type = elem['type']
             element_types[elem_type] = element_types.get(elem_type, 0) + 1
 
-        print(f"📈 Всего элементов: {total_elements}")
-        print(f"📂 Разделов: {len(sections)}")
-        print("🔧 Типы элементов:")
+        print(f" Всего элементов: {total_elements}")
+        print(f" Разделов: {len(sections)}")
+        print(" Типы элементов:")
         for elem_type, count in element_types.items():
             percentage = (count / total_elements) * 100
             print(f"   - {elem_type}: {count} ({percentage:.1f}%)")
 
         # Показываем основные разделы
-        print("\n📑 Основные разделы:")
+        print("\n Основные разделы:")
         for i, section in enumerate(list(sections)[:10]):
             print(f"   {i + 1}. {section}")
 

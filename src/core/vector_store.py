@@ -29,15 +29,15 @@ class VectorStore:
             self.chunk_metadata = []
             self.is_initialized = False
         except Exception as e:
-            print(f"❌ Ошибка инициализации модели: {e}")
+            print(f" Ошибка инициализации модели: {e}")
             raise
 
     def create_embeddings(self, chunks: List[Dict]) -> None:
         """Создает эмбеддинги для всех chunks"""
-        print("📥 Создание эмбеддингов...")
+        print(" Создание эмбеддингов...")
 
         if not chunks:
-            raise ValueError("❌ Нет chunks для обработки")
+            raise ValueError(" Нет chunks для обработки")
 
         self.chunks = [chunk['text'] for chunk in chunks]
         self.chunk_metadata = [chunk['metadata'] for chunk in chunks]
@@ -60,16 +60,16 @@ class VectorStore:
             self.index.add(embeddings_np)
 
             self.is_initialized = True
-            print(f"✅ Векторное хранилище создано: {self.index.ntotal} векторов")
+            print(f" Векторное хранилище создано: {self.index.ntotal} векторов")
 
         except Exception as e:
-            print(f"❌ Ошибка создания эмбеддингов: {e}")
+            print(f" Ошибка создания эмбеддингов: {e}")
             raise
 
     def search(self, query: str, k: int = 5, threshold: float = 0.3) -> List[Tuple[str, Dict, float]]:
         """Поиск наиболее релевантных chunks"""
         if not self.is_initialized or self.index is None:
-            raise ValueError("❌ Индекс не инициализирован. Сначала вызовите create_embeddings()")
+            raise ValueError(" Индекс не инициализирован. Сначала вызовите create_embeddings()")
 
         if not query or not query.strip():
             return []
@@ -100,13 +100,13 @@ class VectorStore:
             return results
 
         except Exception as e:
-            print(f"❌ Ошибка поиска: {e}")
+            print(f" Ошибка поиска: {e}")
             return []
 
     def save_index(self, save_path: str = VECTOR_STORE_DIR):
         """Сохраняет индекс и метаданные"""
         if not self.is_initialized:
-            raise ValueError("❌ Хранилище не инициализировано")
+            raise ValueError(" Хранилище не инициализировано")
         try:
             # Явно создаем директорию с проверками
             os.makedirs(save_path, exist_ok=True)
@@ -126,7 +126,7 @@ class VectorStore:
 
             # Сохраняем FAISS индекс
             index_path = os.path.join(save_path, "faiss.index")
-            print(f"💾 Сохранение FAISS индекса: {index_path}")
+            print(f" Сохранение FAISS индекса: {index_path}")
             faiss.write_index(self.index, index_path)
 
             # Сохраняем chunks и метаданные
@@ -151,13 +151,13 @@ class VectorStore:
             with open(model_info_path, "w", encoding="utf-8") as f:
                 json.dump(model_info, f, ensure_ascii=False, indent=2)
 
-            print(f"✅ Векторное хранилище сохранено: {save_path}")
+            print(f" Векторное хранилище сохранено: {save_path}")
 
         except Exception as e:
-            print(f"❌ Ошибка сохранения векторного хранилища: {e}")
+            print(f" Ошибка сохранения векторного хранилища: {e}")
 
             # Пробуем альтернативный путь
-            print("🔄 Попытка сохранения в альтернативную директорию...")
+            print(" Попытка сохранения в альтернативную директорию...")
             self._save_to_alternative_location()
 
     def _save_to_alternative_location(self):
@@ -175,11 +175,11 @@ class VectorStore:
             with open(f"{alt_path}/metadata.json", "w", encoding="utf-8") as f:
                 json.dump(self.chunk_metadata, f, ensure_ascii=False, indent=2)
 
-            print(f"✅ Векторное хранилище сохранено в альтернативную директорию: {alt_path}")
+            print(f" Векторное хранилище сохранено в альтернативную директорию: {alt_path}")
             return alt_path
 
         except Exception as e:
-            print(f"❌ Критическая ошибка: не удалось сохранить векторное хранилище: {e}")
+            print(f" Критическая ошибка: не удалось сохранить векторное хранилище: {e}")
             raise
 
     def load_index(self, load_path: str = VECTOR_STORE_DIR):
@@ -207,11 +207,11 @@ class VectorStore:
                 self.chunk_metadata = json.load(f)
 
             self.is_initialized = True
-            print(f"📂 Векторное хранилище загружено: {load_path}")
-            print(f"📊 Размер: {len(self.chunks)} chunks, {self.index.ntotal} векторов")
+            print(f" Векторное хранилище загружено: {load_path}")
+            print(f" Размер: {len(self.chunks)} chunks, {self.index.ntotal} векторов")
 
         except Exception as e:
-            print(f"❌ Ошибка загрузки векторного хранилища: {e}")
+            print(f" Ошибка загрузки векторного хранилища: {e}")
             raise
 
     def get_stats(self) -> Dict:
@@ -246,7 +246,7 @@ if __name__ == "__main__":
         "Дата регистрации компании"
     ]
 
-    print("\n🔍 ТЕСТИРОВАНИЕ ПОИСКА:")
+    print("\n ТЕСТИРОВАНИЕ ПОИСКА:")
     for query in test_queries:
         print(f"\nЗапрос: '{query}'")
         results = vector_store.search(query, k=2)

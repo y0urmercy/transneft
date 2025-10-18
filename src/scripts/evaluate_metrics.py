@@ -52,7 +52,7 @@ class MetricsEvaluator:
 
     def evaluate_all_metrics(self, benchmark_path: str = BENCHMARK_PATH):
         """Оценивает все метрики на бенчмарке"""
-        print("📊 ВЫЧИСЛЕНИЕ МЕТРИК КАЧЕСТВА")
+        print(" ВЫЧИСЛЕНИЕ МЕТРИК КАЧЕСТВА")
         print("=" * 60)
 
         # Загружаем бенчмарк
@@ -63,7 +63,7 @@ class MetricsEvaluator:
             logger.error(f"Error loading benchmark: {e}")
             return None
 
-        print(f"🧪 Оценка на {len(benchmark)} вопросах...")
+        print(f" Оценка на {len(benchmark)} вопросах...")
 
         # Собираем данные для метрик
         retrieval_results = []
@@ -86,9 +86,9 @@ class MetricsEvaluator:
                 is_correct = self._check_answer_correctness(system_answer, expected_answer, question)
                 if is_correct:
                     correct_answers += 1
-                    print("✅")
+                    print("")
                 else:
-                    print("❌")
+                    print("")
 
                 # Получаем результаты поиска для ретриверных метрик
                 search_results = self.vector_store.search(question, k=10)
@@ -114,7 +114,7 @@ class MetricsEvaluator:
         accuracy = correct_answers / len(benchmark) if benchmark else 0.0
 
         # Вычисляем метрики
-        print("\n📈 ВЫЧИСЛЕНИЕ МЕТРИК...")
+        print("\n ВЫЧИСЛЕНИЕ МЕТРИК...")
 
         # Метрики ретривера
         retrieval_metrics = self._compute_retrieval_metrics(retrieval_results)
@@ -418,45 +418,45 @@ class MetricsEvaluator:
     def _print_results(self, retrieval_metrics: Dict, generation_metrics: Dict, accuracy: float, total: int,
                        correct: int):
         """Выводит результаты метрик"""
-        print("\n🎯 РЕЗУЛЬТАТЫ МЕТРИК КАЧЕСТВА")
+        print("\n РЕЗУЛЬТАТЫ МЕТРИК КАЧЕСТВА")
         print("=" * 60)
 
-        print(f"🏆 ОСНОВНЫЕ ПОКАЗАТЕЛИ:")
-        print(f"   ✅ Правильных ответов: {correct}/{total}")
-        print(f"   📊 Точность системы: {accuracy:.2%}")
-        print(f"   ⭐ Оценка для фронтенда: {generation_metrics['overall_score']:.2%}")
+        print(f" ОСНОВНЫЕ ПОКАЗАТЕЛИ:")
+        print(f"    Правильных ответов: {correct}/{total}")
+        print(f"    Точность системы: {accuracy:.2%}")
+        print(f"    Оценка для фронтенда: {generation_metrics['overall_score']:.2%}")
 
         print("\n🔍 МЕТРИКИ РЕТРИВЕРА:")
-        print(f"   📊 NDCG@10:        {retrieval_metrics['ndcg']:.4f}")
-        print(f"   🎯 MRR@10:         {retrieval_metrics['mrr']:.4f}")
-        print(f"   ✅ Precision@5:     {retrieval_metrics['precision']:.4f}")
-        print(f"   ✅ Precision@10:    {retrieval_metrics['precision@10']:.4f}")
+        print(f"    NDCG@10:        {retrieval_metrics['ndcg']:.4f}")
+        print(f"    MRR@10:         {retrieval_metrics['mrr']:.4f}")
+        print(f"    Precision@5:     {retrieval_metrics['precision']:.4f}")
+        print(f"    Precision@10:    {retrieval_metrics['precision@10']:.4f}")
 
-        print("\n🤖 МЕТРИКИ ГЕНЕРАЦИИ ДЛЯ ФРОНТЕНДА:")
-        print(f"   📝 ROUGE-1:           {generation_metrics['rouge1']:.2%}")
-        print(f"   📝 ROUGE-2:           {generation_metrics['rouge2']:.2%}")
-        print(f"   📝 ROUGE-L:           {generation_metrics['rougeL']:.2%}")
-        print(f"   🧠 BERTScore:         {generation_metrics['bertscore']:.2%}")
-        print(f"   🔤 BLEU:              {generation_metrics['bleu']:.2%}")
-        print(f"   🌠 METEOR:            {generation_metrics['meteor']:.2%}")
+        print("\n МЕТРИКИ ГЕНЕРАЦИИ ДЛЯ ФРОНТЕНДА:")
+        print(f"    ROUGE-1:           {generation_metrics['rouge1']:.2%}")
+        print(f"    ROUGE-2:           {generation_metrics['rouge2']:.2%}")
+        print(f"    ROUGE-L:           {generation_metrics['rougeL']:.2%}")
+        print(f"    BERTScore:         {generation_metrics['bertscore']:.2%}")
+        print(f"    BLEU:              {generation_metrics['bleu']:.2%}")
+        print(f"    METEOR:            {generation_metrics['meteor']:.2%}")
 
         # Интерпретация результатов
-        print("\n📋 ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ:")
+        print("\n ИНТЕРПРЕТАЦИЯ РЕЗУЛЬТАТОВ:")
         if accuracy > 0.9:
-            print("   🎉 СИСТЕМА: ОТЛИЧНОЕ качество")
+            print("    СИСТЕМА: ОТЛИЧНОЕ качество")
         elif accuracy > 0.7:
-            print("   👍 СИСТЕМА: ХОРОШЕЕ качество")
+            print("    СИСТЕМА: ХОРОШЕЕ качество")
         elif accuracy > 0.5:
-            print("   ⚠️  СИСТЕМА: УДОВЛЕТВОРИТЕЛЬНОЕ качество")
+            print("     СИСТЕМА: УДОВЛЕТВОРИТЕЛЬНОЕ качество")
         else:
-            print("   🔧 СИСТЕМА: Требует улучшения")
+            print("    СИСТЕМА: Требует улучшения")
 
         if retrieval_metrics['ndcg'] > 0.7:
-            print("   ✅ Ретривер: ОТЛИЧНОЕ качество поиска")
+            print("    Ретривер: ОТЛИЧНОЕ качество поиска")
         elif retrieval_metrics['ndcg'] > 0.5:
-            print("   ✅ Ретривер: ХОРОШЕЕ качество поиска")
+            print("    Ретривер: ХОРОШЕЕ качество поиска")
         else:
-            print("   ⚠️  Ретривер: Требует улучшения")
+            print("     Ретривер: Требует улучшения")
 
     def _save_detailed_results(self, retrieval_results: List, generation_results: List,
                                retrieval_metrics: Dict, generation_metrics: Dict):
@@ -482,7 +482,7 @@ class MetricsEvaluator:
             with open(results_path, 'w', encoding='utf-8') as f:
                 json.dump(detailed_results, f, ensure_ascii=False, indent=2)
 
-            print(f"\n💾 Детальные результаты сохранены: {results_path}")
+            print(f"\n Детальные результаты сохранены: {results_path}")
         except Exception as e:
             logger.error(f"Error saving detailed results: {e}")
 
@@ -493,10 +493,10 @@ def main():
         evaluator = MetricsEvaluator()
         metrics = evaluator.evaluate_all_metrics()
 
-        print(f"\n🎉 ОЦЕНКА МЕТРИК ЗАВЕРШЕНА!")
+        print(f"\n ОЦЕНКА МЕТРИК ЗАВЕРШЕНА!")
 
     except Exception as e:
-        print(f"❌ Ошибка оценки метрик: {e}")
+        print(f" Ошибка оценки метрик: {e}")
         import traceback
         traceback.print_exc()
 

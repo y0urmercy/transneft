@@ -5,8 +5,8 @@
       "Информация"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 6,
     "word_count": 241,
@@ -19,8 +19,8 @@
       "Основные направления деятельности"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 8,
     "word_count": 105,
@@ -33,9 +33,9 @@
       "Уставный капитал. Акции"
     ],
     "element_types": [
-      "numbered_item",
+      "paragraph",
       "section_header",
-      "paragraph"
+      "numbered_item"
     ],
     "num_elements": 6,
     "word_count": 135,
@@ -48,8 +48,8 @@
       "Держатель реестра акционеров — Акционерное общество «Независимая регистраторская компания Р.О.С.Т.» (АО «НРК — Р.О.С.Т.»)"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 9,
     "word_count": 72,
@@ -62,8 +62,8 @@
       "Корпоративное управление"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 6,
     "word_count": 139,
@@ -76,8 +76,8 @@
       "Система корпоративного управления ПАО «Транснефть»"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 6,
     "word_count": 149,
@@ -90,8 +90,8 @@
       "Аудитор"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 116,
@@ -104,8 +104,8 @@
       "Информация об аудиторе"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 9,
     "word_count": 114,
@@ -118,8 +118,8 @@
       "Устав и внутренние документы"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 5,
     "word_count": 137,
@@ -132,10 +132,10 @@
       "Обеспечение надежности системы магистральных трубопроводов и сохранение качества экспортных потоков нефти"
     ],
     "element_types": [
-      "numbered_item",
+      "project_header",
       "section_header",
-      "paragraph",
-      "project_header"
+      "numbered_item",
+      "paragraph"
     ],
     "num_elements": 8,
     "word_count": 119,
@@ -148,8 +148,8 @@
       "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 6,
@@ -163,8 +163,8 @@
       "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 4,
     "word_count": 64,
@@ -177,8 +177,8 @@
       "Трубопроводная система «Заполярье — Пурпе — Самотлор»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 3,
     "word_count": 136,
@@ -191,8 +191,8 @@
       "Магистральный нефтепровод Куюмба — Тайшет"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 6,
@@ -206,8 +206,8 @@
       "Магистральный нефтепровод Куюмба — Тайшет"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 7,
     "word_count": 122,
@@ -220,8 +220,8 @@
       "Балтийская трубопроводная система «БТС-2»"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 6,
@@ -235,8 +235,8 @@
       "Балтийская трубопроводная система «БТС-2»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 5,
     "word_count": 78,
@@ -249,8 +249,8 @@
       "Трубопроводная система «Восточная Сибирь — Тихий океан»"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 6,
@@ -264,8 +264,8 @@
       "Трубопроводная система «Восточная Сибирь — Тихий океан»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 8,
     "word_count": 191,
@@ -278,8 +278,8 @@
       "Трубопроводная система «Восточная Сибирь — Тихий океан»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 4,
     "word_count": 81,
@@ -292,8 +292,8 @@
       "Трубопроводная система «Восточная Сибирь — Тихий океан»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 7,
     "word_count": 170,
@@ -306,8 +306,8 @@
       "Магистральный нефтепровод Сковородино — Мохэ"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 5,
@@ -321,8 +321,8 @@
       "Магистральный нефтепровод Сковородино — Мохэ"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 5,
     "word_count": 56,
@@ -335,8 +335,8 @@
       "Магистральный нефтепровод Сковородино — Мохэ"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 5,
     "word_count": 70,
@@ -349,8 +349,8 @@
       "Расширение КТК"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 10,
@@ -377,8 +377,8 @@
       "Проект «Север»"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 6,
@@ -392,8 +392,8 @@
       "Проект «Север»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 6,
     "word_count": 129,
@@ -406,8 +406,8 @@
       "Проект «ЮГ»"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 82,
@@ -420,8 +420,8 @@
       "Проект «ЮГ»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 9,
     "word_count": 98,
@@ -434,8 +434,8 @@
       "Проект «ЮГ»"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 4,
     "word_count": 108,
@@ -448,8 +448,8 @@
       "Реконструкция системы магистральных трубопроводов для увеличения объемов транспортировки нефтепродуктов в Московский регион"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 4,
@@ -463,8 +463,8 @@
       "Реконструкция системы магистральных трубопроводов для увеличения объемов транспортировки нефтепродуктов в Московский регион"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 8,
     "word_count": 147,
@@ -477,8 +477,8 @@
       "Нефтепровод–отвод ТС «ВСТО» — Комсомольский НПЗ"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 6,
@@ -492,8 +492,8 @@
       "Реконструкция магистральных нефтепроводов для транспортировки нефти на НПЗ Краснодарского края"
     ],
     "element_types": [
-      "section_header",
       "paragraph",
+      "section_header",
       "project_header"
     ],
     "num_elements": 6,
@@ -507,8 +507,8 @@
       "Реконструкция магистральных нефтепроводов для транспортировки нефти на НПЗ Краснодарского края"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 8,
     "word_count": 74,
@@ -521,8 +521,8 @@
       "У истоков инноваций"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 120,
@@ -535,8 +535,8 @@
       "Трубу видно с Шаболовки"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 5,
     "word_count": 247,
@@ -549,8 +549,8 @@
       "Магистральная эра"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 100,
@@ -563,8 +563,8 @@
       "Первые советские"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 185,
@@ -577,8 +577,8 @@
       "Для фронта и тыла"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 153,
@@ -591,8 +591,8 @@
       "От Волги до Байкала"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 6,
     "word_count": 262,
@@ -605,8 +605,8 @@
       "Испытание «Дружбой»"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 4,
     "word_count": 247,
@@ -632,8 +632,8 @@
       "Прирастать Сибирью"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 139,
@@ -646,8 +646,8 @@
       "Рекорды на фоне застоя"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 4,
     "word_count": 237,
@@ -673,8 +673,8 @@
       "Ветер перестройки"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 4,
     "word_count": 169,
@@ -687,8 +687,8 @@
       "Эпоха возрождения"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 5,
     "word_count": 256,
@@ -701,8 +701,8 @@
       "Динамичные нулевые"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 5,
     "word_count": 287,
@@ -715,8 +715,8 @@
       "Курс на восток"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 141,
@@ -729,8 +729,8 @@
       "Время новых возможностей"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 6,
     "word_count": 246,
@@ -743,8 +743,8 @@
       "Глобальная модернизация"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 4,
     "word_count": 122,
@@ -757,8 +757,8 @@
       "Глобальная модернизация"
     ],
     "element_types": [
-      "paragraph",
-      "project_header"
+      "project_header",
+      "paragraph"
     ],
     "num_elements": 5,
     "word_count": 186,
@@ -771,8 +771,8 @@
       "На полную мощность"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 64,
@@ -785,8 +785,8 @@
       "Фундамент энергетической безопасности страны"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 63,
@@ -799,8 +799,8 @@
       "Самая восточная точка системы"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 76,
@@ -813,8 +813,8 @@
       "Самое крупное общество системы"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 78,
@@ -827,8 +827,8 @@
       "Диаметр труб «Транснефти»"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 63,
@@ -841,8 +841,8 @@
       "Самый протяженный нефтепровод"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 68,
@@ -855,8 +855,8 @@
       "Крупнейшие подводные переходы"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 2,
     "word_count": 59,
@@ -869,8 +869,8 @@
       "Количество НПС"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 74,
@@ -883,8 +883,8 @@
       "Старейшая организация системы"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 82,
@@ -897,8 +897,8 @@
       "Численность сотрудников"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 58,
@@ -911,8 +911,8 @@
       "Дата учреждения ПАО «Транснефть»"
     ],
     "element_types": [
-      "section_header",
-      "paragraph"
+      "paragraph",
+      "section_header"
     ],
     "num_elements": 3,
     "word_count": 68,

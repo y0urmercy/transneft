@@ -1,8 +1,8 @@
 {
   "retrieval_metrics": {
-    "ndcg@10": 0.9405259639319692,
-    "mrr@10": 1.0,
-    "precision@5": 0.9149999999999998,
+    "ndcg": 0.9405259639319692,
+    "mrr": 1.0,
+    "precision": 0.9149999999999998,
     "precision@10": 0.9100000000000001
   },
   "generation_metrics": {
@@ -3506,7 +3506,7 @@
     }
   ],
   "summary": {
-    "timestamp": "2025-10-16T20:38:54",
+    "timestamp": "2025-10-17T19:17:32",
     "total_questions": 40,
     "correct_answers": 36,
     "accuracy": 0.9

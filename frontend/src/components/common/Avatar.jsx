@@ -179,13 +179,13 @@ const Avatar = ({ state = "idle", onStateChange }) => {
         case "welcome":
           timeoutRef.current = setTimeout(() => {
             onStateChange("idle");
-          }, 2700);
+          }, 5400);
           break;
 
         case "engagement":
           timeoutRef.current = setTimeout(() => {
             onStateChange("idle");
-          }, 1500);
+          }, 3000);
           break;
 
         case "typing":
@@ -195,7 +195,7 @@ const Avatar = ({ state = "idle", onStateChange }) => {
           timeoutRef.current = setTimeout(() => {
             onStateChange("idle");
             setHasWelcomed(false);
-          }, 3000);
+          }, 6000);
           break;
 
         case "idle":

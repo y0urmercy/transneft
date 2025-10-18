@@ -53,6 +53,6 @@ def create_directories():
 
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
-        print(f"✅ Создана директория: {directory}")
+        print(f" Создана директория: {directory}")
 
 create_directories()

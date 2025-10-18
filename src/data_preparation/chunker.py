@@ -21,7 +21,7 @@ class SemanticChunker:
 
     def create_chunks(self, elements: List[Dict]) -> List[Dict]:
         """Создает семантические chunks из элементов"""
-        print("✂️  Начало семантического чанкования...")
+        print("️  Начало семантического чанкования...")
 
         chunks = []
         current_chunk = []
@@ -56,7 +56,7 @@ class SemanticChunker:
         if current_chunk and current_word_count >= self.min_chunk_size:
             chunks.append(self._create_chunk(current_chunk, len(chunks)))
 
-        print(f"✅ Создано {len(chunks)} семантических chunks")
+        print(f" Создано {len(chunks)} семантических chunks")
 
         # Сохраняем chunks
         self._save_chunks(chunks)
@@ -114,23 +114,23 @@ class SemanticChunker:
         try:
             with open(CHUNKS_PATH, 'w', encoding='utf-8') as f:
                 json.dump(chunks, f, ensure_ascii=False, indent=2)
-            print(f"💾 Chunks сохранены: {CHUNKS_PATH}")
+            print(f" Chunks сохранены: {CHUNKS_PATH}")
         except Exception as e:
-            print(f"❌ Ошибка сохранения chunks: {e}")
+            print(f" Ошибка сохранения chunks: {e}")
 
     def analyze_chunks(self, chunks: List[Dict]):
         """Анализирует полученные chunks"""
-        print("\n📊 АНАЛИЗ CHUNKS:")
+        print("\n АНАЛИЗ CHUNKS:")
         print("-" * 40)
 
         total_chunks = len(chunks)
         total_words = sum(chunk['metadata']['word_count'] for chunk in chunks)
         structured_chunks = sum(1 for chunk in chunks if chunk['metadata']['is_structured'])
 
-        print(f"📦 Всего chunks: {total_chunks}")
-        print(f"📝 Всего слов: {total_words}")
-        print(f"📋 Средний размер: {total_words / total_chunks:.1f} слов/chunk")
-        print(f"🏗️  Структурированных chunks: {structured_chunks} ({structured_chunks / total_chunks:.1%})")
+        print(f" Всего chunks: {total_chunks}")
+        print(f" Всего слов: {total_words}")
+        print(f" Средний размер: {total_words / total_chunks:.1f} слов/chunk")
+        print(f"️  Структурированных chunks: {structured_chunks} ({structured_chunks / total_chunks:.1%})")
 
         # Распределение по размерам
         size_ranges = {'small': 0, 'medium': 0, 'large': 0}
@@ -143,7 +143,7 @@ class SemanticChunker:
             else:
                 size_ranges['large'] += 1
 
-        print("\n📏 Распределение по размерам:")
+        print("\n Распределение по размерам:")
         for size, count in size_ranges.items():
             percentage = (count / total_chunks) * 100
             print(f"   - {size}: {count} chunks ({percentage:.1f}%)")
